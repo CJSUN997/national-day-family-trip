@@ -1,0 +1,15 @@
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 临时文件与编辑器文件
+*.tmp
+*.bak
+*.swp
+~$*
+
+# 含敏感信息的本地文件
+私密信息/
+*.secret.*
+.env
