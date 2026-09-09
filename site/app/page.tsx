@@ -39,49 +39,50 @@ const initialData: SiteData = {
       title: "曼谷 × 普吉本岛",
       subtitle: "用曼谷满足美食、夜市与城市体验，用普吉完成海滩、SPA与度假酒店。",
       accent: "#ea6b45",
-      weather: "10月上旬海况有波动，路线不依赖出海",
-      route: ["北京", "曼谷", "普吉本岛", "上海"],
-      strengths: ["泰国美食与SPA全员5分", "城市和海边兼得", "仅换一次主要住宿地"],
-      risks: ["普吉仍处季风尾声", "境内飞行会占用半天", "浮潜必须允许分组"],
+      weather: "10月仍在季风尾声：每天按本岛方案成立，出海只在海况良好时加选",
+      route: ["北京", "曼谷", "普吉本岛", "上海 / 北京"],
+      strengths: ["往返均有直飞组合可筛选", "泰国美食、SPA和海边覆盖全员高分项", "曼谷3晚＋普吉4晚，仅换一次酒店"],
+      risks: ["国庆票价与2间房需尽快锁定", "普吉道路拥堵需给接送留足缓冲", "浮潜必须允许分组且可无损取消"],
       days: [
-        { day: 1, date: "10.04", title: "抵达曼谷 · 先休息", route: "北京 → 曼谷", summary: "抵达后只安排入住和附近晚餐，不把第一天排成赶场日。", activities: [
-          { time: "航班待核", type: "交通", title: "北京出发", note: "PEK/PKX均可比较；按4人含必要托运行李总价核算。" },
-          { time: "抵达后", type: "住宿", title: "曼谷酒店入住", note: "优先安静、位置方便，默认2间房。" },
-          { time: "晚上", type: "美食", title: "酒店附近欢迎晚餐", note: "避免跨城奔波，为第二天保留体力。" },
+        { day: 1, date: "10.04", title: "国航直飞曼谷 · 轻量落地", route: "北京首都 PEK → 曼谷 BKK", summary: "去程锁定国航直飞方向；首选当前计划中的CA555白天班，抵达后只入住和吃饭。", activities: [
+          { time: "09:10—13:35", type: "国航", title: "CA555 北京直飞曼谷", note: "当前时刻为PEK T3起飞、BKK落地；出票前再次核对10月4日实际执飞、机型和4人行李额。" },
+          { time: "抵达后", type: "接送", title: "机场 → 拉差贴威 / 暹罗", note: "预订固定价接机或正规平台车型，4人＋行李确认可装下。" },
+          { time: "就近", type: "美食", title: "酒店附近欢迎晚餐", note: "不跨城、不排夜市；若晚到可直接叫餐，为第二天保留体力。" },
         ] },
-        { day: 2, date: "10.05", title: "曼谷人文 · 河岸 · 美食", route: "老城 → 湄南河", summary: "精选代表性文化景点，不做密集寺庙打卡。", activities: [
-          { time: "09:30", type: "文化", title: "老城代表景点", note: "在大皇宫、卧佛寺、郑王庙中精选组合，控制台阶和暴晒。" },
-          { time: "午后", type: "休闲", title: "午餐与河岸休息", note: "预留室内休息，不连续步行。" },
-          { time: "傍晚", type: "体验", title: "湄南河与特色晚餐", note: "游船不是必须，可根据天气与妈妈感受替换。" },
+        { day: 2, date: "10.05", title: "王城精选 · 河岸慢行", route: "大皇宫 → 卧佛寺 → 河岸", summary: "只选两个相邻的人文核心点，午后进入室内休息，全天控制在约6000—8000步。", activities: [
+          { time: "09:30", type: "文化", title: "大皇宫", note: "提前核实开放与着装要求；上午完成主景点，不叠加三座寺庙。" },
+          { time: "11:30", type: "文化", title: "卧佛寺＋附近午餐", note: "与大皇宫相邻，减少车辆换乘；若体力不足可只保留大皇宫。" },
+          { time: "15:00后", type: "休闲", title: "河岸商场 / 酒店休息＋晚餐", note: "短程摆渡船完全可选，妈妈可直接乘车到达，不把坐船设为必选。" },
         ] },
-        { day: 3, date: "10.06", title: "商圈 · SPA · 夜市", route: "Siam商圈 → 夜市", summary: "把购物、餐饮、按摩放在同一区域，减少无效移动。", activities: [
-          { time: "10:30", type: "城市", title: "商圈与午餐", note: "购物不是全家主线，安排一次集中窗口即可。" },
-          { time: "下午", type: "SPA", title: "全家按摩 / SPA", note: "全员5分项目，建议提前预约。" },
-          { time: "晚上", type: "市场", title: "夜市或当地市场", note: "优先交通方便、餐饮选择丰富的区域。" },
+        { day: 3, date: "10.06", title: "暹罗 · SPA · 唐人街", route: "暹罗商圈 → 按摩 → 耀华力路", summary: "购物、美食和SPA集中在一条顺路动线上；购物费用单独记账。", activities: [
+          { time: "10:30", type: "城市", title: "暹罗商圈＋午餐", note: "可选吉姆·汤普森故居或商场二选一；不为购物拆散整天。" },
+          { time: "15:00", type: "SPA", title: "全家按摩 / SPA", note: "全员5分项目，选择正规门店并提前预约4人同一时段。" },
+          { time: "18:30", type: "美食", title: "耀华力路晚餐", note: "以坐下吃饭为主、街头小吃为辅；逛累即可叫车返回。" },
         ] },
-        { day: 4, date: "10.07", title: "转场普吉 · 酒店半日", route: "曼谷 → 普吉", summary: "从容退房和转场，抵达后让酒店本身成为行程。", activities: [
-          { time: "上午", type: "交通", title: "曼谷境内机场", note: "BKK/DMK需与前后酒店位置一起判断。" },
-          { time: "航班待核", type: "飞行", title: "飞往普吉", note: "含行李总价计入旅行主体预算。" },
-          { time: "傍晚", type: "住宿", title: "Kata / Karon方向入住", note: "优先安静、海滩与泳池，不住芭东夜生活核心。" },
+        { day: 4, date: "10.07", title: "转场普吉 · 海边入住", route: "曼谷 BKK → 普吉 HKT → 卡伦 / 卡塔", summary: "目标选择10:00—13:00起飞的境内航班，下午到酒店，不浪费完整度假日。", activities: [
+          { time: "07:30—09:00", type: "接送", title: "酒店 → BKK机场", note: "默认仍从BKK出发，减少机场判断错误；若DMK票价明显更优再单独比较。" },
+          { time: "上午 / 中午", type: "飞行", title: "曼谷直飞普吉", note: "航程约1.5小时；比较含20kg托运行李、改签条款后的4人总价。" },
+          { time: "下午", type: "住宿", title: "卡伦北段 / 卡塔入住", note: "默认卡伦北段更安静；酒店需步行可达餐厅、具备泳池和雨天公共空间。" },
         ] },
-        { day: 5, date: "10.08", title: "普吉本岛 · 海岸与老城", route: "西海岸 → 普吉老城", summary: "即使不坐船，也能完成有内容的本岛日。", activities: [
-          { time: "10:00", type: "海滩", title: "西海岸慢上午", note: "沙滩、咖啡和酒店设施自由组合。" },
-          { time: "下午", type: "包车", title: "本岛半日包车", note: "4人核算包车总价，减少换乘。" },
-          { time: "傍晚", type: "城市", title: "普吉老城与晚餐", note: "避开烈日时段，保留拍照和餐饮。" },
+        { day: 5, date: "10.08", title: "海滩恢复 · 全家SPA", route: "酒店 → 卡伦 / 卡塔海滩", summary: "先兑现全员喜欢的海边和SPA，不在抵达普吉后的第一整天跨岛赶路。", activities: [
+          { time: "10:00", type: "海滩", title: "西海岸慢上午", note: "根据红旗和降雨决定下水；海况不佳就改为泳池、咖啡和酒店休闲。" },
+          { time: "15:00", type: "SPA", title: "第二次按摩 / SPA", note: "与曼谷SPA形成一次放松主线；预算紧时改为正规按摩店。" },
+          { time: "傍晚", type: "美食", title: "卡伦 / 卡塔就近晚餐", note: "步行或短程叫车，保留体力，不去芭东夜生活核心。" },
         ] },
-        { day: 6, date: "10.09", title: "可选分组日", route: "海况决定 · A/B计划", summary: "让喜欢浮潜的人尽兴，也让妈妈不用被迫坐快艇。", activities: [
-          { time: "海况良好", type: "可选", title: "2—3人短程出海 / 简单浮潜", note: "只选可因天气改期或退款、可不上水的正规产品。" },
-          { time: "同步", type: "休闲", title: "1—2人酒店 / 海滩 / SPA", note: "与出海集合点保持交通便利。" },
-          { time: "晚上", type: "美食", title: "全家会合晚餐", note: "交换当天体验，不安排额外赶场。" },
+        { day: 6, date: "10.09", title: "天气窗口 · A/B分组", route: "海况决定 · 出海组 / 本岛组", summary: "这一天是加分项，不是路线成败点；前一晚依据官方预警、海滩旗帜和运营方通知决定。", activities: [
+          { time: "仅海况良好", type: "A组", title: "2—3人短程出海 / 简单浮潜", note: "不选长距离快艇硬核路线；产品必须可因天气改期或退款，并含保险与救生装备。" },
+          { time: "同步", type: "B组", title: "妈妈：酒店 / 海滩 / 咖啡 / SPA", note: "不要求坐船，活动范围留在酒店附近；独立交通和会合地点提前约定。" },
+          { time: "18:30", type: "会合", title: "全家晚餐", note: "当天不再增加景点；若取消出海，全家直接执行酒店＋本岛轻松版。" },
         ] },
-        { day: 7, date: "10.10", title: "天气缓冲 · 海边收尾", route: "普吉本岛", summary: "为前几天因雨调整的内容留出补位，也可以纯休息。", activities: [
-          { time: "10:30", type: "弹性", title: "本岛备选 / 酒店休闲", note: "根据天气补做海滩、老城、观景点或SPA。" },
-          { time: "下午", type: "整理", title: "行李与购物核对", note: "购物独立记账，检查回程行李额。" },
-          { time: "晚上", type: "美食", title: "旅行收官晚餐", note: "不安排太晚，保障返程。" },
+        { day: 7, date: "10.10", title: "普吉老城 · 天气缓冲", route: "卡伦 / 卡塔 → 普吉老城 → 酒店", summary: "把老城留到最后作为雨天也能成立的本岛内容，并为前几天调整留出补位。", activities: [
+          { time: "10:30", type: "弹性", title: "酒店上午 / 补做海滩", note: "不早起；若前一天取消出海，也不强行补订不安全的船。" },
+          { time: "14:30", type: "包车", title: "普吉老城半日", note: "看街区建筑、咖啡馆和小店；当天是周六，不把周日步行街写入计划。" },
+          { time: "19:00前", type: "整理", title: "返程核对＋收官晚餐", note: "核对航班、接机、行李额和证件；购物独立记账，晚上不过度延长。" },
         ] },
-        { day: 8, date: "10.11", title: "返程上海 · 当天必须抵达", route: "普吉 → 上海", summary: "所有候选航班必须满足10月11日23:59前抵达PVG/SHA。", activities: [
-          { time: "按航班", type: "交通", title: "酒店送机", note: "至少预留国际航班所需时间和普吉道路拥堵缓冲。" },
-          { time: "硬约束", type: "飞行", title: "10月11日当天抵沪", note: "不接受10月12日凌晨到达的组合。" },
+        { day: 8, date: "10.11", title: "返程分流 · 上海 / 北京", route: "卡伦 / 卡塔 → HKT → 上海 PVG / 北京 PEK", summary: "上海组保留10月11日当天抵达硬约束；北京组增加国航直飞，但会在10月12日凌晨落地。", activities: [
+          { time: "起飞前4小时", type: "接送", title: "酒店 → 普吉机场", note: "卡伦 / 卡塔到机场按高峰和降雨预留约1.5—2小时道路时间。" },
+          { time: "上海组", type: "直飞", title: "HKT → PVG · 10月11日落地", note: "优先下午起飞、当晚抵达的直飞；出票页、订单和航司行程单三处确认到达日期。" },
+          { time: "19:25—02:25+1", type: "国航", title: "CA822 普吉直飞北京", note: "当前时刻为HKT起飞、PEK落地；10月12日凌晨到京，适合作为北京组返程，不满足当天抵沪约束。" },
         ] },
       ],
     },
@@ -140,16 +141,19 @@ const initialData: SiteData = {
     },
   ],
   checklist: [
-    { id: "route", phase: "现在", title: "并行核实两条候选", note: "航班、7晚住宿、当地交通、天气风险按同一口径比较。" },
-    { id: "flight", phase: "第一优先", title: "锁定10月11日当天抵沪组合", note: "比较PEK/PKX出发、PVG/SHA到达和4人含行李总价。" },
-    { id: "rooms", phase: "订票前", title: "确认2间房与床型", note: "同步比较合适的两卧套房，但不默认选择民宿。" },
-    { id: "policy", phase: "目的地确定后", title: "核实入境政策与官方入口", note: "只采用官方来源，并记录查询日期。" },
-    { id: "weather", phase: "可退期内", title: "检查季节风险和取消条款", note: "普吉出海必须可改退；巴厘岛关注陆地交通和降雨。" },
-    { id: "final", phase: "出发前72小时", title: "完成最终复核", note: "航班、接送、酒店、天气、行李、保险、SIM与支付。" },
+    { id: "international", phase: "第一优先", title: "锁定去程国航CA555", note: "10月4日PEK→BKK，当前时刻09:10—13:35；按实际返程分组分别核算行李和票价。" },
+    { id: "returns", phase: "同时确认", title: "锁定两组返程", note: "上海组选择10月11日当天落地PVG的直飞；北京组核对国航CA822，预计10月12日02:25到PEK。" },
+    { id: "domestic", phase: "同期", title: "锁定10月7日曼谷→普吉", note: "优先BKK出发、10:00—13:00起飞；购买行李后再比较总价。" },
+    { id: "rooms", phase: "订票后24小时", title: "预订3晚曼谷＋4晚普吉的2间房", note: "曼谷选拉差贴威/暹罗，普吉选卡伦北段或卡塔；确认床型、早餐与免费取消期。" },
+    { id: "transfer", phase: "出发前2周", title: "确认三段接送", note: "BKK→曼谷酒店、HKT→普吉酒店、普吉酒店→HKT；4人和行李必须匹配车型。" },
+    { id: "tdac", phase: "抵泰前3天内", title: "为4人提交泰国TDAC", note: "只使用泰国移民局官方免费入口，并保存确认邮件或二维码。" },
+    { id: "spa", phase: "出发前1周", title: "预约两次SPA / 按摩", note: "确认4人同一时段、正规门店、取消条款和接送范围。" },
+    { id: "weather", phase: "出海前24小时", title: "决定是否执行A/B分组", note: "核对官方预警、海滩旗帜和运营方通知；任何一项不安全就执行本岛版。" },
+    { id: "final", phase: "返程前一天", title: "完成10月11日返程复核", note: "确认落地日期、送机时间、行李、保险、证件、SIM与支付。" },
   ],
 };
 
-const STORAGE_KEY = "national-day-family-trip-v1";
+const STORAGE_KEY = "national-day-family-trip-v2";
 const CHECK_KEY = "national-day-family-trip-checks-v1";
 
 export default function Home() {
@@ -288,13 +292,13 @@ export default function Home() {
         <div className="hero-board" aria-label="已确认旅行约束">
           <div className="board-stamp">已确认</div>
           <div className="board-row"><span>出发</span><strong>10.04 · 北京</strong></div>
-          <div className="board-row"><span>返程</span><strong>10.11 · 当天抵沪</strong></div>
+          <div className="board-row"><span>返程</span><strong>上海组当天抵沪 · 北京组国航直飞</strong></div>
           <div className="board-row"><span>人数</span><strong>4人 · 默认2间房</strong></div>
           <div className="board-row"><span>主体预算</span><strong>约 ¥20,000</strong></div>
           <div className="board-note">不含国际机票与购物 / 代购</div>
         </div>
         <div className="hero-route" aria-hidden="true">
-          <span>PEK / PKX</span><i /><span>海岛</span><i /><span>PVG / SHA</span>
+          <span>PEK</span><i /><span>曼谷 · 普吉</span><i /><span>PVG / PEK</span>
         </div>
       </section>
 
@@ -327,7 +331,7 @@ export default function Home() {
         <div className="section-shell">
           <div className="section-heading light-heading">
             <div><p className="section-index">02 · TWO EQUAL CANDIDATES</p><h2>两条路线，<br />同一把尺子。</h2></div>
-            <p>现在不设主备。先看哪条路线能在10月11日当天抵沪，再比较航班、住宿、天气与不出海时的完整度。</p>
+            <p>上海组必须在10月11日当天抵沪；曼谷＋普吉方案另设北京组国航直飞。再比较航班、住宿、天气与不出海时的完整度。</p>
           </div>
           <div className="candidate-grid">
             {data.candidates.map((item, index) => (
@@ -349,7 +353,7 @@ export default function Home() {
             ))}
           </div>
           <div className="decision-rule">
-            <b>一票否决：</b> 任何无法在 <strong>10月11日当天抵达上海</strong> 的航班组合，不进入后续比价。
+            <b>返程规则：</b> 上海组必须在 <strong>10月11日当天抵达上海</strong>；北京组可乘国航直飞，并接受10月12日凌晨到京。
           </div>
         </div>
       </section>
@@ -415,8 +419,9 @@ export default function Home() {
               <div className="allocation">
                 {[
                   ["住宿 · 2间房", "35%", "¥7,000"],
-                  ["境内与当地交通", "25%", "¥5,000"],
-                  ["餐饮", "25%", "¥5,000"],
+                  ["曼谷→普吉境内机票", "12.5%", "¥2,500"],
+                  ["接送、Grab与包车", "15%", "¥3,000"],
+                  ["餐饮", "22.5%", "¥4,500"],
                   ["活动与SPA", "10%", "¥2,000"],
                   ["应急缓冲", "5%", "¥1,000"],
                 ].map(([name, pct, amount]) => <div key={name}><span>{name}</span><i style={{ width: pct }} /><b>{amount}</b></div>)}
