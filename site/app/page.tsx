@@ -12,7 +12,7 @@ type DayPlan = {
 };
 
 type Candidate = {
-  id: "phuket" | "bali";
+  id: "phuket";
   label: string;
   eyebrow: string;
   title: string;
@@ -34,7 +34,7 @@ const initialData: SiteData = {
   candidates: [
     {
       id: "phuket",
-      label: "候选 A",
+      label: "固定方案",
       eyebrow: "THAILAND · CITY + ISLAND",
       title: "曼谷 × 普吉本岛",
       subtitle: "用曼谷满足美食、夜市与城市体验，用普吉完成海滩、SPA与度假酒店。",
@@ -86,59 +86,6 @@ const initialData: SiteData = {
         ] },
       ],
     },
-    {
-      id: "bali",
-      label: "候选 B",
-      eyebrow: "BALI · CULTURE + RESORT",
-      title: "乌布 × 努沙杜瓦",
-      subtitle: "乌布承载自然、人文与SPA，努沙杜瓦提供安静海滩和高质量酒店休闲。",
-      accent: "#2f8f83",
-      weather: "10月通常仍在旱季尾声，路线不依赖离岛快艇",
-      route: ["北京", "乌布", "努沙杜瓦", "上海"],
-      strengths: ["自然、人文、海边结构均衡", "4人包车便利", "酒店度假价值突出"],
-      risks: ["直飞与到达时间待核", "乌布道路拥堵", "住宿升级可能挤压预算"],
-      days: [
-        { day: 1, date: "10.04", title: "抵达巴厘岛 · 前往乌布", route: "北京 → DPS → 乌布", summary: "航班落地后直接前往乌布，只安排入住与休息。", activities: [
-          { time: "航班待核", type: "交通", title: "北京出发", note: "必须核实实际可售航班、行李与抵达时间。" },
-          { time: "抵达后", type: "包车", title: "DPS机场接机", note: "4人优先Van或合适车型，避免临时议价。" },
-          { time: "晚上", type: "住宿", title: "乌布入住", note: "优先安静、车辆可达，避免只看景观忽略交通。" },
-        ] },
-        { day: 2, date: "10.05", title: "乌布慢生活 · 市场 · SPA", route: "乌布中心", summary: "第一整天保持轻松，适应气候和节奏。", activities: [
-          { time: "10:00", type: "文化", title: "乌布中心与市场", note: "步行区控制暴晒，购物不占整天。" },
-          { time: "下午", type: "SPA", title: "全家SPA", note: "优先接送方便、环境安静的正规门店。" },
-          { time: "晚上", type: "美食", title: "当地特色晚餐", note: "需补确认全家对印尼餐饮的兴趣和忌口。" },
-        ] },
-        { day: 3, date: "10.06", title: "寺庙 · 稻田 · 山林", route: "乌布北部包车", summary: "一天只抓两个核心点，车辆负责连接。", activities: [
-          { time: "09:30", type: "包车", title: "乌布北部出发", note: "避免过早，路线按实时交通优化。" },
-          { time: "上午", type: "自然", title: "梯田或短程自然步道", note: "选择短线、少台阶、可随时折返。" },
-          { time: "下午", type: "文化", title: "代表性寺庙", note: "精选一处，不堆叠相似寺庙。" },
-        ] },
-        { day: 4, date: "10.07", title: "乌布弹性自然日", route: "瀑布 / 村落 / 酒店", summary: "根据前一日体力和天气决定，不预设高强度项目。", activities: [
-          { time: "10:00", type: "弹性", title: "自然或村落半日", note: "瀑布需先核实台阶，不安排高难度徒步。" },
-          { time: "下午", type: "休闲", title: "酒店、泳池或咖啡馆", note: "保留完整休息段。" },
-          { time: "晚上", type: "体验", title: "可选文化表演", note: "根据全家兴趣与返程时间决定。" },
-        ] },
-        { day: 5, date: "10.08", title: "转场努沙杜瓦", route: "乌布 → 努沙杜瓦", summary: "只换一次酒店；转场日不叠加重景点。", activities: [
-          { time: "上午", type: "住宿", title: "从容退房", note: "不安排早起打卡。" },
-          { time: "中午", type: "包车", title: "门到门转场", note: "考虑巴厘岛堵车，按实际路况预留时间。" },
-          { time: "下午", type: "海滩", title: "海边酒店入住与休息", note: "升级住宿要购买真实可用的海滩、泳池和景观。" },
-        ] },
-        { day: 6, date: "10.09", title: "努沙杜瓦 · 纯度假日", route: "酒店与海滩", summary: "把酒店当成正式行程，不安排为了打卡而远距离往返。", activities: [
-          { time: "上午", type: "海滩", title: "海滩与泳池", note: "全家自由安排，不设集合压力。" },
-          { time: "下午", type: "休闲", title: "下午茶 / SPA", note: "可按兴趣分组。" },
-          { time: "晚上", type: "美食", title: "海边晚餐", note: "控制返程距离。" },
-        ] },
-        { day: 7, date: "10.10", title: "南部文化或酒店收尾", route: "努沙杜瓦 → 乌鲁瓦图（可选）", summary: "离岛不是必选；南部陆地路线即可完成文化与海景。", activities: [
-          { time: "10:30", type: "弹性", title: "酒店上午或南部包车", note: "按天气与体力决定。" },
-          { time: "傍晚", type: "文化", title: "乌鲁瓦图 / Kecak（可选）", note: "注意台阶、猴群和晚间返程。" },
-          { time: "晚上", type: "整理", title: "行李与返程核对", note: "购物独立记账，确认送机时间。" },
-        ] },
-        { day: 8, date: "10.11", title: "返程上海 · 当天必须抵达", route: "DPS → 上海", summary: "航班是否能在10月11日当天抵沪，是巴厘岛方案的第一道筛选。", activities: [
-          { time: "按航班", type: "交通", title: "努沙杜瓦送机", note: "考虑机场安检与道路缓冲。" },
-          { time: "硬约束", type: "飞行", title: "10月11日当天抵沪", note: "如无可靠组合，巴厘岛候选自动降级。" },
-        ] },
-      ],
-    },
   ],
   checklist: [
     { id: "international", phase: "第一优先", title: "锁定去程国航CA555", note: "10月4日PEK→BKK，09:15—13:35；官网未税¥460起，2件托运行李档¥690，按4成人登录后确认含税总价与库存。" },
@@ -153,7 +100,7 @@ const initialData: SiteData = {
   ],
 };
 
-const STORAGE_KEY = "national-day-family-trip-v5";
+const STORAGE_KEY = "national-day-family-trip-v6";
 const CHECK_KEY = "national-day-family-trip-checks-v1";
 
 export default function Home() {
@@ -266,7 +213,7 @@ export default function Home() {
           <span><b>向海而行</b><small>2026 家庭旅行决策册</small></span>
         </a>
         <nav aria-label="页面导航">
-          <a href="#compare">候选对比</a>
+          <a href="#compare">方案总览</a>
           <a href="#itinerary">逐日行程</a>
           <a href="#booking">核价与预订</a>
           <a href="#budget">预算</a>
@@ -283,10 +230,10 @@ export default function Home() {
         <div className="hero-orbit orbit-two" />
         <div className="hero-copy">
           <p className="kicker">OCT 04 — OCT 11 · 8 DAYS / 7 NIGHTS</p>
-          <h1>一家四口，<br /><em>在两片海之间做选择。</em></h1>
-          <p className="hero-lead">曼谷＋普吉已推进到可下单版本：航班、2间房含税价、五段接送与返程分流都已落到具体选择。</p>
+          <h1>一家四口，<br /><em>曼谷与普吉的八天。</em></h1>
+          <p className="hero-lead">路线已经确定：曼谷3晚＋普吉4晚。航班、2间房、五段接送与1人上海/3人北京返程都已落到具体选择。</p>
           <div className="hero-buttons">
-            <a className="primary-cta" href="#compare">开始比较 <span>↘</span></a>
+            <a className="primary-cta" href="#compare">查看固定方案 <span>↘</span></a>
             <a className="text-cta" href="#profile">查看家庭画像</a>
           </div>
         </div>
@@ -331,10 +278,10 @@ export default function Home() {
       <section className="comparison" id="compare">
         <div className="section-shell">
           <div className="section-heading light-heading">
-            <div><p className="section-index">02 · TWO EQUAL CANDIDATES</p><h2>两条路线，<br />同一把尺子。</h2></div>
-            <p>1人必须在10月11日当天抵沪；另外3人由普吉乘国航直飞北京。再比较航班、住宿、天气与不出海时的完整度。</p>
+            <div><p className="section-index">02 · FINAL ROUTE</p><h2>方案已定，<br />接下来只执行。</h2></div>
+            <p>唯一方案为曼谷＋普吉本岛：4人从北京出发，返程1人于10月11日当天抵沪，另外3人乘国航直飞北京。</p>
           </div>
-          <div className="candidate-grid">
+          <div className="candidate-grid fixed-grid">
             {data.candidates.map((item, index) => (
               <article className={`candidate-card candidate-${item.id}`} key={item.id} style={{ "--accent": item.accent } as CSSProperties}>
                 <div className="candidate-number">0{index + 1}</div>
@@ -349,7 +296,7 @@ export default function Home() {
                   <div><h4>需要验证</h4>{item.risks.map(text => <p key={text}>— {text}</p>)}</div>
                 </div>
                 <div className="weather-note"><span>季节判断</span>{item.weather}</div>
-                <button onClick={() => chooseCandidate(item.id)}>查看这条逐日路线 <span>↘</span></button>
+                <button onClick={() => chooseCandidate(item.id)}>查看逐日安排 <span>↘</span></button>
               </article>
             ))}
           </div>
@@ -362,14 +309,7 @@ export default function Home() {
       <section className="itinerary section-shell" id="itinerary">
         <div className="section-heading compact-heading">
           <div><p className="section-index">03 · DAY BY DAY</p><h2>{candidate.title}<br />8天草案</h2></div>
-          <p>这是可编辑的规划骨架，不把尚未核实的航班、价格和政策写成事实。</p>
-        </div>
-        <div className="route-selector" role="tablist" aria-label="选择候选路线">
-          {data.candidates.map(item => (
-            <button role="tab" aria-selected={candidateId === item.id} className={candidateId === item.id ? "active" : ""} key={item.id} onClick={() => { setCandidateId(item.id); setDayIndex(0); }}>
-              <span style={{ background: item.accent }} />{item.title}
-            </button>
-          ))}
+          <p>这是已经确认的8天主行程；价格仍以付款页为准，天气只影响当日活动，不再改变目的地。</p>
         </div>
         <div className="day-tabs" role="tablist" aria-label="选择日期">
           {candidate.days.map((item, index) => (

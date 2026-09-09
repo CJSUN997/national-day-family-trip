@@ -18,8 +18,8 @@ test("renders the family travel planner", async () => {
   assert.match(html, /向海而行/);
   assert.match(html, /曼谷/);
   assert.match(html, /普吉本岛/);
-  assert.match(html, /乌布/);
-  assert.match(html, /努沙杜瓦/);
+  assert.match(html, /唯一方案为曼谷＋普吉本岛/);
+  assert.doesNotMatch(html, /乌布|努沙杜瓦|巴厘岛/);
   assert.match(html, /10月11日/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });

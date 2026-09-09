@@ -137,8 +137,8 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, label:focus-withi
 .people-strip p { margin: 0; font-size: 13px; color: rgba(255,255,255,.66); }
 
 .candidate-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.candidate-grid.fixed-grid { grid-template-columns: minmax(0, 820px); }
 .candidate-card { position: relative; overflow: hidden; padding: 38px; border-radius: 30px; color: #fff; background: var(--ink); box-shadow: var(--shadow); }
-.candidate-bali { background: #665a40; }
 .candidate-number { position: absolute; right: 28px; top: 16px; color: rgba(255,255,255,.1); font-family: "Noto Serif SC", serif; font-size: 105px; line-height: 1; }
 .candidate-card .eyebrow { margin: 0 0 14px; color: var(--accent); }
 .candidate-card h3 { margin: 0; max-width: 75%; font-family: "Noto Serif SC", serif; font-size: 35px; line-height: 1.15; }
@@ -179,7 +179,6 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, label:focus-withi
 .timeline-card h4 { margin: 1px 0 3px; }
 .timeline-card p { margin: 0; color: var(--muted); font-size: 13px; }
 .route-map { position: relative; overflow: hidden; min-height: 560px; border-radius: 28px; background: #cae0d9; }
-.map-bali { background: #d8d2bb; }
 .route-map::before, .route-map::after { content: ""; position: absolute; border: 1px solid rgba(23,49,46,.12); border-radius: 46% 54% 60% 40%; }
 .route-map::before { width: 420px; height: 310px; left: -70px; top: 50px; transform: rotate(22deg); box-shadow: inset 0 0 0 35px rgba(255,255,255,.1), inset 0 0 0 70px rgba(255,255,255,.08); }
 .route-map::after { width: 350px; height: 260px; right: -110px; bottom: 15px; transform: rotate(-12deg); }
