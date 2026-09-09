@@ -79,10 +79,10 @@ const initialData: SiteData = {
           { time: "14:30", type: "包车", title: "普吉老城半日", note: "看街区建筑、咖啡馆和小店；当天是周六，不把周日步行街写入计划。" },
           { time: "19:00前", type: "整理", title: "返程核对＋收官晚餐", note: "核对航班、接机、行李额和证件；购物独立记账，晚上不过度延长。" },
         ] },
-        { day: 8, date: "10.11", title: "返程分流 · 上海 / 北京", route: "卡伦 → HKT → 上海 PVG / 北京 PEK", summary: "上海组乘10月11日凌晨直飞，06:30落地；北京组保留国航CA822，10月12日凌晨落地。", activities: [
-          { time: "10.10 · 19:45", type: "上海组送机", title: "卡伦酒店 → HKT", note: "对应次日00:05航班；这是10月10日晚出发的送机订单，勿把预约日期填成10月11日。" },
-          { time: "00:05—06:30", type: "上海航空", title: "HKT直飞PVG", note: "9月9日公开含税参考价¥2,181/人，明确满足10月11日当天抵沪；付款页再次确认落地日期。" },
-          { time: "15:00 / 19:25—02:25+1", type: "北京组 · 国航", title: "送机＋CA822直飞北京", note: "15:00从卡伦出发；CA822当前公开班期已核，票价需在国航端复核，10月12日凌晨到PEK。" },
+        { day: 8, date: "10.11", title: "返程分流 · 1人上海 / 3人北京", route: "卡伦 → HKT → 上海 PVG / 北京 PEK", summary: "1人乘10月11日凌晨直飞上海，06:30落地；3人乘国航CA822，10月12日凌晨落地北京。", activities: [
+          { time: "10.10 · 19:45", type: "上海 · 1人送机", title: "卡伦酒店 → HKT", note: "对应次日00:05航班；单人＋行李可选正规平台普通轿车，预约日期必须填10月10日。" },
+          { time: "00:05—06:30", type: "上海航空 · 1人", title: "HKT直飞PVG", note: "9月9日公开含税参考价¥2,181，明确满足10月11日当天抵沪；付款页再次确认落地日期。" },
+          { time: "15:00 / 19:25—02:25+1", type: "北京 · 3人国航", title: "送机＋CA822直飞北京", note: "3人15:00从卡伦出发；优先SUV / Van装下行李，10月12日02:25到PEK T3。" },
         ] },
       ],
     },
@@ -142,7 +142,7 @@ const initialData: SiteData = {
   ],
   checklist: [
     { id: "international", phase: "第一优先", title: "锁定去程国航CA555", note: "10月4日PEK→BKK，09:15—13:35；官网未税¥460起，2件托运行李档¥690，按4成人登录后确认含税总价与库存。" },
-    { id: "returns", phase: "同时确认", title: "锁定两组返程", note: "上海组当前选择00:05—06:30直飞（¥2,181/人参考）；北京组核对国航CA822，10月12日02:25到PEK。" },
+    { id: "returns", phase: "同时确认", title: "锁定1人上海＋3人北京返程", note: "上海1人选择00:05—06:30直飞（含税¥2,181参考）；北京3人核对国航CA822的同舱库存，10月12日02:25到PEK。" },
     { id: "domestic", phase: "同期", title: "锁定10月7日泰航BKK→HKT", note: "当前首选10:50—12:20，公开含税参考¥486/人；付款前确认托运行李和退改。" },
     { id: "rooms", phase: "订票后24小时", title: "预订曼谷3晚＋普吉4晚的2间房", note: "主选Asia Hotel Bangkok＋Baan Karonburi Resort，当前含税合计¥5,036；优先免费取消，付款前复核床型、早餐与税费。" },
     { id: "transfer", phase: "出发前2周", title: "建立5张接送订单", note: "两段机场接机、一段曼谷送机、上海组和北京组各一段普吉送机；4人同行段选择Van / SUV。" },
@@ -153,7 +153,7 @@ const initialData: SiteData = {
   ],
 };
 
-const STORAGE_KEY = "national-day-family-trip-v4";
+const STORAGE_KEY = "national-day-family-trip-v5";
 const CHECK_KEY = "national-day-family-trip-checks-v1";
 
 export default function Home() {
@@ -293,8 +293,8 @@ export default function Home() {
         <div className="hero-board" aria-label="已确认旅行约束">
           <div className="board-stamp">已确认</div>
           <div className="board-row"><span>出发</span><strong>10.04 · 北京</strong></div>
-          <div className="board-row"><span>返程</span><strong>上海组当天抵沪 · 北京组国航直飞</strong></div>
-          <div className="board-row"><span>人数</span><strong>4人 · 默认2间房</strong></div>
+          <div className="board-row"><span>返程</span><strong>1人当天抵沪 · 3人国航回北京</strong></div>
+          <div className="board-row"><span>人数</span><strong>4人同行 · 2间房</strong></div>
           <div className="board-row"><span>主体预算</span><strong>约 ¥20,000</strong></div>
           <div className="board-note">不含国际机票与购物 / 代购</div>
         </div>
@@ -332,7 +332,7 @@ export default function Home() {
         <div className="section-shell">
           <div className="section-heading light-heading">
             <div><p className="section-index">02 · TWO EQUAL CANDIDATES</p><h2>两条路线，<br />同一把尺子。</h2></div>
-            <p>上海组必须在10月11日当天抵沪；曼谷＋普吉方案另设北京组国航直飞。再比较航班、住宿、天气与不出海时的完整度。</p>
+            <p>1人必须在10月11日当天抵沪；另外3人由普吉乘国航直飞北京。再比较航班、住宿、天气与不出海时的完整度。</p>
           </div>
           <div className="candidate-grid">
             {data.candidates.map((item, index) => (
@@ -354,7 +354,7 @@ export default function Home() {
             ))}
           </div>
           <div className="decision-rule">
-            <b>返程规则：</b> 上海组必须在 <strong>10月11日当天抵达上海</strong>；北京组可乘国航直飞，并接受10月12日凌晨到京。
+            <b>返程规则：</b> 1人必须在 <strong>10月11日当天抵达上海</strong>；其余3人乘国航直飞，并接受10月12日凌晨到京。
           </div>
         </div>
       </section>
@@ -418,7 +418,7 @@ export default function Home() {
           <div className="price-summary">
             <div><span>已核主体价格</span><strong>¥6,980</strong><small>泰国境内机票4人＋主选酒店7晚</small></div>
             <div><span>主选酒店</span><strong>¥5,036</strong><small>2间房 · 曼谷3晚＋普吉4晚</small></div>
-            <div><span>尚需按人数计算</span><strong>国际段</strong><small>购物不计入预算</small></div>
+            <div><span>国际票已知价格基数</span><strong>¥11,421</strong><small>推荐行李档 · 另加国航税费</small></div>
           </div>
 
           <div className="booking-block">
@@ -439,17 +439,17 @@ export default function Home() {
               <article className="booking-card recommended">
                 <div className="status-row"><span className="status-pill live">上海组刚性选择</span><small>10月11日</small></div>
                 <h4>上海航空 · HKT → PVG</h4><strong className="card-time">00:05—06:30</strong>
-                <p><b>¥2,181/人 × 上海组人数</b>。目前找到的直飞中，明确满足10月11日当天抵沪；送机需预订在10月10日晚。</p>
+                <p><b>1人 · 含税参考¥2,181</b>。目前找到的直飞中，明确满足10月11日当天抵沪；送机需预订在10月10日晚。</p>
                 <a href="https://www.google.com/travel/flights" target="_blank" rel="noreferrer">付款前复核到达日期 ↗</a>
               </article>
               <article className="booking-card">
                 <div className="status-row"><span className="status-pill">国航首选</span><small>10月11日</small></div>
                 <h4>CA822 · HKT → PEK</h4><strong className="card-time">19:25—02:25+1</strong>
-                <p><b>官网未税¥2,010/人起</b>；¥2,160档含2件托运行李、退改¥0起。登录后按北京组实际人数确认含税总价与库存。</p>
+                <p><b>3人 · 官网未税¥2,010/人起</b>；推荐¥2,160档，3人未税¥6,480，含2件托运行李、退改¥0起。登录后确认3张同舱库存。</p>
                 <a href="https://www.airchina.com.cn/" target="_blank" rel="noreferrer">去国航复核价格 ↗</a>
               </article>
             </div>
-            <div className="formula-note"><b>国际机票总价公式：</b> CA555含税价 × 4人 ＋ ¥2,181 × 上海组人数 ＋ CA822含税价 × 北京组人数。国航官网当前均为未税单人价，只有登录并输入真实人数后才能得到最终订单总价。</div>
+            <div className="formula-note"><b>按推荐行李档的已知价格基数：</b> CA555 ¥690 × 4人 ＋ 上海航空 ¥2,181 × 1人 ＋ CA822 ¥2,160 × 3人 ＝ <b>¥11,421＋两段国航税费</b>。输入4人去程、3人返程并登录后，才能得到最终含税总价。</div>
           </div>
 
           <div className="booking-block">
@@ -470,8 +470,8 @@ export default function Home() {
                 ["10.04 · 15:00后", "BKK → Asia Hotel", "4人同行 · Van / SUV", "落地后按航班动态调整；BKK Grab上车点为1层4号出口附近。"],
                 ["10.07 · 07:15", "Asia Hotel → BKK", "4人同行 · Van / SUV", "10:50国内航班；备注4件托运行李，目标08:30前进航站楼。"],
                 ["10.07 · 13:20", "HKT → 卡伦酒店", "4人同行 · Van / SUV", "按12:20落地＋60分钟取行李设置；道路预留75—100分钟。"],
-                ["10.10 · 19:45", "卡伦酒店 → HKT", "上海组 · 独立订单", "对应10月11日00:05航班，预约日期必须填10月10日。"],
-                ["10.11 · 15:00", "卡伦酒店 → HKT", "北京组 · 独立订单", "对应CA822 19:25起飞；雨天或周末不再向后压缩。"],
+                ["10.10 · 19:45", "卡伦酒店 → HKT", "上海1人 · 普通轿车", "对应10月11日00:05航班；1人＋行李，预约日期必须填10月10日。"],
+                ["10.11 · 15:00", "卡伦酒店 → HKT", "北京3人 · SUV / Van", "对应CA822 19:25起飞；备注3件托运行李，雨天不向后压缩。"],
               ].map(([time, route, car, note], index) => (
                 <article key={route + time}><span>{String(index + 1).padStart(2, "0")}</span><div><small>{time}</small><h4>{route}</h4><b>{car}</b><p>{note}</p></div></article>
               ))}
@@ -485,14 +485,14 @@ export default function Home() {
           <div className="booking-block execution-block">
             <div className="booking-title"><span>04</span><div><h3>出发执行手册</h3><p>把容易忘的节点写成当天可以直接照做的动作。</p></div></div>
             <div className="execution-grid">
-              <article><small>出票当天</small><h4>四人先核同舱库存</h4><p>CA555优先看¥690的2件行李档，CA822优先看¥2,160档；输入真实人数后再比较含税总价。保存票价、行李和退改页面截图。</p><a href="https://www.airchina.com.cn/" target="_blank" rel="noreferrer">打开国航官网 ↗</a></article>
+              <article><small>出票当天</small><h4>按4人去、1＋3人返核价</h4><p>CA555查询4人同舱并优先看¥690档；CA822查询3人同舱并优先看¥2,160档。上海航空单独为1人出票，保存三段票价、行李和退改截图。</p><a href="https://www.airchina.com.cn/" target="_blank" rel="noreferrer">打开国航官网 ↗</a></article>
               <article><small>酒店下单</small><h4>主选两家一次核完</h4><p>曼谷选Asia Hotel，普吉选Baan Karonburi；确认2间房的床型、早餐、税费、取消期限，并把英文酒店名和地址发进家庭群。</p><div className="mini-links"><a href="https://www.asiahotel.co.th/asia_bangkok/contact/" target="_blank" rel="noreferrer">曼谷酒店资料 ↗</a><a href="https://www.karonburi.com/facilities" target="_blank" rel="noreferrer">普吉酒店资料 ↗</a></div></article>
               <article><small>10月6日 · 15:00</small><h4>曼谷SPA先预约4人</h4><p>Let&apos;s Relax Siam Square One交通最顺，营业至23:00；按已公开项目，肩颈60分钟THB750、香薰60分钟THB1,300，可按预算分项目。</p><a href="https://letsrelaxspa.com/branches/bangkok-siam-square-1/" target="_blank" rel="noreferrer">查看门店与预约 ↗</a></article>
               <article><small>10月8日 · 15:00</small><h4>普吉SPA保留可取消</h4><p>若选Oasis Spa，至少提前2小时预约并提前15分钟到店；天气不佳时可把海滩时段与SPA对调。</p><a href="https://oasisspa.net/en/FAQs/" target="_blank" rel="noreferrer">查看预约说明 ↗</a></article>
             </div>
             <div className="ops-timeline">
               {[
-                ["现在", "确认返程人数", "只差“上海组几人、北京组几人”；确定后国际机票总额才能封账。"],
+                ["现在", "锁定三段国际机票", "返程已确认1人上海、3人北京；分别核1张与3张返程库存，去程核4张同舱。"],
                 ["出票后24小时", "下单两家主选酒店", "选择可取消方案，把订单号、英文地址和取消截止日记入家庭群。"],
                 ["9月27—30日", "预约接送与SPA", "建立5张车单，备注4人及行李数；返程两组分别下单。"],
                 ["10月1日起", "提交4人TDAC", "抵泰前3天内用官方免费入口填写，并保存4份确认信息。"],
