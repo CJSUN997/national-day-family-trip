@@ -191,6 +191,56 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, label:focus-withi
 .node-3 { right: 17%; bottom: 18%; }
 .map-caption { position: absolute; z-index: 4; left: 25px; bottom: 25px; max-width: 250px; padding: 14px 17px; border-radius: 14px; background: rgba(255,255,255,.82); backdrop-filter: blur(8px); font-size: 13px; }
 
+.booking { background: var(--ink); color: #fff; }
+.booking .section-heading h2 { color: #fff; }
+.booking .section-heading > p { color: rgba(255,255,255,.66); }
+.price-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; overflow: hidden; margin-bottom: 70px; border: 1px solid rgba(255,255,255,.14); border-radius: 24px; background: rgba(255,255,255,.14); }
+.price-summary > div { min-height: 150px; padding: 27px; background: rgba(255,255,255,.055); }
+.price-summary span, .price-summary small { display: block; color: rgba(255,255,255,.58); }
+.price-summary span { font-size: 12px; letter-spacing: .1em; }
+.price-summary strong { display: block; margin: 7px 0 4px; color: #f4b184; font-family: "Noto Serif SC", serif; font-size: 38px; }
+.price-summary small { font-size: 12px; }
+.booking-block + .booking-block { margin-top: 76px; }
+.booking-title { display: flex; align-items: start; gap: 18px; margin-bottom: 25px; }
+.booking-title > span { display: grid; place-items: center; width: 42px; height: 42px; flex: 0 0 auto; border: 1px solid rgba(255,255,255,.28); border-radius: 50%; color: #f4b184; font-weight: 700; }
+.booking-title h3 { margin: -5px 0 2px; font-family: "Noto Serif SC", serif; font-size: 30px; }
+.booking-title p { margin: 0; color: rgba(255,255,255,.55); }
+.flight-grid, .hotel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.booking-card, .hotel-card { position: relative; padding: 25px; border: 1px solid rgba(255,255,255,.13); border-radius: 21px; background: rgba(255,255,255,.055); }
+.booking-card.recommended, .hotel-card.picked { border-color: rgba(244,177,132,.65); background: linear-gradient(145deg, rgba(234,107,69,.12), rgba(255,255,255,.045)); }
+.status-row, .hotel-top { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+.status-row small, .hotel-top small { color: rgba(255,255,255,.5); }
+.status-pill, .hotel-top span { padding: 4px 9px; border-radius: 999px; background: rgba(244,177,132,.13); color: #f4b184; font-size: 11px; font-weight: 700; letter-spacing: .06em; }
+.status-pill.live { background: rgba(79,186,164,.14); color: #8bd7c5; }
+.booking-card h4, .hotel-card h4 { margin: 18px 0 3px; font-size: 19px; }
+.card-time { display: block; color: #fff; font-family: "Noto Serif SC", serif; font-size: 29px; }
+.booking-card p, .hotel-card p { color: rgba(255,255,255,.67); font-size: 13px; }
+.booking-card p b { color: #fff; }
+.booking-card a, .hotel-actions a, .transfer-budget a { display: inline-block; color: #f4b184; font-size: 13px; font-weight: 700; }
+.formula-note, .booking-warning { margin-top: 16px; padding: 18px 22px; border-radius: 15px; background: rgba(255,255,255,.07); color: rgba(255,255,255,.7); font-size: 13px; }
+.formula-note b, .booking-warning b { color: #fff; }
+.hotel-card strong { display: block; margin-top: 19px; color: #f4b184; font-family: "Noto Serif SC", serif; font-size: 30px; font-style: normal; }
+.hotel-card strong small { color: rgba(255,255,255,.5); font-family: "DM Sans", sans-serif; font-size: 11px; font-weight: 500; }
+.hotel-card em { display: block; margin-top: 2px; color: rgba(255,255,255,.48); font-size: 12px; font-style: normal; }
+.hotel-actions { display: flex; justify-content: space-between; align-items: center; gap: 25px; margin-top: 18px; }
+.hotel-actions p { max-width: 650px; margin: 0; color: rgba(255,255,255,.58); font-size: 12px; text-align: right; }
+.transfer-timeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; overflow: hidden; border: 1px solid rgba(255,255,255,.13); border-radius: 21px; background: rgba(255,255,255,.13); }
+.transfer-timeline article { display: grid; grid-template-columns: 30px 1fr; gap: 10px; min-height: 260px; padding: 20px 16px; background: rgba(255,255,255,.045); }
+.transfer-timeline article > span { color: #f4b184; font-weight: 700; }
+.transfer-timeline small { color: rgba(255,255,255,.5); }
+.transfer-timeline h4 { margin: 6px 0 10px; line-height: 1.35; }
+.transfer-timeline b { color: #8bd7c5; font-size: 12px; }
+.transfer-timeline p { margin: 8px 0 0; color: rgba(255,255,255,.58); font-size: 12px; }
+.transfer-guide { display: grid; grid-template-columns: 1.3fr .7fr; gap: 14px; margin-top: 14px; }
+.transfer-guide > div { padding: 24px; border-radius: 19px; background: rgba(255,255,255,.055); }
+.transfer-guide h4 { margin: 0 0 10px; }
+.transfer-guide ol { margin: 0; padding-left: 20px; color: rgba(255,255,255,.66); font-size: 13px; }
+.transfer-guide li + li { margin-top: 6px; }
+.transfer-budget span, .transfer-budget small { display: block; color: rgba(255,255,255,.55); }
+.transfer-budget strong { display: block; margin: 8px 0; color: #f4b184; font-family: "Noto Serif SC", serif; font-size: 25px; }
+.transfer-budget a { margin-top: 18px; }
+.booking-warning { margin-top: 30px; border: 1px dashed rgba(244,177,132,.4); }
+
 .budget-layout { display: grid; grid-template-columns: .75fr 1.25fr; gap: 60px; align-items: center; }
 .budget-main { padding: 36px; border: 1px solid var(--line); border-radius: 28px; }
 .budget-main p { color: var(--muted); }
@@ -241,6 +291,7 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, label:focus-withi
   .people-strip { grid-template-columns: 1fr 1fr; }
   .day-layout { grid-template-columns: 1fr; }
   .route-map { min-height: 400px; }
+  .transfer-timeline { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 720px) {
@@ -261,6 +312,12 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, label:focus-withi
   .section-heading h2 { font-size: 36px; }
   .score-grid { grid-template-columns: 1fr 1fr; }
   .people-strip, .candidate-grid, .check-list { grid-template-columns: 1fr; }
+  .price-summary, .flight-grid, .hotel-grid, .transfer-timeline, .transfer-guide { grid-template-columns: 1fr; }
+  .price-summary { margin-bottom: 50px; }
+  .booking-block + .booking-block { margin-top: 56px; }
+  .transfer-timeline article { min-height: auto; }
+  .hotel-actions { align-items: flex-start; flex-direction: column; }
+  .hotel-actions p { text-align: left; }
   .candidate-card { padding: 28px; }
   .candidate-card h3 { font-size: 29px; }
   .candidate-subtitle { min-height: auto; }

@@ -59,10 +59,10 @@ const initialData: SiteData = {
           { time: "15:00", type: "SPA", title: "全家按摩 / SPA", note: "全员5分项目，选择正规门店并提前预约4人同一时段。" },
           { time: "18:30", type: "美食", title: "耀华力路晚餐", note: "以坐下吃饭为主、街头小吃为辅；逛累即可叫车返回。" },
         ] },
-        { day: 4, date: "10.07", title: "转场普吉 · 海边入住", route: "曼谷 BKK → 普吉 HKT → 卡伦 / 卡塔", summary: "目标选择10:00—13:00起飞的境内航班，下午到酒店，不浪费完整度假日。", activities: [
-          { time: "07:30—09:00", type: "接送", title: "酒店 → BKK机场", note: "默认仍从BKK出发，减少机场判断错误；若DMK票价明显更优再单独比较。" },
-          { time: "上午 / 中午", type: "飞行", title: "曼谷直飞普吉", note: "航程约1.5小时；比较含20kg托运行李、改签条款后的4人总价。" },
-          { time: "下午", type: "住宿", title: "卡伦北段 / 卡塔入住", note: "默认卡伦北段更安静；酒店需步行可达餐厅、具备泳池和雨天公共空间。" },
+        { day: 4, date: "10.07", title: "泰航转场普吉 · 海边入住", route: "曼谷 BKK → 普吉 HKT → 卡伦", summary: "采用10:50起飞的泰航直飞作为当前首选，午后入住，不浪费完整度假日。", activities: [
+          { time: "07:15", type: "接送", title: "酒店 → BKK机场", note: "预订Grab Van / SUV，目标08:30前到达BKK国内出发层；确认航站楼与行李空间。" },
+          { time: "10:50—12:20", type: "泰航", title: "BKK直飞HKT", note: "9月9日公开含税参考价¥486/人、4人¥1,944；付款前确认托运行李与退改条款。" },
+          { time: "13:20左右", type: "接机", title: "HKT → 卡伦酒店", note: "按4人＋托运行李选Van / SUV，预留约75—100分钟道路时间。" },
         ] },
         { day: 5, date: "10.08", title: "海滩恢复 · 全家SPA", route: "酒店 → 卡伦 / 卡塔海滩", summary: "先兑现全员喜欢的海边和SPA，不在抵达普吉后的第一整天跨岛赶路。", activities: [
           { time: "10:00", type: "海滩", title: "西海岸慢上午", note: "根据红旗和降雨决定下水；海况不佳就改为泳池、咖啡和酒店休闲。" },
@@ -79,10 +79,10 @@ const initialData: SiteData = {
           { time: "14:30", type: "包车", title: "普吉老城半日", note: "看街区建筑、咖啡馆和小店；当天是周六，不把周日步行街写入计划。" },
           { time: "19:00前", type: "整理", title: "返程核对＋收官晚餐", note: "核对航班、接机、行李额和证件；购物独立记账，晚上不过度延长。" },
         ] },
-        { day: 8, date: "10.11", title: "返程分流 · 上海 / 北京", route: "卡伦 / 卡塔 → HKT → 上海 PVG / 北京 PEK", summary: "上海组保留10月11日当天抵达硬约束；北京组增加国航直飞，但会在10月12日凌晨落地。", activities: [
-          { time: "起飞前4小时", type: "接送", title: "酒店 → 普吉机场", note: "卡伦 / 卡塔到机场按高峰和降雨预留约1.5—2小时道路时间。" },
-          { time: "上海组", type: "直飞", title: "HKT → PVG · 10月11日落地", note: "优先下午起飞、当晚抵达的直飞；出票页、订单和航司行程单三处确认到达日期。" },
-          { time: "19:25—02:25+1", type: "国航", title: "CA822 普吉直飞北京", note: "当前时刻为HKT起飞、PEK落地；10月12日凌晨到京，适合作为北京组返程，不满足当天抵沪约束。" },
+        { day: 8, date: "10.11", title: "返程分流 · 上海 / 北京", route: "卡伦 → HKT → 上海 PVG / 北京 PEK", summary: "上海组乘10月11日凌晨直飞，06:30落地；北京组保留国航CA822，10月12日凌晨落地。", activities: [
+          { time: "10.10 · 19:45", type: "上海组送机", title: "卡伦酒店 → HKT", note: "对应次日00:05航班；这是10月10日晚出发的送机订单，勿把预约日期填成10月11日。" },
+          { time: "00:05—06:30", type: "上海航空", title: "HKT直飞PVG", note: "9月9日公开含税参考价¥2,181/人，明确满足10月11日当天抵沪；付款页再次确认落地日期。" },
+          { time: "15:00 / 19:25—02:25+1", type: "北京组 · 国航", title: "送机＋CA822直飞北京", note: "15:00从卡伦出发；CA822当前公开班期已核，票价需在国航端复核，10月12日凌晨到PEK。" },
         ] },
       ],
     },
@@ -141,11 +141,11 @@ const initialData: SiteData = {
     },
   ],
   checklist: [
-    { id: "international", phase: "第一优先", title: "锁定去程国航CA555", note: "10月4日PEK→BKK，当前时刻09:10—13:35；按实际返程分组分别核算行李和票价。" },
-    { id: "returns", phase: "同时确认", title: "锁定两组返程", note: "上海组选择10月11日当天落地PVG的直飞；北京组核对国航CA822，预计10月12日02:25到PEK。" },
-    { id: "domestic", phase: "同期", title: "锁定10月7日曼谷→普吉", note: "优先BKK出发、10:00—13:00起飞；购买行李后再比较总价。" },
-    { id: "rooms", phase: "订票后24小时", title: "预订3晚曼谷＋4晚普吉的2间房", note: "曼谷选拉差贴威/暹罗，普吉选卡伦北段或卡塔；确认床型、早餐与免费取消期。" },
-    { id: "transfer", phase: "出发前2周", title: "确认三段接送", note: "BKK→曼谷酒店、HKT→普吉酒店、普吉酒店→HKT；4人和行李必须匹配车型。" },
+    { id: "international", phase: "第一优先", title: "锁定去程国航CA555", note: "10月4日PEK→BKK，09:10—13:35；公开页暂未显示国航价格，在国航端按4人、含税与行李复核。" },
+    { id: "returns", phase: "同时确认", title: "锁定两组返程", note: "上海组当前选择00:05—06:30直飞（¥2,181/人参考）；北京组核对国航CA822，10月12日02:25到PEK。" },
+    { id: "domestic", phase: "同期", title: "锁定10月7日泰航BKK→HKT", note: "当前首选10:50—12:20，公开含税参考¥486/人；付款前确认托运行李和退改。" },
+    { id: "rooms", phase: "订票后24小时", title: "预订曼谷3晚＋普吉4晚的2间房", note: "首选Asia Hotel Bangkok＋The Front Village，当前含税合计¥4,035；优先免费取消，付款前复核床型。" },
+    { id: "transfer", phase: "出发前2周", title: "建立5张接送订单", note: "两段机场接机、一段曼谷送机、上海组和北京组各一段普吉送机；4人同行段选择Van / SUV。" },
     { id: "tdac", phase: "抵泰前3天内", title: "为4人提交泰国TDAC", note: "只使用泰国移民局官方免费入口，并保存确认邮件或二维码。" },
     { id: "spa", phase: "出发前1周", title: "预约两次SPA / 按摩", note: "确认4人同一时段、正规门店、取消条款和接送范围。" },
     { id: "weather", phase: "出海前24小时", title: "决定是否执行A/B分组", note: "核对官方预警、海滩旗帜和运营方通知；任何一项不安全就执行本岛版。" },
@@ -153,7 +153,7 @@ const initialData: SiteData = {
   ],
 };
 
-const STORAGE_KEY = "national-day-family-trip-v2";
+const STORAGE_KEY = "national-day-family-trip-v3";
 const CHECK_KEY = "national-day-family-trip-checks-v1";
 
 export default function Home() {
@@ -268,6 +268,7 @@ export default function Home() {
         <nav aria-label="页面导航">
           <a href="#compare">候选对比</a>
           <a href="#itinerary">逐日行程</a>
+          <a href="#booking">核价与预订</a>
           <a href="#budget">预算</a>
           <a href="#checklist">清单</a>
         </nav>
@@ -283,7 +284,7 @@ export default function Home() {
         <div className="hero-copy">
           <p className="kicker">OCT 04 — OCT 11 · 8 DAYS / 7 NIGHTS</p>
           <h1>一家四口，<br /><em>在两片海之间做选择。</em></h1>
-          <p className="hero-lead">巴厘岛与曼谷＋普吉本岛并列候选。先用问卷守住每个人的愿望，再用航班、天气和4人总价做最后决定。</p>
+          <p className="hero-lead">曼谷＋普吉已推进到可下单版本：航班、2间房含税价、五段接送与返程分流都已落到具体选择。</p>
           <div className="hero-buttons">
             <a className="primary-cta" href="#compare">开始比较 <span>↘</span></a>
             <a className="text-cta" href="#profile">查看家庭画像</a>
@@ -407,10 +408,88 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="booking" id="booking">
+        <div className="section-shell">
+          <div className="section-heading light-heading">
+            <div><p className="section-index">04 · LIVE BOOKING BOARD</p><h2>价格有时效，<br />决策有红线。</h2></div>
+            <p>以下为2026年9月9日查询的4成人、2间房公开价格快照。机票按每人展示，酒店为全部入住人的含税总价；动态价格以付款页为准。</p>
+          </div>
+
+          <div className="price-summary">
+            <div><span>已核主体价格</span><strong>¥5,979</strong><small>泰国境内机票4人＋基础酒店7晚</small></div>
+            <div><span>基础酒店</span><strong>¥4,035</strong><small>2间房 · 曼谷3晚＋普吉4晚</small></div>
+            <div><span>尚需按人数计算</span><strong>国际段</strong><small>购物不计入预算</small></div>
+          </div>
+
+          <div className="booking-block">
+            <div className="booking-title"><span>01</span><div><h3>航班锁定表</h3><p>先锁国际段，再订两间可免费取消的房。</p></div></div>
+            <div className="flight-grid">
+              <article className="booking-card recommended">
+                <div className="status-row"><span className="status-pill">国航首选</span><small>10月4日</small></div>
+                <h4>CA555 · PEK → BKK</h4><strong className="card-time">09:10—13:35</strong>
+                <p>班期已核；公开比价页未显示国航票价。建议在国航付款页按“4成人＋托运行李”复核，含税不高于¥4,000/人时可锁。</p>
+                <a href="https://www.airchina.com.cn/" target="_blank" rel="noreferrer">去国航复核价格 ↗</a>
+              </article>
+              <article className="booking-card">
+                <div className="status-row"><span className="status-pill live">当前可售</span><small>10月7日</small></div>
+                <h4>泰国航空 · BKK → HKT</h4><strong className="card-time">10:50—12:20</strong>
+                <p><b>¥486/人 · 4人¥1,944</b>。时间比廉航早班更适合全家，付款前确认托运行李、选座与退改是否计入。</p>
+                <a href="https://www.google.com/travel/flights" target="_blank" rel="noreferrer">重新比较同日航班 ↗</a>
+              </article>
+              <article className="booking-card recommended">
+                <div className="status-row"><span className="status-pill live">上海组刚性选择</span><small>10月11日</small></div>
+                <h4>上海航空 · HKT → PVG</h4><strong className="card-time">00:05—06:30</strong>
+                <p><b>¥2,181/人 × 上海组人数</b>。目前找到的直飞中，明确满足10月11日当天抵沪；送机需预订在10月10日晚。</p>
+                <a href="https://www.google.com/travel/flights" target="_blank" rel="noreferrer">付款前复核到达日期 ↗</a>
+              </article>
+              <article className="booking-card">
+                <div className="status-row"><span className="status-pill">国航首选</span><small>10月11日</small></div>
+                <h4>CA822 · HKT → PEK</h4><strong className="card-time">19:25—02:25+1</strong>
+                <p>直飞班期已核；公开页暂无价格。建议含税不高于¥3,200/人时优先锁定，避免用转机节省小额费用却增加全家疲劳。</p>
+                <a href="https://www.airchina.com.cn/" target="_blank" rel="noreferrer">去国航复核价格 ↗</a>
+              </article>
+            </div>
+            <div className="formula-note"><b>国际机票总价公式：</b> CA555 × 4人 ＋ ¥2,181 × 上海组人数 ＋ CA822 × 北京组人数。国航未显示公开价，所以不把估算写成“已确定”。</div>
+          </div>
+
+          <div className="booking-block">
+            <div className="booking-title"><span>02</span><div><h3>酒店二选一</h3><p>优先床型、位置与可取消，不被“看起来便宜”带偏。</p></div></div>
+            <div className="hotel-grid">
+              <article className="hotel-card picked"><div className="hotel-top"><span>曼谷首选</span><small>10.04—10.07 · 3晚</small></div><h4>Asia Hotel Bangkok</h4><p>近轨道交通 · 2间行政双床/双人房 · 可免费取消</p><strong>¥2,570 <small>含税总价</small></strong><em>约¥428 / 间夜</em></article>
+              <article className="hotel-card"><div className="hotel-top"><span>曼谷备选</span><small>10.04—10.07 · 3晚</small></div><h4>Maitria Hotel Rama 9</h4><p>2间花园景高级双床房 · 免费取消 · 到店付款</p><strong>¥2,616 <small>含税总价</small></strong><em>位置离中心较远</em></article>
+              <article className="hotel-card picked"><div className="hotel-top"><span>普吉基础首选</span><small>10.07—10.11 · 4晚</small></div><h4>The Front Village</h4><p>卡伦 · 距海滩约250米 · 2间海景房 · 可免费取消</p><strong>¥1,465 <small>含税总价</small></strong><em>价格异常友好，付款前重点复核床型与条款</em></article>
+              <article className="hotel-card"><div className="hotel-top"><span>普吉舒适升级</span><small>10.07—10.11 · 4晚</small></div><h4>Baan Karonburi Resort</h4><p>距海滩约50米 · 2间豪华房 · 含早餐</p><strong>¥2,466 <small>含税总价</small></strong><em>比基础组合多¥1,001</em></article>
+            </div>
+            <div className="hotel-actions"><a href="https://www.booking.com/" target="_blank" rel="noreferrer">在Booking按4成人、2间房复核 ↗</a><p>基础组合¥4,035；普吉升级后合计¥5,036。下单前截图保存：房型、早餐、税费、取消截止时间和付款币种。</p></div>
+          </div>
+
+          <div className="booking-block transfer-block">
+            <div className="booking-title"><span>03</span><div><h3>五段接送预约卡</h3><p>同行段选Van / SUV；返程分流后分别建立订单。</p></div></div>
+            <div className="transfer-timeline">
+              {[
+                ["10.04 · 15:00后", "BKK → Asia Hotel", "4人同行 · Van / SUV", "落地后按航班动态调整；BKK Grab上车点为1层4号出口附近。"],
+                ["10.07 · 07:15", "Asia Hotel → BKK", "4人同行 · Van / SUV", "10:50国内航班；备注4件托运行李，目标08:30前进航站楼。"],
+                ["10.07 · 13:20", "HKT → 卡伦酒店", "4人同行 · Van / SUV", "按12:20落地＋60分钟取行李设置；道路预留75—100分钟。"],
+                ["10.10 · 19:45", "卡伦酒店 → HKT", "上海组 · 独立订单", "对应10月11日00:05航班，预约日期必须填10月10日。"],
+                ["10.11 · 15:00", "卡伦酒店 → HKT", "北京组 · 独立订单", "对应CA822 19:25起飞；雨天或周末不再向后压缩。"],
+              ].map(([time, route, car, note], index) => (
+                <article key={route + time}><span>{String(index + 1).padStart(2, "0")}</span><div><small>{time}</small><h4>{route}</h4><b>{car}</b><p>{note}</p></div></article>
+              ))}
+            </div>
+            <div className="transfer-guide">
+              <div><h4>推荐操作</h4><ol><li>在Grab“出行”中选择提前预约；普吉接机可选“预约机场接机”。</li><li>填写真实航班号、酒店英文名、乘客数与行李数；4人同行不要选普通轿车。</li><li>确认固定价、等候时间、上车点与取消规则；保存订单截图和司机聊天。</li><li>上车核对车牌与司机，付款只走平台；不要向陌生个人二维码预付。</li></ol></div>
+              <div className="transfer-budget"><span>五段接送控制价</span><strong>THB 4,400—6,200</strong><small>约¥970—1,370 · 这是预算区间，不是实时叫车价</small><a href="https://www.grab.com/th/en/transport/advance-booking/" target="_blank" rel="noreferrer">查看Grab提前预约说明 ↗</a></div>
+            </div>
+          </div>
+
+          <div className="booking-warning"><b>下单顺序：</b>先同时打开CA555、上海组直飞和CA822付款页，确认三段都能接受后再支付；随后24小时内下单两家可取消酒店，最后建立接送提醒。任何页面若出现日期、机场或行李不一致，先停在付款前。</div>
+        </div>
+      </section>
+
       <section className="budget" id="budget">
         <div className="section-shell">
           <div className="section-heading light-heading">
-            <div><p className="section-index">04 · MONEY RULES</p><h2>先分账，<br />再谈性价比。</h2></div>
+            <div><p className="section-index">05 · MONEY RULES</p><h2>先分账，<br />再谈性价比。</h2></div>
             <p>¥20,000是4人旅行主体目标，不含中国往返目的地的国际机票，也不含购物和代购。</p>
           </div>
           <div className="budget-layout">
@@ -440,7 +519,7 @@ export default function Home() {
 
       <section className="checklist section-shell" id="checklist">
         <div className="section-heading compact-heading">
-          <div><p className="section-index">05 · BOOKING TIMELINE</p><h2>从现在到出发，<br />一件件锁定。</h2></div>
+          <div><p className="section-index">06 · BOOKING TIMELINE</p><h2>从现在到出发，<br />一件件锁定。</h2></div>
           <p>勾选状态只保存在这台设备。当前完成 {completed}/{data.checklist.length} 项。</p>
         </div>
         <div className="progress-track"><span style={{ width: `${(completed / data.checklist.length) * 100}%` }} /></div>
