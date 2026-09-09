@@ -241,6 +241,21 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, label:focus-withi
 .transfer-budget a { margin-top: 18px; }
 .booking-warning { margin-top: 30px; border: 1px dashed rgba(244,177,132,.4); }
 
+.execution-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.execution-grid article { display: flex; min-height: 230px; flex-direction: column; padding: 25px; border: 1px solid rgba(255,255,255,.1); border-radius: 20px; background: rgba(255,255,255,.055); }
+.execution-grid small { color: #8bd7c5; font-weight: 700; letter-spacing: .08em; }
+.execution-grid h4 { margin: 9px 0 5px; font-family: "Noto Serif SC", serif; font-size: 21px; }
+.execution-grid p { margin: 0 0 18px; color: rgba(255,255,255,.65); font-size: 13px; line-height: 1.7; }
+.execution-grid a { margin-top: auto; }
+.mini-links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: auto; }
+.ops-timeline { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; overflow: hidden; margin-top: 16px; border: 1px solid rgba(255,255,255,.1); border-radius: 20px; background: rgba(255,255,255,.1); }
+.ops-timeline article { display: grid; grid-template-columns: 76px 1fr; gap: 12px; padding: 20px; background: #193d39; }
+.ops-timeline time { color: #f4b184; font-size: 11px; font-weight: 700; }
+.ops-timeline h4 { margin: 0 0 5px; font-size: 14px; }
+.ops-timeline p { margin: 0; color: rgba(255,255,255,.58); font-size: 12px; line-height: 1.6; }
+.rain-plan { margin-top: 16px; padding: 18px 20px; border-left: 3px solid #f4b184; border-radius: 0 14px 14px 0; background: rgba(244,177,132,.09); color: rgba(255,255,255,.7); font-size: 13px; line-height: 1.7; }
+.rain-plan b { color: #fff; }
+
 .budget-layout { display: grid; grid-template-columns: .75fr 1.25fr; gap: 60px; align-items: center; }
 .budget-main { padding: 36px; border: 1px solid var(--line); border-radius: 28px; }
 .budget-main p { color: var(--muted); }
@@ -292,6 +307,7 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, label:focus-withi
   .day-layout { grid-template-columns: 1fr; }
   .route-map { min-height: 400px; }
   .transfer-timeline { grid-template-columns: repeat(2, 1fr); }
+  .ops-timeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 720px) {
@@ -312,10 +328,12 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, label:focus-withi
   .section-heading h2 { font-size: 36px; }
   .score-grid { grid-template-columns: 1fr 1fr; }
   .people-strip, .candidate-grid, .check-list { grid-template-columns: 1fr; }
-  .price-summary, .flight-grid, .hotel-grid, .transfer-timeline, .transfer-guide { grid-template-columns: 1fr; }
+  .price-summary, .flight-grid, .hotel-grid, .transfer-timeline, .transfer-guide, .execution-grid, .ops-timeline { grid-template-columns: 1fr; }
   .price-summary { margin-bottom: 50px; }
   .booking-block + .booking-block { margin-top: 56px; }
   .transfer-timeline article { min-height: auto; }
+  .execution-grid article { min-height: auto; padding: 21px; }
+  .ops-timeline article { grid-template-columns: 70px minmax(0, 1fr); padding: 17px; }
   .hotel-actions { align-items: flex-start; flex-direction: column; }
   .hotel-actions p { text-align: left; }
   .candidate-card { padding: 28px; }

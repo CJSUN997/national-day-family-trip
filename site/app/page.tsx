@@ -45,7 +45,7 @@ const initialData: SiteData = {
       risks: ["国庆票价与2间房需尽快锁定", "普吉道路拥堵需给接送留足缓冲", "浮潜必须允许分组且可无损取消"],
       days: [
         { day: 1, date: "10.04", title: "国航直飞曼谷 · 轻量落地", route: "北京首都 PEK → 曼谷 BKK", summary: "去程锁定国航直飞方向；首选当前计划中的CA555白天班，抵达后只入住和吃饭。", activities: [
-          { time: "09:10—13:35", type: "国航", title: "CA555 北京直飞曼谷", note: "当前时刻为PEK T3起飞、BKK落地；出票前再次核对10月4日实际执飞、机型和4人行李额。" },
+          { time: "09:15—13:35", type: "国航", title: "CA555 北京直飞曼谷", note: "国航官网已核：PEK T3起飞、BKK落地，A330-300；经济舱未税¥460起，建议优先核对2件托运行李档。" },
           { time: "抵达后", type: "接送", title: "机场 → 拉差贴威 / 暹罗", note: "预订固定价接机或正规平台车型，4人＋行李确认可装下。" },
           { time: "就近", type: "美食", title: "酒店附近欢迎晚餐", note: "不跨城、不排夜市；若晚到可直接叫餐，为第二天保留体力。" },
         ] },
@@ -141,10 +141,10 @@ const initialData: SiteData = {
     },
   ],
   checklist: [
-    { id: "international", phase: "第一优先", title: "锁定去程国航CA555", note: "10月4日PEK→BKK，09:10—13:35；公开页暂未显示国航价格，在国航端按4人、含税与行李复核。" },
+    { id: "international", phase: "第一优先", title: "锁定去程国航CA555", note: "10月4日PEK→BKK，09:15—13:35；官网未税¥460起，2件托运行李档¥690，按4成人登录后确认含税总价与库存。" },
     { id: "returns", phase: "同时确认", title: "锁定两组返程", note: "上海组当前选择00:05—06:30直飞（¥2,181/人参考）；北京组核对国航CA822，10月12日02:25到PEK。" },
     { id: "domestic", phase: "同期", title: "锁定10月7日泰航BKK→HKT", note: "当前首选10:50—12:20，公开含税参考¥486/人；付款前确认托运行李和退改。" },
-    { id: "rooms", phase: "订票后24小时", title: "预订曼谷3晚＋普吉4晚的2间房", note: "首选Asia Hotel Bangkok＋The Front Village，当前含税合计¥4,035；优先免费取消，付款前复核床型。" },
+    { id: "rooms", phase: "订票后24小时", title: "预订曼谷3晚＋普吉4晚的2间房", note: "主选Asia Hotel Bangkok＋Baan Karonburi Resort，当前含税合计¥5,036；优先免费取消，付款前复核床型、早餐与税费。" },
     { id: "transfer", phase: "出发前2周", title: "建立5张接送订单", note: "两段机场接机、一段曼谷送机、上海组和北京组各一段普吉送机；4人同行段选择Van / SUV。" },
     { id: "tdac", phase: "抵泰前3天内", title: "为4人提交泰国TDAC", note: "只使用泰国移民局官方免费入口，并保存确认邮件或二维码。" },
     { id: "spa", phase: "出发前1周", title: "预约两次SPA / 按摩", note: "确认4人同一时段、正规门店、取消条款和接送范围。" },
@@ -153,7 +153,7 @@ const initialData: SiteData = {
   ],
 };
 
-const STORAGE_KEY = "national-day-family-trip-v3";
+const STORAGE_KEY = "national-day-family-trip-v4";
 const CHECK_KEY = "national-day-family-trip-checks-v1";
 
 export default function Home() {
@@ -416,8 +416,8 @@ export default function Home() {
           </div>
 
           <div className="price-summary">
-            <div><span>已核主体价格</span><strong>¥5,979</strong><small>泰国境内机票4人＋基础酒店7晚</small></div>
-            <div><span>基础酒店</span><strong>¥4,035</strong><small>2间房 · 曼谷3晚＋普吉4晚</small></div>
+            <div><span>已核主体价格</span><strong>¥6,980</strong><small>泰国境内机票4人＋主选酒店7晚</small></div>
+            <div><span>主选酒店</span><strong>¥5,036</strong><small>2间房 · 曼谷3晚＋普吉4晚</small></div>
             <div><span>尚需按人数计算</span><strong>国际段</strong><small>购物不计入预算</small></div>
           </div>
 
@@ -426,8 +426,8 @@ export default function Home() {
             <div className="flight-grid">
               <article className="booking-card recommended">
                 <div className="status-row"><span className="status-pill">国航首选</span><small>10月4日</small></div>
-                <h4>CA555 · PEK → BKK</h4><strong className="card-time">09:10—13:35</strong>
-                <p>班期已核；公开比价页未显示国航票价。建议在国航付款页按“4成人＋托运行李”复核，含税不高于¥4,000/人时可锁。</p>
+                <h4>CA555 · PEK → BKK</h4><strong className="card-time">09:15—13:35</strong>
+                <p><b>官网未税¥460/人起</b>；¥690档含2件托运行李、退改¥0起。登录前无法确认4张库存与含税总价，建议先核¥690档。</p>
                 <a href="https://www.airchina.com.cn/" target="_blank" rel="noreferrer">去国航复核价格 ↗</a>
               </article>
               <article className="booking-card">
@@ -445,11 +445,11 @@ export default function Home() {
               <article className="booking-card">
                 <div className="status-row"><span className="status-pill">国航首选</span><small>10月11日</small></div>
                 <h4>CA822 · HKT → PEK</h4><strong className="card-time">19:25—02:25+1</strong>
-                <p>直飞班期已核；公开页暂无价格。建议含税不高于¥3,200/人时优先锁定，避免用转机节省小额费用却增加全家疲劳。</p>
+                <p><b>官网未税¥2,010/人起</b>；¥2,160档含2件托运行李、退改¥0起。登录后按北京组实际人数确认含税总价与库存。</p>
                 <a href="https://www.airchina.com.cn/" target="_blank" rel="noreferrer">去国航复核价格 ↗</a>
               </article>
             </div>
-            <div className="formula-note"><b>国际机票总价公式：</b> CA555 × 4人 ＋ ¥2,181 × 上海组人数 ＋ CA822 × 北京组人数。国航未显示公开价，所以不把估算写成“已确定”。</div>
+            <div className="formula-note"><b>国际机票总价公式：</b> CA555含税价 × 4人 ＋ ¥2,181 × 上海组人数 ＋ CA822含税价 × 北京组人数。国航官网当前均为未税单人价，只有登录并输入真实人数后才能得到最终订单总价。</div>
           </div>
 
           <div className="booking-block">
@@ -457,10 +457,10 @@ export default function Home() {
             <div className="hotel-grid">
               <article className="hotel-card picked"><div className="hotel-top"><span>曼谷首选</span><small>10.04—10.07 · 3晚</small></div><h4>Asia Hotel Bangkok</h4><p>近轨道交通 · 2间行政双床/双人房 · 可免费取消</p><strong>¥2,570 <small>含税总价</small></strong><em>约¥428 / 间夜</em></article>
               <article className="hotel-card"><div className="hotel-top"><span>曼谷备选</span><small>10.04—10.07 · 3晚</small></div><h4>Maitria Hotel Rama 9</h4><p>2间花园景高级双床房 · 免费取消 · 到店付款</p><strong>¥2,616 <small>含税总价</small></strong><em>位置离中心较远</em></article>
-              <article className="hotel-card picked"><div className="hotel-top"><span>普吉基础首选</span><small>10.07—10.11 · 4晚</small></div><h4>The Front Village</h4><p>卡伦 · 距海滩约250米 · 2间海景房 · 可免费取消</p><strong>¥1,465 <small>含税总价</small></strong><em>价格异常友好，付款前重点复核床型与条款</em></article>
-              <article className="hotel-card"><div className="hotel-top"><span>普吉舒适升级</span><small>10.07—10.11 · 4晚</small></div><h4>Baan Karonburi Resort</h4><p>距海滩约50米 · 2间豪华房 · 含早餐</p><strong>¥2,466 <small>含税总价</small></strong><em>比基础组合多¥1,001</em></article>
+              <article className="hotel-card"><div className="hotel-top"><span>普吉预算备选</span><small>10.07—10.11 · 4晚</small></div><h4>The Front Village</h4><p>卡伦 · 距海滩约250米 · 2间海景房 · 可免费取消</p><strong>¥1,465 <small>含税总价</small></strong><em>仅在床型、税费与取消条款全部复核无误后考虑</em></article>
+              <article className="hotel-card picked"><div className="hotel-top"><span>普吉最终主选</span><small>10.07—10.11 · 4晚</small></div><h4>Baan Karonburi Resort</h4><p>距海滩约50米 · 2间豪华房 · 含早餐</p><strong>¥2,466 <small>含税总价</small></strong><em>早餐06:30—10:30 · 多¥1,001换取更稳妥的家庭体验</em></article>
             </div>
-            <div className="hotel-actions"><a href="https://www.booking.com/" target="_blank" rel="noreferrer">在Booking按4成人、2间房复核 ↗</a><p>基础组合¥4,035；普吉升级后合计¥5,036。下单前截图保存：房型、早餐、税费、取消截止时间和付款币种。</p></div>
+            <div className="hotel-actions"><a href="https://www.booking.com/" target="_blank" rel="noreferrer">在Booking按4成人、2间房复核 ↗</a><p>主选组合¥5,036；若改用预算备选可省¥1,001。下单前截图保存：房型、早餐、税费、取消截止时间和付款币种。</p></div>
           </div>
 
           <div className="booking-block transfer-block">
@@ -480,6 +480,27 @@ export default function Home() {
               <div><h4>推荐操作</h4><ol><li>在Grab“出行”中选择提前预约；普吉接机可选“预约机场接机”。</li><li>填写真实航班号、酒店英文名、乘客数与行李数；4人同行不要选普通轿车。</li><li>确认固定价、等候时间、上车点与取消规则；保存订单截图和司机聊天。</li><li>上车核对车牌与司机，付款只走平台；不要向陌生个人二维码预付。</li></ol></div>
               <div className="transfer-budget"><span>五段接送控制价</span><strong>THB 4,400—6,200</strong><small>约¥970—1,370 · 这是预算区间，不是实时叫车价</small><a href="https://www.grab.com/th/en/transport/advance-booking/" target="_blank" rel="noreferrer">查看Grab提前预约说明 ↗</a></div>
             </div>
+          </div>
+
+          <div className="booking-block execution-block">
+            <div className="booking-title"><span>04</span><div><h3>出发执行手册</h3><p>把容易忘的节点写成当天可以直接照做的动作。</p></div></div>
+            <div className="execution-grid">
+              <article><small>出票当天</small><h4>四人先核同舱库存</h4><p>CA555优先看¥690的2件行李档，CA822优先看¥2,160档；输入真实人数后再比较含税总价。保存票价、行李和退改页面截图。</p><a href="https://www.airchina.com.cn/" target="_blank" rel="noreferrer">打开国航官网 ↗</a></article>
+              <article><small>酒店下单</small><h4>主选两家一次核完</h4><p>曼谷选Asia Hotel，普吉选Baan Karonburi；确认2间房的床型、早餐、税费、取消期限，并把英文酒店名和地址发进家庭群。</p><div className="mini-links"><a href="https://www.asiahotel.co.th/asia_bangkok/contact/" target="_blank" rel="noreferrer">曼谷酒店资料 ↗</a><a href="https://www.karonburi.com/facilities" target="_blank" rel="noreferrer">普吉酒店资料 ↗</a></div></article>
+              <article><small>10月6日 · 15:00</small><h4>曼谷SPA先预约4人</h4><p>Let&apos;s Relax Siam Square One交通最顺，营业至23:00；按已公开项目，肩颈60分钟THB750、香薰60分钟THB1,300，可按预算分项目。</p><a href="https://letsrelaxspa.com/branches/bangkok-siam-square-1/" target="_blank" rel="noreferrer">查看门店与预约 ↗</a></article>
+              <article><small>10月8日 · 15:00</small><h4>普吉SPA保留可取消</h4><p>若选Oasis Spa，至少提前2小时预约并提前15分钟到店；天气不佳时可把海滩时段与SPA对调。</p><a href="https://oasisspa.net/en/FAQs/" target="_blank" rel="noreferrer">查看预约说明 ↗</a></article>
+            </div>
+            <div className="ops-timeline">
+              {[
+                ["现在", "确认返程人数", "只差“上海组几人、北京组几人”；确定后国际机票总额才能封账。"],
+                ["出票后24小时", "下单两家主选酒店", "选择可取消方案，把订单号、英文地址和取消截止日记入家庭群。"],
+                ["9月27—30日", "预约接送与SPA", "建立5张车单，备注4人及行李数；返程两组分别下单。"],
+                ["10月1日起", "提交4人TDAC", "抵泰前3天内用官方免费入口填写，并保存4份确认信息。"],
+                ["10月3日", "值机与行李终检", "检查护照、保险、eSIM、药品；充电宝随身携带、每人最多2块，机上禁用。"],
+                ["10月8日晚", "决定10月9日A/B方案", "看官方预警、海滩红旗和运营方通知；不安全就全员执行本岛雨天版。"],
+              ].map(([date, title, note]) => <article key={date}><time>{date}</time><div><h4>{title}</h4><p>{note}</p></div></article>)}
+            </div>
+            <div className="rain-plan"><b>雨天替换原则：</b>10月8日海况差就改酒店泳池/咖啡＋SPA；10月9日取消出海则改普吉老城＋Central Phuket，10月10日留作海滩或休息补位。任何红旗、雷暴或运营方停航都不硬上船。</div>
           </div>
 
           <div className="booking-warning"><b>下单顺序：</b>先同时打开CA555、上海组直飞和CA822付款页，确认三段都能接受后再支付；随后24小时内下单两家可取消酒店，最后建立接送提醒。任何页面若出现日期、机场或行李不一致，先停在付款前。</div>
