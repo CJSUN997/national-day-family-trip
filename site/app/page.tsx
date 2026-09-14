@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Event = { time: string; tag: string; title: string; note: string };
 type Day = { date: string; city: string; title: string; lead: string; pace: string; rule?: string; events: Event[] };
@@ -70,17 +70,91 @@ export default function Home() {
   const toggle=(id:string)=>{if(id==="outbound")return;const next={...checks,[id]:!checks[id]};setChecks(next);localStorage.setItem("thai-trip-v7-checks",JSON.stringify(next))};
   const day=days[active]!;
   return <main>
-    <header className="topbar"><button className="brand" onClick={()=>jump("top")}><span>向</span><b>向南，再向北<small>2026 家庭旅行执行册</small></b></button><button className="menu" onClick={()=>setMenu(!menu)}>目录</button><nav className={menu?"open":""}>{[["route","路线"],["days","每日"],["booking","预订"],["budget","预算"],["tasks","清单"]].map(([id,label])=><button key={id} onClick={()=>jump(id)}>{label}</button>)}</nav><em>● 7天6晚</em></header>
+    <header className="topbar"><button className="brand" onClick={()=>jump("top")}><span>向</span><b>向南，再向北<small>2026 家庭旅行执行册</small></b></button><button className="menu" onClick={()=>setMenu(!menu)}>目录</button><nav className={menu?"open":""}>{[["route","路线"],["weather","天气"],["days","每日"],["booking","预订"],["budget","预算"],["tasks","清单"]].map(([id,label])=><button key={id} onClick={()=>jump(id)}>{label}</button>)}</nav><em>● 7天6晚</em></header>
     <section className="hero" id="top"><div className="hero-copy"><p>OCT 04 — OCT 10 · PHUKET / BANGKOK</p><h1>先去海边，<br/><i>再回城市。</i></h1><h2>一家四口的泰国七日：普吉3晚，曼谷3晚。去程已经确定，余下的每一步都围绕舒服、真实和可执行。</h2><div><button onClick={()=>jump("days")}>查看每日安排 ↘</button><button onClick={()=>jump("tasks")}>先看待办</button></div></div><article className="ticket"><header><span>OUTBOUND · CONFIRMED</span><b>已订</b></header><div className="airports"><section><strong>PEK</strong><small>北京 · T3</small></section><i>CA581<br/>──────── ✦</i><section><strong>HKT</strong><small>普吉</small></section></div><div className="times"><span><b>15:30</b>10月4日</span><span><b>6h</b>直飞</span><span><b>20:30</b>当地时间</span></div><p>4人同行 · 每人1×23kg托运行李 · 以电子客票号确认出票</p></article></section>
     <section className="shell route" id="route"><Heading index="01 · ROUTE LOGIC" title={<>六晚，两个落脚点。<br/>没有多余的折返。</>} text="路线先满足航班与体力，再安排体验。海况改变活动，不改变城市；返程分流，但都从素万那普机场出发。"/><div className="route-grid">{[["10.04 · 已订","北京","CA581 直飞"],["3 NIGHTS","普吉","海滩 · SPA · 天气窗口"],["3 NIGHTS","曼谷","文化 · 美食 · 河岸"],["10.10 · 待订","上海 / 北京","1人 PVG · 3人 PEK/PKX"]].map(([a,b,c])=><article key={b}><small>{a}</small><b>{b}</b><p>{c}</p></article>)}</div><div className="rails">{[["01","少换酒店","只在10月7日转场一次"],["02","不赶早","完整活动日10点后开始"],["03","允许分组","妈妈不被迫参加水上活动"],["04","明确排除","不去大皇宫，不看低俗演出"]].map(([n,t,d])=><article key={n}><span>{n}</span><b>{t}</b><small>{d}</small></article>)}</div></section>
-    <section className="dark" id="days"><div className="shell"><Heading light index="02 · DAY BY DAY" title={<>每天只做一件<br/>真正重要的事。</>} text="选择日期查看时间线。安排保留交通和休息缓冲，不用景点数量衡量一天是否值得。"/><div className="tabs">{days.map((d,i)=><button className={i===active?"active":""} onClick={()=>setActive(i)} key={d.date}><small>{d.date.split(" · ")[0]}</small><b>D{i+1}</b><span>{d.city}</span></button>)}</div><div className="day"><aside><span>{day.date}<i>{day.pace}</i></span><small>{day.city} · DAY {active+1}</small><h3>{day.title}</h3><p>{day.lead}</p>{day.rule&&<em><b>WEATHER RULE</b>{day.rule}</em>}</aside><div className="timeline">{day.events.map((e,i)=><article key={e.title}><span>{String(i+1).padStart(2,"0")}</span><div><small>{e.time}<i>{e.tag}</i></small><h4>{e.title}</h4><p>{e.note}</p></div></article>)}</div></div></div></section>
-    <section className="shell booking" id="booking"><Heading index="03 · BOOKING GATES" title={<>先锁交通，<br/>再让酒店落位。</>} text="动态价格不写成事实。这里只固定筛选条件和决策顺序，最终信息以付款页与电子客票为准。"/><div className="cards"><FlightCard urgent date="10.10" code="BKK → PVG" title="上海组 · 1人" items={["直飞且含托运行李","优先10月10日当天抵沪","独立出票，不等待北京组同价"]}/><FlightCard urgent date="10.10" code="BKK → PEK / PKX" title="北京组 · 3人" items={["一次查询3张同舱库存","直飞、含托运行李","凌晨抵达须全员提前确认"]}/><FlightCard date="10.07" code="HKT → BKK" title="城市转场 · 4人" items={["11:00—14:00理想起飞","只选BKK，避免DMK","包含4人托运行李"]}/><article className="rooms"><small>出票后24小时 · 2间房</small><div><b>普吉</b><span>10.04—10.07</span><em>卡伦 · 3晚</em></div><div><b>曼谷</b><span>10.07—10.10</span><em>暹罗 / 拉差贴威 · 3晚</em></div><p>明确床型、BTS步行距离、电梯、早餐、税费和免费取消截止日。</p></article></div><div className="car-rule"><b>送机规则</b><span>两组航班相差 ≤ 2小时 → 一起乘Van去BKK</span><span>相差 ＞ 2小时 → 分别预约车辆</span></div></section>
-    <section className="money" id="budget"><div className="shell"><Heading light index="04 · MONEY MAP" title={<>国际机票另算，<br/>两万元只服务体验。</>} text="这是控制线，不是伪装成实时价格的报价。购物和代购仍使用完全独立的账本。"/><div className="money-grid"><article className="total"><small>旅行主体目标 · 4人</small><b>¥20,000</b><p>不含国际机票<br/>不含购物与代购</p><span>建议区间 <strong>¥15,300—22,200</strong></span></article><article className="bars">{[["住宿 · 6晚2间房","¥4,400—6,500",31],["泰国境内机票","¥1,600—2,800",14],["接送与市内交通","¥1,500—2,200",12],["餐饮","¥4,000—5,000",25],["SPA与活动","¥1,500—2,500",13],["保险与缓冲","¥2,300—3,200",16]].map(([n,a,w])=><div key={String(n)}><span>{n}</span><b>{a}</b><i><em style={{width:`${w}%`}}/></i></div>)}</article><article className="saving"><small>省钱顺序</small><ol><li>不升级过度昂贵的曼谷酒店</li><li>出海选择短线且可取消产品</li><li>接送提前预约，不临时议价</li><li>一次高品质SPA＋一次普通按摩</li></ol></article></div></div></section>
-    <section className="shell tasks" id="tasks"><Heading index="05 · ACTION LIST" title={<>从现在开始，<br/>一件件锁定。</>} text={`${completed}/${tasks.length} 项已完成。勾选结果只保存在当前设备。`}/><div className="progress"><i style={{width:`${completed/tasks.length*100}%`}}/></div><div className="task-list">{tasks.map(([id,phase,title,note],i)=><label className={checks[id]?"done":""} key={id}><input type="checkbox" checked={!!checks[id]} disabled={id==="outbound"} onChange={()=>toggle(id)}/><span>{String(i+1).padStart(2,"0")}</span><em>{phase}</em><b>{title}<small>{note}</small></b><i>✓</i></label>)}</div></section>
-    <section className="final-band"><div><small>06 · BEFORE YOU GO</small><h2>三个不能忘的<br/>出发前节点。</h2></div><article><small>10.01 起</small><b>填写4人 TDAC</b><p>仅使用泰国移民局官方免费入口。</p><a href="https://tdac.immigration.go.th/" target="_blank">打开官网 ↗</a></article><article><small>10.03</small><b>值机与行李终检</b><p>护照、保险、eSIM、常用药；充电宝随身携带。</p></article><article><small>全程</small><b>公开信息边界</b><p>不上传证件号、完整订单号、手机号、邮箱或支付凭证。</p></article></section>
+    <WeatherBoard />
+    <section className="dark" id="days"><div className="shell"><Heading light index="03 · DAY BY DAY" title={<>每天只做一件<br/>真正重要的事。</>} text="选择日期查看时间线。安排保留交通和休息缓冲，不用景点数量衡量一天是否值得。"/><div className="tabs">{days.map((d,i)=><button className={i===active?"active":""} onClick={()=>setActive(i)} key={d.date}><small>{d.date.split(" · ")[0]}</small><b>D{i+1}</b><span>{d.city}</span></button>)}</div><div className="day"><aside><span>{day.date}<i>{day.pace}</i></span><small>{day.city} · DAY {active+1}</small><h3>{day.title}</h3><p>{day.lead}</p>{day.rule&&<em><b>WEATHER RULE</b>{day.rule}</em>}</aside><div className="timeline">{day.events.map((e,i)=><article key={e.title}><span>{String(i+1).padStart(2,"0")}</span><div><small>{e.time}<i>{e.tag}</i></small><h4>{e.title}</h4><p>{e.note}</p></div></article>)}</div></div></div></section>
+    <section className="shell booking" id="booking"><Heading index="04 · BOOKING GATES" title={<>先锁交通，<br/>再让酒店落位。</>} text="动态价格不写成事实。这里只固定筛选条件和决策顺序，最终信息以付款页与电子客票为准。"/><div className="cards"><FlightCard urgent date="10.10" code="BKK → PVG" title="上海组 · 1人" items={["直飞且含托运行李","优先10月10日当天抵沪","独立出票，不等待北京组同价"]}/><FlightCard urgent date="10.10" code="BKK → PEK / PKX" title="北京组 · 3人" items={["一次查询3张同舱库存","直飞、含托运行李","凌晨抵达须全员提前确认"]}/><FlightCard date="10.07" code="HKT → BKK" title="城市转场 · 4人" items={["11:00—14:00理想起飞","只选BKK，避免DMK","包含4人托运行李"]}/><article className="rooms"><small>出票后24小时 · 2间房</small><div><b>普吉</b><span>10.04—10.07</span><em>卡伦 · 3晚</em></div><div><b>曼谷</b><span>10.07—10.10</span><em>暹罗 / 拉差贴威 · 3晚</em></div><p>明确床型、BTS步行距离、电梯、早餐、税费和免费取消截止日。</p></article></div><div className="car-rule"><b>送机规则</b><span>两组航班相差 ≤ 2小时 → 一起乘Van去BKK</span><span>相差 ＞ 2小时 → 分别预约车辆</span></div></section>
+    <section className="money" id="budget"><div className="shell"><Heading light index="05 · MONEY MAP" title={<>国际机票另算，<br/>两万元只服务体验。</>} text="这是控制线，不是伪装成实时价格的报价。购物和代购仍使用完全独立的账本。"/><div className="money-grid"><article className="total"><small>旅行主体目标 · 4人</small><b>¥20,000</b><p>不含国际机票<br/>不含购物与代购</p><span>建议区间 <strong>¥15,300—22,200</strong></span></article><article className="bars">{[["住宿 · 6晚2间房","¥4,400—6,500",31],["泰国境内机票","¥1,600—2,800",14],["接送与市内交通","¥1,500—2,200",12],["餐饮","¥4,000—5,000",25],["SPA与活动","¥1,500—2,500",13],["保险与缓冲","¥2,300—3,200",16]].map(([n,a,w])=><div key={String(n)}><span>{n}</span><b>{a}</b><i><em style={{width:`${w}%`}}/></i></div>)}</article><article className="saving"><small>省钱顺序</small><ol><li>不升级过度昂贵的曼谷酒店</li><li>出海选择短线且可取消产品</li><li>接送提前预约，不临时议价</li><li>一次高品质SPA＋一次普通按摩</li></ol></article></div></div></section>
+    <section className="shell tasks" id="tasks"><Heading index="06 · ACTION LIST" title={<>从现在开始，<br/>一件件锁定。</>} text={`${completed}/${tasks.length} 项已完成。勾选结果只保存在当前设备。`}/><div className="progress"><i style={{width:`${completed/tasks.length*100}%`}}/></div><div className="task-list">{tasks.map(([id,phase,title,note],i)=><label className={checks[id]?"done":""} key={id}><input type="checkbox" checked={!!checks[id]} disabled={id==="outbound"} onChange={()=>toggle(id)}/><span>{String(i+1).padStart(2,"0")}</span><em>{phase}</em><b>{title}<small>{note}</small></b><i>✓</i></label>)}</div></section>
+    <section className="final-band"><div><small>07 · BEFORE YOU GO</small><h2>三个不能忘的<br/>出发前节点。</h2></div><article><small>10.01 起</small><b>填写4人 TDAC</b><p>仅使用泰国移民局官方免费入口。</p><a href="https://tdac.immigration.go.th/" target="_blank">打开官网 ↗</a></article><article><small>10.03</small><b>值机与行李终检</b><p>护照、保险、eSIM、常用药；充电宝随身携带。</p></article><article><small>全程</small><b>公开信息边界</b><p>不上传证件号、完整订单号、手机号、邮箱或支付凭证。</p></article></section>
     <footer><b>向南，再向北</b><span>事实与建议分开。未知保持未知，动态信息在付款前重新核实。</span><button onClick={()=>jump("top")}>回到顶部 ↑</button></footer>
   </main>
 }
 
 function Heading({index,title,text,light=false}:{index:string;title:React.ReactNode;text:string;light?:boolean}){return <header className={`heading ${light?"light":""}`}><div><small>{index}</small><h2>{title}</h2></div><p>{text}</p></header>}
 function FlightCard({urgent=false,date,code,title,items}:{urgent?:boolean;date:string;code:string;title:string;items:string[]}){return <article className={`flight-card ${urgent?"urgent":""}`}><header><span>{urgent?"最高优先级":"同步锁定"}</span><small>{date}</small></header><p>{code}</p><h3>{title}</h3><ul>{items.map(x=><li key={x}>{x}</li>)}</ul><a href="https://www.google.com/travel/flights" target="_blank">打开航班搜索 ↗</a></article>}
+
+type WeatherResponse = {
+  current: { time:string; temperature_2m:number; apparent_temperature:number; weather_code:number; wind_speed_10m:number };
+  daily: { time:string[]; weather_code:number[]; temperature_2m_max:number[]; temperature_2m_min:number[]; precipitation_probability_max:number[] };
+};
+
+const weatherPlaces = [
+  { name:"普吉", stay:"10.04—10.07", lat:7.8804, lon:98.3923 },
+  { name:"曼谷", stay:"10.07—10.10", lat:13.7563, lon:100.5018 },
+];
+
+function weatherLabel(code:number) {
+  if (code === 0) return "晴朗";
+  if (code <= 3) return "多云";
+  if (code <= 48) return "有雾";
+  if (code <= 57) return "毛毛雨";
+  if (code <= 67) return "有雨";
+  if (code <= 77) return "阵雪";
+  if (code <= 82) return "阵雨";
+  return "雷雨";
+}
+
+function weatherIcon(code:number) {
+  if (code === 0) return "☀";
+  if (code <= 3) return "☁";
+  if (code <= 67) return "☂";
+  if (code <= 82) return "☔";
+  return "ϟ";
+}
+
+function WeatherBoard() {
+  const [weather,setWeather]=useState<Record<string,WeatherResponse>>({});
+  const [loading,setLoading]=useState(true);
+  const [error,setError]=useState(false);
+  const [updated,setUpdated]=useState("");
+
+  async function refresh() {
+    setLoading(true); setError(false);
+    try {
+      const entries=await Promise.all(weatherPlaces.map(async place=>{
+        const query=new URLSearchParams({
+          latitude:String(place.lat), longitude:String(place.lon), timezone:"Asia/Bangkok", forecast_days:"7",
+          current:"temperature_2m,apparent_temperature,weather_code,wind_speed_10m",
+          daily:"weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
+        });
+        const response=await fetch(`https://api.open-meteo.com/v1/forecast?${query}`);
+        if(!response.ok) throw new Error("weather request failed");
+        return [place.name,await response.json()] as const;
+      }));
+      setWeather(Object.fromEntries(entries));
+      setUpdated(new Intl.DateTimeFormat("zh-CN",{hour:"2-digit",minute:"2-digit",timeZone:"Asia/Bangkok"}).format(new Date()));
+    } catch { setError(true); }
+    finally { setLoading(false); }
+  }
+
+  useEffect(()=>{
+    const timer=window.setTimeout(()=>{ void refresh(); },0);
+    return ()=>window.clearTimeout(timer);
+  },[]);
+
+  return <section className="weather" id="weather"><div className="shell">
+    <Heading index="02 · LIVE WEATHER" title={<>两座城市，<br/>一眼看清天气。</>} text="当前展示当地实况与未来7天预报。进入旅行日期的可预报窗口后，这里会自动覆盖普吉和曼谷的实际行程日。"/>
+    <div className="weather-status"><span><i/>泰国当地时间 · {updated||"正在同步"}</span><button onClick={refresh} disabled={loading}>{loading?"更新中…":"刷新天气 ↻"}</button></div>
+    {error&&<div className="weather-error">天气服务暂时不可用。行程仍按季风期规则执行，稍后可手动刷新。</div>}
+    <div className="weather-grid">{weatherPlaces.map(place=>{
+      const data=weather[place.name];
+      return <article className="weather-card" key={place.name}>
+        <header><div><small>{place.stay} · THAILAND</small><h3>{place.name}</h3></div>{data?<div className="now"><span>{weatherIcon(data.current.weather_code)}</span><b>{Math.round(data.current.temperature_2m)}°</b></div>:<div className="weather-skeleton"/>}</header>
+        {data?<><div className="current-detail"><span>{weatherLabel(data.current.weather_code)}</span><span>体感 {Math.round(data.current.apparent_temperature)}°</span><span>风速 {Math.round(data.current.wind_speed_10m)} km/h</span></div><div className="forecast">{data.daily.time.slice(0,5).map((date,i)=><div key={date}><time>{new Intl.DateTimeFormat("zh-CN",{weekday:"short",timeZone:"Asia/Bangkok"}).format(new Date(`${date}T12:00:00+07:00`))}</time><b>{weatherIcon(data.daily.weather_code[i]!)}</b><span>{Math.round(data.daily.temperature_2m_max[i]!)}° <i>{Math.round(data.daily.temperature_2m_min[i]!)}°</i></span><small>雨 {data.daily.precipitation_probability_max[i]}%</small></div>)}</div></>:<p className="weather-loading">正在获取当地天气…</p>}
+      </article>})}</div>
+    <div className="weather-note"><b>行程联动规则</b><span>普吉降雨概率高不等于全天有雨；出海决定仍以雷暴预警、海滩旗帜和运营方通知为准。</span><a href="https://open-meteo.com/" target="_blank" rel="noreferrer">天气数据 · Open-Meteo ↗</a></div>
+  </div></section>;
+}
