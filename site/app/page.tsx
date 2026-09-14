@@ -115,6 +115,13 @@ function weatherIcon(code:number) {
   return "ϟ";
 }
 
+function forecastDate(date:string,index:number) {
+  const value=new Date(`${date}T12:00:00+07:00`);
+  const day=new Intl.DateTimeFormat("zh-CN",{month:"numeric",day:"numeric",timeZone:"Asia/Bangkok"}).format(value);
+  const weekday=new Intl.DateTimeFormat("zh-CN",{weekday:"short",timeZone:"Asia/Bangkok"}).format(value);
+  return {day,weekday:index===0?`今天 · ${weekday}`:weekday};
+}
+
 function WeatherBoard() {
   const [weather,setWeather]=useState<Record<string,WeatherResponse>>({});
   const [loading,setLoading]=useState(true);
@@ -153,7 +160,7 @@ function WeatherBoard() {
       const data=weather[place.name];
       return <article className="weather-card" key={place.name}>
         <header><div><small>{place.stay} · THAILAND</small><h3>{place.name}</h3></div>{data?<div className="now"><span>{weatherIcon(data.current.weather_code)}</span><b>{Math.round(data.current.temperature_2m)}°</b></div>:<div className="weather-skeleton"/>}</header>
-        {data?<><div className="current-detail"><span>{weatherLabel(data.current.weather_code)}</span><span>体感 {Math.round(data.current.apparent_temperature)}°</span><span>风速 {Math.round(data.current.wind_speed_10m)} km/h</span></div><div className="forecast">{data.daily.time.slice(0,5).map((date,i)=><div key={date}><time>{new Intl.DateTimeFormat("zh-CN",{weekday:"short",timeZone:"Asia/Bangkok"}).format(new Date(`${date}T12:00:00+07:00`))}</time><b>{weatherIcon(data.daily.weather_code[i]!)}</b><span>{Math.round(data.daily.temperature_2m_max[i]!)}° <i>{Math.round(data.daily.temperature_2m_min[i]!)}°</i></span><small>雨 {data.daily.precipitation_probability_max[i]}%</small></div>)}</div></>:<p className="weather-loading">正在获取当地天气…</p>}
+        {data?<><div className="current-detail"><span>{weatherLabel(data.current.weather_code)}</span><span>体感 {Math.round(data.current.apparent_temperature)}°</span><span>风速 {Math.round(data.current.wind_speed_10m)} km/h</span></div><div className="forecast">{data.daily.time.slice(0,5).map((date,i)=>{const label=forecastDate(date,i);return <div key={date}><time><strong>{label.day}</strong><em>{label.weekday}</em></time><b>{weatherIcon(data.daily.weather_code[i]!)}</b><span>{Math.round(data.daily.temperature_2m_max[i]!)}° <i>{Math.round(data.daily.temperature_2m_min[i]!)}°</i></span><small>雨 {data.daily.precipitation_probability_max[i]}%</small></div>})}</div></>:<p className="weather-loading">正在获取当地天气…</p>}
       </article>})}</div>
     <div className="weather-note"><b>行程联动规则</b><span>普吉降雨概率高不等于全天有雨；出海决定仍以雷暴预警、海滩旗帜和运营方通知为准。</span><a href="https://open-meteo.com/" target="_blank" rel="noreferrer">天气数据 · Open-Meteo ↗</a></div>
   </div></section>;
