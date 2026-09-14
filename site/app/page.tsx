@@ -1,525 +1,86 @@
 "use client";
 
-import { ChangeEvent, type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 
-type DayPlan = {
-  day: number;
-  date: string;
-  title: string;
-  route: string;
-  summary: string;
-  activities: { time: string; type: string; title: string; note: string }[];
-};
+type Event = { time: string; tag: string; title: string; note: string };
+type Day = { date: string; city: string; title: string; lead: string; pace: string; rule?: string; events: Event[] };
 
-type Candidate = {
-  id: "phuket";
-  label: string;
-  eyebrow: string;
-  title: string;
-  subtitle: string;
-  accent: string;
-  weather: string;
-  route: string[];
-  strengths: string[];
-  risks: string[];
-  days: DayPlan[];
-};
+const days: Day[] = [
+  { date:"10.04 · 周日", city:"普吉", title:"向南飞，先睡个好觉", lead:"已订 CA581。晚间落地不赶行程，把体力留给真正的海岛假期。", pace:"交通日", events:[
+    {time:"12:00",tag:"集合",title:"首都机场 T3",note:"4人一起办理值机，逐人确认电子客票号与1×23kg托运行李。"},
+    {time:"15:30—20:30",tag:"已预订",title:"CA581 · PEK → HKT",note:"直飞普吉；泰国时间比北京时间慢1小时。"},
+    {time:"22:00",tag:"接机",title:"普吉机场 → 卡伦",note:"预订SUV / Van并填写航班号，预计23:15前后抵达酒店。"}]},
+  { date:"10.05 · 周一", city:"普吉", title:"海风、慢午餐与 SPA", lead:"第一整天不跨岛，用海滩和休息完成从通勤状态到度假状态的切换。", pace:"很轻松", rule:"红旗或大浪时不下水，直接切换酒店泳池与咖啡馆。", events:[
+    {time:"10:00",tag:"海滩",title:"卡伦海滩慢上午",note:"自然起床，海边散步或酒店泳池；不设置集合压力。"},
+    {time:"12:30",tag:"美食",title:"卡伦就近午餐",note:"选择有空调、能坐下慢慢吃的餐厅，午后回酒店休息。"},
+    {time:"16:00",tag:"全员高分",title:"全家按摩 / SPA",note:"提前预约4人同一时段，可以各自选择不同项目。"},
+    {time:"18:30",tag:"日落",title:"卡塔或卡伦晚餐",note:"短程移动，看天气决定是否等日落。"}]},
+  { date:"10.06 · 周二", city:"普吉", title:"把选择权交给海况", lead:"出海只是加分项。前一晚再决定，妈妈不坐船也能拥有完整的一天。", pace:"适中", rule:"任何雷暴预警、红旗或运营方停航，都执行本岛方案。", events:[
+    {time:"前晚决定",tag:"A 组",title:"短程出海 / 简单浮潜",note:"2—3人参加，避免长距离快艇；产品必须含保险并支持天气取消。"},
+    {time:"同步",tag:"B 组",title:"酒店、咖啡与海滩",note:"妈妈留在卡伦附近，独立交通与晚间会合地点提前约定。"},
+    {time:"雨天替换",tag:"全家",title:"普吉老城半日",note:"放弃出海时再执行；不叠加南部环岛和多个打卡点。"},
+    {time:"18:30",tag:"会合",title:"全家收官晚餐",note:"当天不再增加活动，回酒店整理转场行李。"}]},
+  { date:"10.07 · 周三", city:"曼谷", title:"从海岛回到城市", lead:"优先选择中午前后的 HKT → BKK 直飞，把机场链路当作一天的主任务。", pace:"交通日", events:[
+    {time:"09:30",tag:"退房",title:"卡伦 → 普吉机场",note:"至少在起飞前2.5小时离开酒店，雨天不压缩道路缓冲。"},
+    {time:"11:00—14:00",tag:"待预订",title:"HKT → BKK",note:"只筛素万那普机场直飞、含托运行李的组合；不为低价改飞DMK。"},
+    {time:"16:00",tag:"入住",title:"暹罗 / 拉差贴威",note:"2间房，优先BTS步行500米内、明确床型、可免费取消。"},
+    {time:"晚上",tag:"留白",title:"附近晚餐",note:"不安排正式景点；有精神再逛商场或做普通按摩。"}]},
+  { date:"10.08 · 周四", city:"曼谷", title:"丝绸旧宅与湄南河夜色", lead:"删除大皇宫路线，把文化、购物和河岸放在一条更舒适的城市动线上。", pace:"适中", events:[
+    {time:"10:30",tag:"文化",title:"吉姆·汤普森故居",note:"主屋随导览参观；若兴趣不高，可替换为曼谷艺术文化中心。"},
+    {time:"12:30",tag:"城市",title:"暹罗商圈午餐",note:"Siam Center / Paragon按兴趣选择，不为购物拆散整天。"},
+    {time:"15:30",tag:"休息",title:"酒店休息或 SPA",note:"保留完整的室内恢复段，避开午后闷热。"},
+    {time:"17:30",tag:"河岸",title:"ICONSIAM 与晚餐",note:"看湄南河夜景，结束后直接返回酒店。"}]},
+  { date:"10.09 · 周五", city:"曼谷", title:"老街、咖啡与耀华力", lead:"最后一个完整日只走相邻街区，购物与代购独立记账。", pace:"轻松", events:[
+    {time:"10:30",tag:"自由",title:"慢上午 / 补购",note:"可分组活动，午后回酒店放下购物袋并休息。"},
+    {time:"15:30",tag:"街区",title:"Talat Noi",note:"看老建筑、街头艺术和咖啡馆；妈妈可减少步行后直接会合。"},
+    {time:"17:30",tag:"美食",title:"耀华力路晚餐",note:"坐下吃饭为主、街头小吃为辅，避开长时间排队。"},
+    {time:"20:30",tag:"整理",title:"两组返程终检",note:"分别确认航站楼、送机时间、行李额、证件和落地日期。"}]},
+  { date:"10.10 · 周六", city:"返程", title:"同一座机场，两条回家路线", lead:"1人返回上海，3人返回北京。两组独立出票，以直飞和合理到达时间优先。", pace:"交通日", events:[
+    {time:"待航班",tag:"上海 · 1人",title:"BKK → PVG",note:"优先10月10日当天抵沪、含托运行李的直飞航班。"},
+    {time:"待航班",tag:"北京 · 3人",title:"BKK → PEK / PKX",note:"查询3张同舱库存；若10月11日凌晨落地，出票前再次确认。"},
+    {time:"起飞前3小时",tag:"送机",title:"酒店 → BKK",note:"两组起飞相差不超过2小时可同车，否则分别预约。"}]},
+];
 
-type SiteData = {
-  candidates: Candidate[];
-  checklist: { id: string; phase: string; title: string; note: string }[];
-};
-
-const initialData: SiteData = {
-  candidates: [
-    {
-      id: "phuket",
-      label: "固定方案",
-      eyebrow: "THAILAND · CITY + ISLAND",
-      title: "曼谷 × 普吉本岛",
-      subtitle: "用曼谷满足美食、夜市与城市体验，用普吉完成海滩、SPA与度假酒店。",
-      accent: "#ea6b45",
-      weather: "10月仍在季风尾声：每天按本岛方案成立，出海只在海况良好时加选",
-      route: ["北京", "曼谷", "普吉本岛", "上海 / 北京"],
-      strengths: ["往返均有直飞组合可筛选", "泰国美食、SPA和海边覆盖全员高分项", "曼谷3晚＋普吉4晚，仅换一次酒店"],
-      risks: ["国庆票价与2间房需尽快锁定", "普吉道路拥堵需给接送留足缓冲", "浮潜必须允许分组且可无损取消"],
-      days: [
-        { day: 1, date: "10.04", title: "国航直飞曼谷 · 轻量落地", route: "北京首都 PEK → 曼谷 BKK", summary: "去程锁定国航直飞方向；首选当前计划中的CA555白天班，抵达后只入住和吃饭。", activities: [
-          { time: "09:15—13:35", type: "国航", title: "CA555 北京直飞曼谷", note: "国航官网已核：PEK T3起飞、BKK落地，A330-300；经济舱未税¥460起，建议优先核对2件托运行李档。" },
-          { time: "抵达后", type: "接送", title: "机场 → 拉差贴威 / 暹罗", note: "预订固定价接机或正规平台车型，4人＋行李确认可装下。" },
-          { time: "就近", type: "美食", title: "酒店附近欢迎晚餐", note: "不跨城、不排夜市；若晚到可直接叫餐，为第二天保留体力。" },
-        ] },
-        { day: 2, date: "10.05", title: "王城精选 · 河岸慢行", route: "大皇宫 → 卧佛寺 → 河岸", summary: "只选两个相邻的人文核心点，午后进入室内休息，全天控制在约6000—8000步。", activities: [
-          { time: "09:30", type: "文化", title: "大皇宫", note: "提前核实开放与着装要求；上午完成主景点，不叠加三座寺庙。" },
-          { time: "11:30", type: "文化", title: "卧佛寺＋附近午餐", note: "与大皇宫相邻，减少车辆换乘；若体力不足可只保留大皇宫。" },
-          { time: "15:00后", type: "休闲", title: "河岸商场 / 酒店休息＋晚餐", note: "短程摆渡船完全可选，妈妈可直接乘车到达，不把坐船设为必选。" },
-        ] },
-        { day: 3, date: "10.06", title: "暹罗 · SPA · 唐人街", route: "暹罗商圈 → 按摩 → 耀华力路", summary: "购物、美食和SPA集中在一条顺路动线上；购物费用单独记账。", activities: [
-          { time: "10:30", type: "城市", title: "暹罗商圈＋午餐", note: "可选吉姆·汤普森故居或商场二选一；不为购物拆散整天。" },
-          { time: "15:00", type: "SPA", title: "全家按摩 / SPA", note: "全员5分项目，选择正规门店并提前预约4人同一时段。" },
-          { time: "18:30", type: "美食", title: "耀华力路晚餐", note: "以坐下吃饭为主、街头小吃为辅；逛累即可叫车返回。" },
-        ] },
-        { day: 4, date: "10.07", title: "泰航转场普吉 · 海边入住", route: "曼谷 BKK → 普吉 HKT → 卡伦", summary: "采用10:50起飞的泰航直飞作为当前首选，午后入住，不浪费完整度假日。", activities: [
-          { time: "07:15", type: "接送", title: "酒店 → BKK机场", note: "预订Grab Van / SUV，目标08:30前到达BKK国内出发层；确认航站楼与行李空间。" },
-          { time: "10:50—12:20", type: "泰航", title: "BKK直飞HKT", note: "9月9日公开含税参考价¥486/人、4人¥1,944；付款前确认托运行李与退改条款。" },
-          { time: "13:20左右", type: "接机", title: "HKT → 卡伦酒店", note: "按4人＋托运行李选Van / SUV，预留约75—100分钟道路时间。" },
-        ] },
-        { day: 5, date: "10.08", title: "海滩恢复 · 全家SPA", route: "酒店 → 卡伦 / 卡塔海滩", summary: "先兑现全员喜欢的海边和SPA，不在抵达普吉后的第一整天跨岛赶路。", activities: [
-          { time: "10:00", type: "海滩", title: "西海岸慢上午", note: "根据红旗和降雨决定下水；海况不佳就改为泳池、咖啡和酒店休闲。" },
-          { time: "15:00", type: "SPA", title: "第二次按摩 / SPA", note: "与曼谷SPA形成一次放松主线；预算紧时改为正规按摩店。" },
-          { time: "傍晚", type: "美食", title: "卡伦 / 卡塔就近晚餐", note: "步行或短程叫车，保留体力，不去芭东夜生活核心。" },
-        ] },
-        { day: 6, date: "10.09", title: "天气窗口 · A/B分组", route: "海况决定 · 出海组 / 本岛组", summary: "这一天是加分项，不是路线成败点；前一晚依据官方预警、海滩旗帜和运营方通知决定。", activities: [
-          { time: "仅海况良好", type: "A组", title: "2—3人短程出海 / 简单浮潜", note: "不选长距离快艇硬核路线；产品必须可因天气改期或退款，并含保险与救生装备。" },
-          { time: "同步", type: "B组", title: "妈妈：酒店 / 海滩 / 咖啡 / SPA", note: "不要求坐船，活动范围留在酒店附近；独立交通和会合地点提前约定。" },
-          { time: "18:30", type: "会合", title: "全家晚餐", note: "当天不再增加景点；若取消出海，全家直接执行酒店＋本岛轻松版。" },
-        ] },
-        { day: 7, date: "10.10", title: "普吉老城 · 天气缓冲", route: "卡伦 / 卡塔 → 普吉老城 → 酒店", summary: "把老城留到最后作为雨天也能成立的本岛内容，并为前几天调整留出补位。", activities: [
-          { time: "10:30", type: "弹性", title: "酒店上午 / 补做海滩", note: "不早起；若前一天取消出海，也不强行补订不安全的船。" },
-          { time: "14:30", type: "包车", title: "普吉老城半日", note: "看街区建筑、咖啡馆和小店；当天是周六，不把周日步行街写入计划。" },
-          { time: "19:00前", type: "整理", title: "返程核对＋收官晚餐", note: "核对航班、接机、行李额和证件；购物独立记账，晚上不过度延长。" },
-        ] },
-        { day: 8, date: "10.11", title: "返程分流 · 1人上海 / 3人北京", route: "卡伦 → HKT → 上海 PVG / 北京 PEK", summary: "1人乘10月11日凌晨直飞上海，06:30落地；3人乘国航CA822，10月12日凌晨落地北京。", activities: [
-          { time: "10.10 · 19:45", type: "上海 · 1人送机", title: "卡伦酒店 → HKT", note: "对应次日00:05航班；单人＋行李可选正规平台普通轿车，预约日期必须填10月10日。" },
-          { time: "00:05—06:30", type: "上海航空 · 1人", title: "HKT直飞PVG", note: "9月9日公开含税参考价¥2,181，明确满足10月11日当天抵沪；付款页再次确认落地日期。" },
-          { time: "15:00 / 19:25—02:25+1", type: "北京 · 3人国航", title: "送机＋CA822直飞北京", note: "3人15:00从卡伦出发；优先SUV / Van装下行李，10月12日02:25到PEK T3。" },
-        ] },
-      ],
-    },
-  ],
-  checklist: [
-    { id: "international", phase: "第一优先", title: "锁定去程国航CA555", note: "10月4日PEK→BKK，09:15—13:35；官网未税¥460起，2件托运行李档¥690，按4成人登录后确认含税总价与库存。" },
-    { id: "returns", phase: "同时确认", title: "锁定1人上海＋3人北京返程", note: "上海1人选择00:05—06:30直飞（含税¥2,181参考）；北京3人核对国航CA822的同舱库存，10月12日02:25到PEK。" },
-    { id: "domestic", phase: "同期", title: "锁定10月7日泰航BKK→HKT", note: "当前首选10:50—12:20，公开含税参考¥486/人；付款前确认托运行李和退改。" },
-    { id: "rooms", phase: "订票后24小时", title: "预订曼谷3晚＋普吉4晚的2间房", note: "主选Asia Hotel Bangkok＋Baan Karonburi Resort，当前含税合计¥5,036；优先免费取消，付款前复核床型、早餐与税费。" },
-    { id: "transfer", phase: "出发前2周", title: "建立5张接送订单", note: "两段机场接机、一段曼谷送机、上海组和北京组各一段普吉送机；4人同行段选择Van / SUV。" },
-    { id: "tdac", phase: "抵泰前3天内", title: "为4人提交泰国TDAC", note: "只使用泰国移民局官方免费入口，并保存确认邮件或二维码。" },
-    { id: "spa", phase: "出发前1周", title: "预约两次SPA / 按摩", note: "确认4人同一时段、正规门店、取消条款和接送范围。" },
-    { id: "weather", phase: "出海前24小时", title: "决定是否执行A/B分组", note: "核对官方预警、海滩旗帜和运营方通知；任何一项不安全就执行本岛版。" },
-    { id: "final", phase: "返程前一天", title: "完成10月11日返程复核", note: "确认落地日期、送机时间、行李、保险、证件、SIM与支付。" },
-  ],
-};
-
-const STORAGE_KEY = "national-day-family-trip-v6";
-const CHECK_KEY = "national-day-family-trip-checks-v1";
+const tasks = [
+  ["outbound","已完成","确认 CA581 全员出票","逐人检查电子客票号和1×23kg托运行李。"],
+  ["return","现在","锁定两组返程","10月10日：1人BKK→PVG，3人BKK→PEK/PKX。"],
+  ["domestic","现在","锁定普吉到曼谷","10月7日HKT→BKK，直飞、含行李、中午前后起飞。"],
+  ["rooms","出票后","预订两地2间房","普吉10.04—10.07；曼谷10.07—10.10。"],
+  ["transfer","出发前2周","建立机场接送订单","同行段用SUV/Van；返程按航班差值决定是否分车。"],
+  ["insurance","出发前2周","购买旅行保险","覆盖医疗、航班延误和水上活动，核对免责条款。"],
+  ["tdac","10月1日起","提交4人 TDAC","仅使用泰国移民局免费官方入口，保存确认信息。"],
+  ["weather","10月5日晚","决定10月6日 A/B 方案","海况不安全即取消出海，执行本岛方案。"],
+  ["final","10月9日晚","完成返程终检","两组分别确认航站楼、送机时间、行李额和抵达日期。"],
+] as const;
 
 export default function Home() {
-  const [data, setData] = useState<SiteData>(initialData);
-  const [candidateId, setCandidateId] = useState<Candidate["id"]>("phuket");
-  const [dayIndex, setDayIndex] = useState(0);
-  const [editorOpen, setEditorOpen] = useState(false);
-  const [editorValue, setEditorValue] = useState("");
-  const [editorError, setEditorError] = useState("");
-  const [checks, setChecks] = useState<Record<string, boolean>>({});
-  const importRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      try {
-        const saved = window.localStorage.getItem(STORAGE_KEY);
-        const savedChecks = window.localStorage.getItem(CHECK_KEY);
-        if (saved) setData(JSON.parse(saved));
-        if (savedChecks) setChecks(JSON.parse(savedChecks));
-      } catch {
-        // Ignore invalid local data and keep the public default.
-      }
-    }, 0);
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  const candidate = useMemo<Candidate>(
-    () => data.candidates.find((item) => item.id === candidateId) ?? data.candidates[0] ?? initialData.candidates[0]!,
-    [candidateId, data],
-  );
-  const day = candidate.days[dayIndex] ?? candidate.days[0]!;
-  const completed = Object.values(checks).filter(Boolean).length;
-
-  function chooseCandidate(id: Candidate["id"]) {
-    setCandidateId(id);
-    setDayIndex(0);
-    document.getElementById("itinerary")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function toggleCheck(id: string) {
-    const next = { ...checks, [id]: !checks[id] };
-    setChecks(next);
-    window.localStorage.setItem(CHECK_KEY, JSON.stringify(next));
-  }
-
-  function openEditor() {
-    setEditorValue(JSON.stringify(data, null, 2));
-    setEditorError("");
-    setEditorOpen(true);
-  }
-
-  function saveEditor() {
+  const [active, setActive] = useState(0);
+  const [checks, setChecks] = useState<Record<string, boolean>>(() => {
+    if (typeof window === "undefined") return { outbound: true };
     try {
-      const parsed = JSON.parse(editorValue) as SiteData;
-      if (!Array.isArray(parsed.candidates) || !Array.isArray(parsed.checklist)) {
-        throw new Error("数据必须包含 candidates 和 checklist。");
-      }
-      setData(parsed);
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
-      setEditorOpen(false);
-      setDayIndex(0);
-    } catch (error) {
-      setEditorError(error instanceof Error ? error.message : "JSON格式不正确。");
+      const saved = window.localStorage.getItem("thai-trip-v7-checks");
+      return saved ? { outbound: true, ...JSON.parse(saved) } : { outbound: true };
+    } catch {
+      return { outbound: true };
     }
-  }
-
-  function resetLocalData() {
-    window.localStorage.removeItem(STORAGE_KEY);
-    setData(initialData);
-    setEditorValue(JSON.stringify(initialData, null, 2));
-    setEditorError("");
-    setDayIndex(0);
-  }
-
-  function exportData() {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = `国庆家庭旅行_${new Date().toISOString().slice(0, 10)}.json`;
-    anchor.click();
-    URL.revokeObjectURL(url);
-  }
-
-  function importData(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const parsed = JSON.parse(String(reader.result)) as SiteData;
-        if (!Array.isArray(parsed.candidates) || !Array.isArray(parsed.checklist)) throw new Error();
-        setData(parsed);
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
-        setDayIndex(0);
-      } catch {
-        setEditorError("导入失败：文件不是有效的旅行数据。");
-        setEditorOpen(true);
-      }
-    };
-    reader.readAsText(file);
-    event.target.value = "";
-  }
-
-  return (
-    <main>
-      <header className="topbar">
-        <a className="brand" href="#top" aria-label="回到首页">
-          <span className="brand-mark">十一</span>
-          <span><b>向海而行</b><small>2026 家庭旅行决策册</small></span>
-        </a>
-        <nav aria-label="页面导航">
-          <a href="#compare">方案总览</a>
-          <a href="#itinerary">逐日行程</a>
-          <a href="#booking">核价与预订</a>
-          <a href="#budget">预算</a>
-          <a href="#checklist">清单</a>
-        </nav>
-        <div className="top-actions">
-          <button className="ghost-button" onClick={exportData}>导出</button>
-          <button className="solid-button" onClick={openEditor}>编辑本机数据</button>
-        </div>
-      </header>
-
-      <section className="hero" id="top">
-        <div className="hero-orbit orbit-one" />
-        <div className="hero-orbit orbit-two" />
-        <div className="hero-copy">
-          <p className="kicker">OCT 04 — OCT 11 · 8 DAYS / 7 NIGHTS</p>
-          <h1>一家四口，<br /><em>曼谷与普吉的八天。</em></h1>
-          <p className="hero-lead">路线已经确定：曼谷3晚＋普吉4晚。航班、2间房、五段接送与1人上海/3人北京返程都已落到具体选择。</p>
-          <div className="hero-buttons">
-            <a className="primary-cta" href="#compare">查看固定方案 <span>↘</span></a>
-            <a className="text-cta" href="#profile">查看家庭画像</a>
-          </div>
-        </div>
-        <div className="hero-board" aria-label="已确认旅行约束">
-          <div className="board-stamp">已确认</div>
-          <div className="board-row"><span>出发</span><strong>10.04 · 北京</strong></div>
-          <div className="board-row"><span>返程</span><strong>1人当天抵沪 · 3人国航回北京</strong></div>
-          <div className="board-row"><span>人数</span><strong>4人同行 · 2间房</strong></div>
-          <div className="board-row"><span>主体预算</span><strong>约 ¥20,000</strong></div>
-          <div className="board-note">不含国际机票与购物 / 代购</div>
-        </div>
-        <div className="hero-route" aria-hidden="true">
-          <span>PEK</span><i /><span>曼谷 · 普吉</span><i /><span>PVG / PEK</span>
-        </div>
-      </section>
-
-      <section className="profile section-shell" id="profile">
-        <div className="section-heading compact-heading">
-          <div><p className="section-index">01 · FAMILY SIGNALS</p><h2>问卷不是投票，<br />是行程的护栏。</h2></div>
-          <p>全员共同喜欢海岛、美食与SPA；差异最大的浮潜、坐船和早起，则用分组与备选保护。</p>
-        </div>
-        <div className="score-grid">
-          {[
-            ["5.00", "海岛 · 沙滩 · 海景", "4人全部满分"],
-            ["5.00", "当地美食", "每天都应有亮点"],
-            ["5.00", "按摩 · SPA", "至少安排1—2次"],
-            ["4.75", "夜市与酒店休闲", "稳定公共体验"],
-          ].map(([score, label, note]) => (
-            <article className="score-card" key={label}>
-              <strong>{score}</strong><h3>{label}</h3><p>{note}</p>
-            </article>
-          ))}
-        </div>
-        <div className="people-strip">
-          <article><span>妈妈</span><b>海岛 · 人文 · 舒服不赶</b><small>不浮潜，对坐船较担心；5000—8000步更舒适</small></article>
-          <article><span>姐夫</span><b>浮潜 · 玩水 · 全家舒服</b><small>喜欢坐船，但讨厌搬行李</small></article>
-          <article><span>我</span><b>海岛 · 美食 · 特色体验</b><small>偏轻松，可尝试简单浮潜</small></article>
-          <article><span>姐姐</span><b>人文 · 美食 · 特色体验</b><small>最好9点后出发，愿为好体验加预算</small></article>
-        </div>
-      </section>
-
-      <section className="comparison" id="compare">
-        <div className="section-shell">
-          <div className="section-heading light-heading">
-            <div><p className="section-index">02 · FINAL ROUTE</p><h2>方案已定，<br />接下来只执行。</h2></div>
-            <p>唯一方案为曼谷＋普吉本岛：4人从北京出发，返程1人于10月11日当天抵沪，另外3人乘国航直飞北京。</p>
-          </div>
-          <div className="candidate-grid fixed-grid">
-            {data.candidates.map((item, index) => (
-              <article className={`candidate-card candidate-${item.id}`} key={item.id} style={{ "--accent": item.accent } as CSSProperties}>
-                <div className="candidate-number">0{index + 1}</div>
-                <p className="candidate-eyebrow">{item.eyebrow}</p>
-                <h3>{item.title}</h3>
-                <p className="candidate-subtitle">{item.subtitle}</p>
-                <div className="mini-route">
-                  {item.route.map((stop, stopIndex) => <span key={stop}>{stop}{stopIndex < item.route.length - 1 && <i>→</i>}</span>)}
-                </div>
-                <div className="candidate-columns">
-                  <div><h4>为什么成立</h4>{item.strengths.map(text => <p key={text}>＋ {text}</p>)}</div>
-                  <div><h4>需要验证</h4>{item.risks.map(text => <p key={text}>— {text}</p>)}</div>
-                </div>
-                <div className="weather-note"><span>季节判断</span>{item.weather}</div>
-                <button onClick={() => chooseCandidate(item.id)}>查看逐日安排 <span>↘</span></button>
-              </article>
-            ))}
-          </div>
-          <div className="decision-rule">
-            <b>返程规则：</b> 1人必须在 <strong>10月11日当天抵达上海</strong>；其余3人乘国航直飞，并接受10月12日凌晨到京。
-          </div>
-        </div>
-      </section>
-
-      <section className="itinerary section-shell" id="itinerary">
-        <div className="section-heading compact-heading">
-          <div><p className="section-index">03 · DAY BY DAY</p><h2>{candidate.title}<br />8天草案</h2></div>
-          <p>这是已经确认的8天主行程；价格仍以付款页为准，天气只影响当日活动，不再改变目的地。</p>
-        </div>
-        <div className="day-tabs" role="tablist" aria-label="选择日期">
-          {candidate.days.map((item, index) => (
-            <button role="tab" aria-selected={dayIndex === index} className={dayIndex === index ? "active" : ""} key={`${candidate.id}-${item.day}`} onClick={() => setDayIndex(index)}>
-              <b>D{item.day}</b><span>{item.date}</span>
-            </button>
-          ))}
-        </div>
-        <div className="day-layout" style={{ "--accent": candidate.accent } as CSSProperties}>
-          <div className="day-copy">
-            <p className="day-label">DAY {day.day} · {day.date}</p>
-            <h3>{day.title}</h3>
-            <p className="day-route">⌁ {day.route}</p>
-            <p className="day-summary">{day.summary}</p>
-            <div className="timeline-list">
-              {day.activities.map((activity, index) => (
-                <article className="timeline-item" key={`${activity.time}-${activity.title}`}>
-                  <div className="timeline-time">{activity.time}</div>
-                  <div className="timeline-pin"><span>{index + 1}</span></div>
-                  <div className="timeline-card"><small>{activity.type}</small><h4>{activity.title}</h4><p>{activity.note}</p></div>
-                </article>
-              ))}
-            </div>
-          </div>
-          <div className={`route-map map-${candidate.id}`}>
-            <div className="map-caption"><span>ROUTE BOARD</span><b>{day.route}</b></div>
-            <div className="map-contours contour-a" /><div className="map-contours contour-b" />
-            <div className="map-line line-a" /><div className="map-line line-b" />
-            {day.activities.map((activity, index) => (
-              <div className={`map-node node-${index + 1}`} key={activity.title}>
-                <span>{index + 1}</span><b>{activity.title}</b>
-              </div>
-            ))}
-            <p>示意图 · 实际经纬度与路网将在目的地确认后补充</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="booking" id="booking">
-        <div className="section-shell">
-          <div className="section-heading light-heading">
-            <div><p className="section-index">04 · LIVE BOOKING BOARD</p><h2>价格有时效，<br />决策有红线。</h2></div>
-            <p>以下为2026年9月9日查询的4成人、2间房公开价格快照。机票按每人展示，酒店为全部入住人的含税总价；动态价格以付款页为准。</p>
-          </div>
-
-          <div className="price-summary">
-            <div><span>已核主体价格</span><strong>¥6,980</strong><small>泰国境内机票4人＋主选酒店7晚</small></div>
-            <div><span>主选酒店</span><strong>¥5,036</strong><small>2间房 · 曼谷3晚＋普吉4晚</small></div>
-            <div><span>国际票已知价格基数</span><strong>¥11,421</strong><small>推荐行李档 · 另加国航税费</small></div>
-          </div>
-
-          <div className="booking-block">
-            <div className="booking-title"><span>01</span><div><h3>航班锁定表</h3><p>先锁国际段，再订两间可免费取消的房。</p></div></div>
-            <div className="flight-grid">
-              <article className="booking-card recommended">
-                <div className="status-row"><span className="status-pill">国航首选</span><small>10月4日</small></div>
-                <h4>CA555 · PEK → BKK</h4><strong className="card-time">09:15—13:35</strong>
-                <p><b>官网未税¥460/人起</b>；¥690档含2件托运行李、退改¥0起。登录前无法确认4张库存与含税总价，建议先核¥690档。</p>
-                <a href="https://www.airchina.com.cn/" target="_blank" rel="noreferrer">去国航复核价格 ↗</a>
-              </article>
-              <article className="booking-card">
-                <div className="status-row"><span className="status-pill live">当前可售</span><small>10月7日</small></div>
-                <h4>泰国航空 · BKK → HKT</h4><strong className="card-time">10:50—12:20</strong>
-                <p><b>¥486/人 · 4人¥1,944</b>。时间比廉航早班更适合全家，付款前确认托运行李、选座与退改是否计入。</p>
-                <a href="https://www.google.com/travel/flights" target="_blank" rel="noreferrer">重新比较同日航班 ↗</a>
-              </article>
-              <article className="booking-card recommended">
-                <div className="status-row"><span className="status-pill live">上海组刚性选择</span><small>10月11日</small></div>
-                <h4>上海航空 · HKT → PVG</h4><strong className="card-time">00:05—06:30</strong>
-                <p><b>1人 · 含税参考¥2,181</b>。目前找到的直飞中，明确满足10月11日当天抵沪；送机需预订在10月10日晚。</p>
-                <a href="https://www.google.com/travel/flights" target="_blank" rel="noreferrer">付款前复核到达日期 ↗</a>
-              </article>
-              <article className="booking-card">
-                <div className="status-row"><span className="status-pill">国航首选</span><small>10月11日</small></div>
-                <h4>CA822 · HKT → PEK</h4><strong className="card-time">19:25—02:25+1</strong>
-                <p><b>3人 · 官网未税¥2,010/人起</b>；推荐¥2,160档，3人未税¥6,480，含2件托运行李、退改¥0起。登录后确认3张同舱库存。</p>
-                <a href="https://www.airchina.com.cn/" target="_blank" rel="noreferrer">去国航复核价格 ↗</a>
-              </article>
-            </div>
-            <div className="formula-note"><b>按推荐行李档的已知价格基数：</b> CA555 ¥690 × 4人 ＋ 上海航空 ¥2,181 × 1人 ＋ CA822 ¥2,160 × 3人 ＝ <b>¥11,421＋两段国航税费</b>。输入4人去程、3人返程并登录后，才能得到最终含税总价。</div>
-          </div>
-
-          <div className="booking-block">
-            <div className="booking-title"><span>02</span><div><h3>酒店二选一</h3><p>优先床型、位置与可取消，不被“看起来便宜”带偏。</p></div></div>
-            <div className="hotel-grid">
-              <article className="hotel-card picked"><div className="hotel-top"><span>曼谷首选</span><small>10.04—10.07 · 3晚</small></div><h4>Asia Hotel Bangkok</h4><p>近轨道交通 · 2间行政双床/双人房 · 可免费取消</p><strong>¥2,570 <small>含税总价</small></strong><em>约¥428 / 间夜</em></article>
-              <article className="hotel-card"><div className="hotel-top"><span>曼谷备选</span><small>10.04—10.07 · 3晚</small></div><h4>Maitria Hotel Rama 9</h4><p>2间花园景高级双床房 · 免费取消 · 到店付款</p><strong>¥2,616 <small>含税总价</small></strong><em>位置离中心较远</em></article>
-              <article className="hotel-card"><div className="hotel-top"><span>普吉预算备选</span><small>10.07—10.11 · 4晚</small></div><h4>The Front Village</h4><p>卡伦 · 距海滩约250米 · 2间海景房 · 可免费取消</p><strong>¥1,465 <small>含税总价</small></strong><em>仅在床型、税费与取消条款全部复核无误后考虑</em></article>
-              <article className="hotel-card picked"><div className="hotel-top"><span>普吉最终主选</span><small>10.07—10.11 · 4晚</small></div><h4>Baan Karonburi Resort</h4><p>距海滩约50米 · 2间豪华房 · 含早餐</p><strong>¥2,466 <small>含税总价</small></strong><em>早餐06:30—10:30 · 多¥1,001换取更稳妥的家庭体验</em></article>
-            </div>
-            <div className="hotel-actions"><a href="https://www.booking.com/" target="_blank" rel="noreferrer">在Booking按4成人、2间房复核 ↗</a><p>主选组合¥5,036；若改用预算备选可省¥1,001。下单前截图保存：房型、早餐、税费、取消截止时间和付款币种。</p></div>
-          </div>
-
-          <div className="booking-block transfer-block">
-            <div className="booking-title"><span>03</span><div><h3>五段接送预约卡</h3><p>同行段选Van / SUV；返程分流后分别建立订单。</p></div></div>
-            <div className="transfer-timeline">
-              {[
-                ["10.04 · 15:00后", "BKK → Asia Hotel", "4人同行 · Van / SUV", "落地后按航班动态调整；BKK Grab上车点为1层4号出口附近。"],
-                ["10.07 · 07:15", "Asia Hotel → BKK", "4人同行 · Van / SUV", "10:50国内航班；备注4件托运行李，目标08:30前进航站楼。"],
-                ["10.07 · 13:20", "HKT → 卡伦酒店", "4人同行 · Van / SUV", "按12:20落地＋60分钟取行李设置；道路预留75—100分钟。"],
-                ["10.10 · 19:45", "卡伦酒店 → HKT", "上海1人 · 普通轿车", "对应10月11日00:05航班；1人＋行李，预约日期必须填10月10日。"],
-                ["10.11 · 15:00", "卡伦酒店 → HKT", "北京3人 · SUV / Van", "对应CA822 19:25起飞；备注3件托运行李，雨天不向后压缩。"],
-              ].map(([time, route, car, note], index) => (
-                <article key={route + time}><span>{String(index + 1).padStart(2, "0")}</span><div><small>{time}</small><h4>{route}</h4><b>{car}</b><p>{note}</p></div></article>
-              ))}
-            </div>
-            <div className="transfer-guide">
-              <div><h4>推荐操作</h4><ol><li>在Grab“出行”中选择提前预约；普吉接机可选“预约机场接机”。</li><li>填写真实航班号、酒店英文名、乘客数与行李数；4人同行不要选普通轿车。</li><li>确认固定价、等候时间、上车点与取消规则；保存订单截图和司机聊天。</li><li>上车核对车牌与司机，付款只走平台；不要向陌生个人二维码预付。</li></ol></div>
-              <div className="transfer-budget"><span>五段接送控制价</span><strong>THB 4,400—6,200</strong><small>约¥970—1,370 · 这是预算区间，不是实时叫车价</small><a href="https://www.grab.com/th/en/transport/advance-booking/" target="_blank" rel="noreferrer">查看Grab提前预约说明 ↗</a></div>
-            </div>
-          </div>
-
-          <div className="booking-block execution-block">
-            <div className="booking-title"><span>04</span><div><h3>出发执行手册</h3><p>把容易忘的节点写成当天可以直接照做的动作。</p></div></div>
-            <div className="execution-grid">
-              <article><small>出票当天</small><h4>按4人去、1＋3人返核价</h4><p>CA555查询4人同舱并优先看¥690档；CA822查询3人同舱并优先看¥2,160档。上海航空单独为1人出票，保存三段票价、行李和退改截图。</p><a href="https://www.airchina.com.cn/" target="_blank" rel="noreferrer">打开国航官网 ↗</a></article>
-              <article><small>酒店下单</small><h4>主选两家一次核完</h4><p>曼谷选Asia Hotel，普吉选Baan Karonburi；确认2间房的床型、早餐、税费、取消期限，并把英文酒店名和地址发进家庭群。</p><div className="mini-links"><a href="https://www.asiahotel.co.th/asia_bangkok/contact/" target="_blank" rel="noreferrer">曼谷酒店资料 ↗</a><a href="https://www.karonburi.com/facilities" target="_blank" rel="noreferrer">普吉酒店资料 ↗</a></div></article>
-              <article><small>10月6日 · 15:00</small><h4>曼谷SPA先预约4人</h4><p>Let&apos;s Relax Siam Square One交通最顺，营业至23:00；按已公开项目，肩颈60分钟THB750、香薰60分钟THB1,300，可按预算分项目。</p><a href="https://letsrelaxspa.com/branches/bangkok-siam-square-1/" target="_blank" rel="noreferrer">查看门店与预约 ↗</a></article>
-              <article><small>10月8日 · 15:00</small><h4>普吉SPA保留可取消</h4><p>若选Oasis Spa，至少提前2小时预约并提前15分钟到店；天气不佳时可把海滩时段与SPA对调。</p><a href="https://oasisspa.net/en/FAQs/" target="_blank" rel="noreferrer">查看预约说明 ↗</a></article>
-            </div>
-            <div className="ops-timeline">
-              {[
-                ["现在", "锁定三段国际机票", "返程已确认1人上海、3人北京；分别核1张与3张返程库存，去程核4张同舱。"],
-                ["出票后24小时", "下单两家主选酒店", "选择可取消方案，把订单号、英文地址和取消截止日记入家庭群。"],
-                ["9月27—30日", "预约接送与SPA", "建立5张车单，备注4人及行李数；返程两组分别下单。"],
-                ["10月1日起", "提交4人TDAC", "抵泰前3天内用官方免费入口填写，并保存4份确认信息。"],
-                ["10月3日", "值机与行李终检", "检查护照、保险、eSIM、药品；充电宝随身携带、每人最多2块，机上禁用。"],
-                ["10月8日晚", "决定10月9日A/B方案", "看官方预警、海滩红旗和运营方通知；不安全就全员执行本岛雨天版。"],
-              ].map(([date, title, note]) => <article key={date}><time>{date}</time><div><h4>{title}</h4><p>{note}</p></div></article>)}
-            </div>
-            <div className="rain-plan"><b>雨天替换原则：</b>10月8日海况差就改酒店泳池/咖啡＋SPA；10月9日取消出海则改普吉老城＋Central Phuket，10月10日留作海滩或休息补位。任何红旗、雷暴或运营方停航都不硬上船。</div>
-          </div>
-
-          <div className="booking-warning"><b>下单顺序：</b>先同时打开CA555、上海组直飞和CA822付款页，确认三段都能接受后再支付；随后24小时内下单两家可取消酒店，最后建立接送提醒。任何页面若出现日期、机场或行李不一致，先停在付款前。</div>
-        </div>
-      </section>
-
-      <section className="budget" id="budget">
-        <div className="section-shell">
-          <div className="section-heading light-heading">
-            <div><p className="section-index">05 · MONEY RULES</p><h2>先分账，<br />再谈性价比。</h2></div>
-            <p>¥20,000是4人旅行主体目标，不含中国往返目的地的国际机票，也不含购物和代购。</p>
-          </div>
-          <div className="budget-layout">
-            <article className="budget-main">
-              <div className="budget-total"><span>旅行主体目标</span><strong>¥20,000</strong><small>约 ¥5,000 / 人</small></div>
-              <div className="allocation">
-                {[
-                  ["住宿 · 2间房", "35%", "¥7,000"],
-                  ["曼谷→普吉境内机票", "12.5%", "¥2,500"],
-                  ["接送、Grab与包车", "15%", "¥3,000"],
-                  ["餐饮", "22.5%", "¥4,500"],
-                  ["活动与SPA", "10%", "¥2,000"],
-                  ["应急缓冲", "5%", "¥1,000"],
-                ].map(([name, pct, amount]) => <div key={name}><span>{name}</span><i style={{ width: pct }} /><b>{amount}</b></div>)}
-              </div>
-              <p>以上是规划分配，不是实时价格；核价后允许在类别间调整，但总额需要解释。</p>
-            </article>
-            <article className="budget-separate">
-              <p className="section-index">SEPARATE LEDGER</p>
-              <h3>购物与代购<br />完全独立</h3>
-              <p>零食、美妆、香薰、免税商品和亲友代购单独记录，不挤占住宿、餐饮与交通。</p>
-              <ul><li>个人购物</li><li>亲友代购</li><li>回程行李增量</li><li>退税与海关</li></ul>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section className="checklist section-shell" id="checklist">
-        <div className="section-heading compact-heading">
-          <div><p className="section-index">06 · BOOKING TIMELINE</p><h2>从现在到出发，<br />一件件锁定。</h2></div>
-          <p>勾选状态只保存在这台设备。当前完成 {completed}/{data.checklist.length} 项。</p>
-        </div>
-        <div className="progress-track"><span style={{ width: `${(completed / data.checklist.length) * 100}%` }} /></div>
-        <div className="check-list">
-          {data.checklist.map((item, index) => (
-            <label className={checks[item.id] ? "checked" : ""} key={item.id}>
-              <input type="checkbox" checked={Boolean(checks[item.id])} onChange={() => toggleCheck(item.id)} />
-              <span className="check-number">{String(index + 1).padStart(2, "0")}</span>
-              <span className="check-phase">{item.phase}</span>
-              <span className="check-copy"><b>{item.title}</b><small>{item.note}</small></span>
-              <span className="check-mark">✓</span>
-            </label>
-          ))}
-        </div>
-      </section>
-
-      <footer>
-        <div><b>向海而行 · 2026</b><p>事实与建议分开，未知保持未知，所有动态信息在预订前重新核实。</p></div>
-        <div className="privacy-note"><span>公开版规则</span>不记录证件号、完整订单号、支付凭证、联系方式或账号密码。</div>
-      </footer>
-
-      <input ref={importRef} type="file" accept="application/json" hidden onChange={importData} />
-      {editorOpen && (
-        <div className="editor-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setEditorOpen(false); }}>
-          <section className="editor-modal" role="dialog" aria-modal="true" aria-labelledby="editor-title">
-            <div className="editor-head"><div><p className="section-index">LOCAL EDITOR</p><h2 id="editor-title">编辑旅行数据</h2></div><button aria-label="关闭编辑器" onClick={() => setEditorOpen(false)}>×</button></div>
-            <div className="editor-warning">仅保存在当前浏览器；分享网址不会同步你的修改。请勿写入证件、订单号或支付信息。</div>
-            <textarea aria-label="旅行JSON数据" value={editorValue} onChange={(event) => setEditorValue(event.target.value)} spellCheck={false} />
-            {editorError && <p className="editor-error">{editorError}</p>}
-            <div className="editor-actions">
-              <button onClick={() => importRef.current?.click()}>导入JSON</button>
-              <button onClick={resetLocalData}>恢复公开默认</button>
-              <span />
-              <button onClick={() => setEditorOpen(false)}>取消</button>
-              <button className="save-button" onClick={saveEditor}>保存并应用</button>
-            </div>
-          </section>
-        </div>
-      )}
-    </main>
-  );
+  });
+  const [menu, setMenu] = useState(false);
+  const completed=useMemo(()=>tasks.filter(([id])=>checks[id]).length,[checks]);
+  const jump=(id:string)=>{setMenu(false);document.getElementById(id)?.scrollIntoView({behavior:"smooth"})};
+  const toggle=(id:string)=>{if(id==="outbound")return;const next={...checks,[id]:!checks[id]};setChecks(next);localStorage.setItem("thai-trip-v7-checks",JSON.stringify(next))};
+  const day=days[active]!;
+  return <main>
+    <header className="topbar"><button className="brand" onClick={()=>jump("top")}><span>向</span><b>向南，再向北<small>2026 家庭旅行执行册</small></b></button><button className="menu" onClick={()=>setMenu(!menu)}>目录</button><nav className={menu?"open":""}>{[["route","路线"],["days","每日"],["booking","预订"],["budget","预算"],["tasks","清单"]].map(([id,label])=><button key={id} onClick={()=>jump(id)}>{label}</button>)}</nav><em>● 7天6晚</em></header>
+    <section className="hero" id="top"><div className="hero-copy"><p>OCT 04 — OCT 10 · PHUKET / BANGKOK</p><h1>先去海边，<br/><i>再回城市。</i></h1><h2>一家四口的泰国七日：普吉3晚，曼谷3晚。去程已经确定，余下的每一步都围绕舒服、真实和可执行。</h2><div><button onClick={()=>jump("days")}>查看每日安排 ↘</button><button onClick={()=>jump("tasks")}>先看待办</button></div></div><article className="ticket"><header><span>OUTBOUND · CONFIRMED</span><b>已订</b></header><div className="airports"><section><strong>PEK</strong><small>北京 · T3</small></section><i>CA581<br/>──────── ✦</i><section><strong>HKT</strong><small>普吉</small></section></div><div className="times"><span><b>15:30</b>10月4日</span><span><b>6h</b>直飞</span><span><b>20:30</b>当地时间</span></div><p>4人同行 · 每人1×23kg托运行李 · 以电子客票号确认出票</p></article></section>
+    <section className="shell route" id="route"><Heading index="01 · ROUTE LOGIC" title={<>六晚，两个落脚点。<br/>没有多余的折返。</>} text="路线先满足航班与体力，再安排体验。海况改变活动，不改变城市；返程分流，但都从素万那普机场出发。"/><div className="route-grid">{[["10.04 · 已订","北京","CA581 直飞"],["3 NIGHTS","普吉","海滩 · SPA · 天气窗口"],["3 NIGHTS","曼谷","文化 · 美食 · 河岸"],["10.10 · 待订","上海 / 北京","1人 PVG · 3人 PEK/PKX"]].map(([a,b,c])=><article key={b}><small>{a}</small><b>{b}</b><p>{c}</p></article>)}</div><div className="rails">{[["01","少换酒店","只在10月7日转场一次"],["02","不赶早","完整活动日10点后开始"],["03","允许分组","妈妈不被迫参加水上活动"],["04","明确排除","不去大皇宫，不看低俗演出"]].map(([n,t,d])=><article key={n}><span>{n}</span><b>{t}</b><small>{d}</small></article>)}</div></section>
+    <section className="dark" id="days"><div className="shell"><Heading light index="02 · DAY BY DAY" title={<>每天只做一件<br/>真正重要的事。</>} text="选择日期查看时间线。安排保留交通和休息缓冲，不用景点数量衡量一天是否值得。"/><div className="tabs">{days.map((d,i)=><button className={i===active?"active":""} onClick={()=>setActive(i)} key={d.date}><small>{d.date.split(" · ")[0]}</small><b>D{i+1}</b><span>{d.city}</span></button>)}</div><div className="day"><aside><span>{day.date}<i>{day.pace}</i></span><small>{day.city} · DAY {active+1}</small><h3>{day.title}</h3><p>{day.lead}</p>{day.rule&&<em><b>WEATHER RULE</b>{day.rule}</em>}</aside><div className="timeline">{day.events.map((e,i)=><article key={e.title}><span>{String(i+1).padStart(2,"0")}</span><div><small>{e.time}<i>{e.tag}</i></small><h4>{e.title}</h4><p>{e.note}</p></div></article>)}</div></div></div></section>
+    <section className="shell booking" id="booking"><Heading index="03 · BOOKING GATES" title={<>先锁交通，<br/>再让酒店落位。</>} text="动态价格不写成事实。这里只固定筛选条件和决策顺序，最终信息以付款页与电子客票为准。"/><div className="cards"><FlightCard urgent date="10.10" code="BKK → PVG" title="上海组 · 1人" items={["直飞且含托运行李","优先10月10日当天抵沪","独立出票，不等待北京组同价"]}/><FlightCard urgent date="10.10" code="BKK → PEK / PKX" title="北京组 · 3人" items={["一次查询3张同舱库存","直飞、含托运行李","凌晨抵达须全员提前确认"]}/><FlightCard date="10.07" code="HKT → BKK" title="城市转场 · 4人" items={["11:00—14:00理想起飞","只选BKK，避免DMK","包含4人托运行李"]}/><article className="rooms"><small>出票后24小时 · 2间房</small><div><b>普吉</b><span>10.04—10.07</span><em>卡伦 · 3晚</em></div><div><b>曼谷</b><span>10.07—10.10</span><em>暹罗 / 拉差贴威 · 3晚</em></div><p>明确床型、BTS步行距离、电梯、早餐、税费和免费取消截止日。</p></article></div><div className="car-rule"><b>送机规则</b><span>两组航班相差 ≤ 2小时 → 一起乘Van去BKK</span><span>相差 ＞ 2小时 → 分别预约车辆</span></div></section>
+    <section className="money" id="budget"><div className="shell"><Heading light index="04 · MONEY MAP" title={<>国际机票另算，<br/>两万元只服务体验。</>} text="这是控制线，不是伪装成实时价格的报价。购物和代购仍使用完全独立的账本。"/><div className="money-grid"><article className="total"><small>旅行主体目标 · 4人</small><b>¥20,000</b><p>不含国际机票<br/>不含购物与代购</p><span>建议区间 <strong>¥15,300—22,200</strong></span></article><article className="bars">{[["住宿 · 6晚2间房","¥4,400—6,500",31],["泰国境内机票","¥1,600—2,800",14],["接送与市内交通","¥1,500—2,200",12],["餐饮","¥4,000—5,000",25],["SPA与活动","¥1,500—2,500",13],["保险与缓冲","¥2,300—3,200",16]].map(([n,a,w])=><div key={String(n)}><span>{n}</span><b>{a}</b><i><em style={{width:`${w}%`}}/></i></div>)}</article><article className="saving"><small>省钱顺序</small><ol><li>不升级过度昂贵的曼谷酒店</li><li>出海选择短线且可取消产品</li><li>接送提前预约，不临时议价</li><li>一次高品质SPA＋一次普通按摩</li></ol></article></div></div></section>
+    <section className="shell tasks" id="tasks"><Heading index="05 · ACTION LIST" title={<>从现在开始，<br/>一件件锁定。</>} text={`${completed}/${tasks.length} 项已完成。勾选结果只保存在当前设备。`}/><div className="progress"><i style={{width:`${completed/tasks.length*100}%`}}/></div><div className="task-list">{tasks.map(([id,phase,title,note],i)=><label className={checks[id]?"done":""} key={id}><input type="checkbox" checked={!!checks[id]} disabled={id==="outbound"} onChange={()=>toggle(id)}/><span>{String(i+1).padStart(2,"0")}</span><em>{phase}</em><b>{title}<small>{note}</small></b><i>✓</i></label>)}</div></section>
+    <section className="final-band"><div><small>06 · BEFORE YOU GO</small><h2>三个不能忘的<br/>出发前节点。</h2></div><article><small>10.01 起</small><b>填写4人 TDAC</b><p>仅使用泰国移民局官方免费入口。</p><a href="https://tdac.immigration.go.th/" target="_blank">打开官网 ↗</a></article><article><small>10.03</small><b>值机与行李终检</b><p>护照、保险、eSIM、常用药；充电宝随身携带。</p></article><article><small>全程</small><b>公开信息边界</b><p>不上传证件号、完整订单号、手机号、邮箱或支付凭证。</p></article></section>
+    <footer><b>向南，再向北</b><span>事实与建议分开。未知保持未知，动态信息在付款前重新核实。</span><button onClick={()=>jump("top")}>回到顶部 ↑</button></footer>
+  </main>
 }
+
+function Heading({index,title,text,light=false}:{index:string;title:React.ReactNode;text:string;light?:boolean}){return <header className={`heading ${light?"light":""}`}><div><small>{index}</small><h2>{title}</h2></div><p>{text}</p></header>}
+function FlightCard({urgent=false,date,code,title,items}:{urgent?:boolean;date:string;code:string;title:string;items:string[]}){return <article className={`flight-card ${urgent?"urgent":""}`}><header><span>{urgent?"最高优先级":"同步锁定"}</span><small>{date}</small></header><p>{code}</p><h3>{title}</h3><ul>{items.map(x=><li key={x}>{x}</li>)}</ul><a href="https://www.google.com/travel/flights" target="_blank">打开航班搜索 ↗</a></article>}

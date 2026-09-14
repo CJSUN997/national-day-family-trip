@@ -8,15 +8,15 @@ export async function generateMetadata(): Promise<Metadata> {
   const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
   const imageUrl = `${protocol}://${host}/og.png`;
   return {
-    title: "向海而行 · 2026国庆家庭旅行决策册",
-    description: "2026国庆曼谷＋普吉本岛家庭旅行固定方案，包含家庭偏好、逐日行程、预算和预订清单。",
+    title: "向南，再向北 · 2026国庆家庭旅行执行册",
+    description: "2026国庆普吉3晚＋曼谷3晚家庭旅行方案，包含逐日安排、航班约束、预算与执行清单。",
     icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
     openGraph: {
-      title: "向海而行 · 2026国庆家庭旅行决策册",
-      description: "曼谷3晚＋普吉4晚，一家四口的2026国庆旅行执行方案。",
+      title: "向南，再向北 · 2026国庆家庭旅行执行册",
+      description: "普吉3晚＋曼谷3晚，一家四口的2026国庆旅行执行方案。",
       type: "website",
       locale: "zh_CN",
-      images: [{ url: imageUrl, width: 1736, height: 907, alt: "曼谷与普吉家庭旅行拼贴" }],
+      images: [{ url: imageUrl, width: 1736, height: 907, alt: "普吉与曼谷家庭旅行执行册" }],
     },
     twitter: { card: "summary_large_image", images: [imageUrl] },
   };

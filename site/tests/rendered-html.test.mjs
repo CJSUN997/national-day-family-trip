@@ -10,16 +10,19 @@ async function render() {
   }, { waitUntil() {}, passThroughOnException() {} });
 }
 
-test("renders the family travel planner", async () => {
+test("renders the updated family travel planner", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
-  assert.match(html, /向海而行/);
-  assert.match(html, /曼谷/);
-  assert.match(html, /普吉本岛/);
-  assert.match(html, /唯一方案为曼谷＋普吉本岛/);
-  assert.doesNotMatch(html, /乌布|努沙杜瓦|巴厘岛/);
-  assert.match(html, /10月11日/);
+  assert.match(html, /向南，再向北/);
+  assert.match(html, /CA581/);
+  assert.match(html, /普吉3晚/);
+  assert.match(html, /曼谷3晚/);
+  assert.match(html, /上海组 · 1人/);
+  assert.match(html, /北京组 · 3人/);
+  assert.match(html, /10月10日/);
+  assert.match(html, /不去大皇宫/);
+  assert.doesNotMatch(html, /人妖秀|乌布|努沙杜瓦|巴厘岛/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
