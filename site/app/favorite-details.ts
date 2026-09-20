@@ -3,6 +3,13 @@ export type FavoriteDigest = {
   facts: string[];
   tripUse: string;
   verify?: string;
+  screenshot?: {
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+    capturedAt?: string;
+  };
 };
 
 export const placeFavoriteDetails = {

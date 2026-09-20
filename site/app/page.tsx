@@ -1854,9 +1854,11 @@ function FavoriteDigestPanel({
 function InlineFavoriteDigest({
   digest,
   locationNote,
+  sourceUrl,
 }: {
   digest: FavoriteDigest;
   locationNote?: string;
+  sourceUrl?: string;
 }) {
   return (
     <div className="spot-digest-drawer">
@@ -1882,6 +1884,30 @@ function InlineFavoriteDigest({
           <b>位置说明</b>
           {locationNote}
         </p>
+      )}
+      {digest.screenshot && (
+        <figure className="rednote-screenshot">
+          <a
+            href={sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={digest.screenshot.src}
+              alt={digest.screenshot.alt}
+              width={digest.screenshot.width}
+              height={digest.screenshot.height}
+              loading="lazy"
+            />
+          </a>
+          <figcaption>
+            原帖内容截图
+            {digest.screenshot.capturedAt
+              ? ` · 保存于 ${digest.screenshot.capturedAt}`
+              : ""}
+          </figcaption>
+        </figure>
       )}
     </div>
   );
@@ -2153,6 +2179,19 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
                     className={`compact-spot-card ${digestExpanded ? "digest-open" : ""}`}
                     key={spot.id}
                   >
+                    {digest && (
+                      <button
+                        type="button"
+                        className="card-toggle"
+                        onClick={() =>
+                          setExpandedSpotId(
+                            digestExpanded ? null : spot.id,
+                          )
+                        }
+                        aria-expanded={digestExpanded}
+                        aria-label={`${spot.name}，${digestExpanded ? "收起" : "展开"}小红书摘要`}
+                      />
+                    )}
                     <span
                       style={{
                         color: spotCategories.find(
@@ -2190,22 +2229,14 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
                             href={googlePlaceUrl(spot.query)}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={(event) => event.stopPropagation()}
                           >
                             地图 ↗
                           </a>
                           {digest && (
-                            <button
-                              type="button"
-                              className="digest-toggle"
-                              onClick={() =>
-                                setExpandedSpotId(
-                                  digestExpanded ? null : spot.id,
-                                )
-                              }
-                              aria-expanded={digestExpanded}
-                            >
-                              {digestExpanded ? "收起摘要" : "查看摘要"}
-                            </button>
+                            <span className="digest-hint" aria-hidden="true">
+                              摘要 {digestExpanded ? "⌃" : "⌄"}
+                            </span>
                           )}
                           {spot.sourceUrl && (
                             <a
@@ -2213,6 +2244,7 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
                               href={spot.sourceUrl}
                               target="_blank"
                               rel="noopener noreferrer"
+                              onClick={(event) => event.stopPropagation()}
                             >
                               原帖 ↗
                             </a>
@@ -2222,9 +2254,11 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
                     </div>
                     <button
                       className={
-                        favorites.includes(spot.favoriteId || spot.id)
-                          ? "saved"
-                          : ""
+                        `spot-save ${
+                          favorites.includes(spot.favoriteId || spot.id)
+                            ? "saved"
+                            : ""
+                        }`
                       }
                       onClick={() =>
                         toggleFavorite(spot.favoriteId || spot.id)
@@ -2243,6 +2277,7 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
                       <InlineFavoriteDigest
                         digest={digest}
                         locationNote={spot.locationNote}
+                        sourceUrl={spot.sourceUrl}
                       />
                     )}
                   </article>

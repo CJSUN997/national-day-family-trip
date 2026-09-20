@@ -42,7 +42,8 @@ test("renders the updated family travel planner", async () => {
   assert.match(html, /个区域锚点/);
   assert.match(html, /个城市默认点/);
   assert.match(html, /小红书：/);
-  assert.match(html, /查看摘要/);
+  assert.match(html, /展开小红书摘要/);
+  assert.match(html, /aria-expanded="false"/);
   assert.match(html, /小红书原帖/);
   assert.match(html, /收藏更新注意事项/);
   assert.match(html, /打开泰国专辑/);
