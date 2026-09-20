@@ -30,8 +30,15 @@ test("renders the updated family travel planner", async () => {
   assert.match(html, /FAVORITES/);
   assert.match(html, /手机端主导航/);
   assert.match(html, /地图视图/);
+  assert.match(html, /地图查看/);
+  assert.match(html, /分类查看/);
   assert.match(html, /地点收藏/);
   assert.match(html, /实用收藏/);
+  assert.match(html, /帖子文字速览/);
+  assert.match(html, /炒面约 70 THB/);
+  assert.match(html, /13 kg (档)?温水洗/);
+  assert.match(html, /11:00–22:00/);
+  assert.match(html, /已核验收藏点/);
   assert.match(html, /小红书原帖/);
   assert.match(html, /收藏更新注意事项/);
   assert.match(html, /打开泰国专辑/);
