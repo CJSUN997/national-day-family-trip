@@ -8,6 +8,7 @@ desktop.ini
 *.bak
 *.swp
 ~$*
+*.tsbuildinfo
 
 # 含敏感信息的本地文件
 私密信息/

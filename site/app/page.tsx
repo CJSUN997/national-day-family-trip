@@ -24,7 +24,7 @@ const mobileNavigation: {
 }[] = [
   { id: "overview", label: "概览", icon: "home" },
   { id: "days", label: "行程", icon: "calendar" },
-  { id: "map", label: "地图", icon: "pin" },
+  { id: "map", label: "收藏", icon: "pin" },
   { id: "booking", label: "预订", icon: "ticket" },
   { id: "tasks", label: "清单", icon: "check" },
 ];
@@ -371,6 +371,31 @@ type MapSpot = {
   lat: number;
   lon: number;
   query: string;
+  sourceUrl?: string;
+};
+
+type PlaceFavorite = {
+  id: string;
+  city: "普吉" | "曼谷";
+  category: SpotCategory;
+  name: string;
+  note: string;
+  query: string;
+  priority: "高" | "中" | "低";
+  status: "已核验" | "待核验";
+  tags: string[];
+  sourceUrl: string;
+  pinned?: boolean;
+};
+
+type PracticalFavorite = {
+  id: string;
+  stage: "出发前" | "抵达日" | "普吉" | "曼谷" | "现场";
+  name: string;
+  note: string;
+  sourceUrl: string;
+  secondaryUrl?: string;
+  secondaryLabel?: string;
 };
 
 const spotCategories: { name: "全部" | SpotCategory; color: string }[] = [
@@ -407,6 +432,8 @@ const mapSpots: MapSpot[] = [
     lat: 7.884,
     lon: 98.3891,
     query: "Phuket Old Town Thalang Road",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a888cd00000000016020a40",
   },
   {
     id: "wat-chalong",
@@ -451,6 +478,8 @@ const mapSpots: MapSpot[] = [
     lat: 8.1132,
     lon: 98.3169,
     query: "Phuket International Airport",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aa14770000000002601bd69",
   },
   {
     id: "bkk",
@@ -473,6 +502,8 @@ const mapSpots: MapSpot[] = [
     lat: 13.7432,
     lon: 100.5224,
     query: "Banthat Thong Road Bangkok",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a9e2313000000002603322e",
   },
   {
     id: "mbk",
@@ -506,6 +537,8 @@ const mapSpots: MapSpot[] = [
     lat: 13.7265,
     lon: 100.51,
     query: "ICONSIAM Bangkok",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a9e2313000000002603322e",
   },
   {
     id: "mahanakhon",
@@ -528,6 +561,457 @@ const mapSpots: MapSpot[] = [
     lat: 13.7999,
     lon: 100.5501,
     query: "Chatuchak Weekend Market",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aa9da35000000002b027a3f",
+  },
+];
+
+const placeFavorites: PlaceFavorite[] = [
+  {
+    id: "central-phuket",
+    city: "普吉",
+    category: "购物",
+    name: "Central Phuket / Tops",
+    note: "补给、水果和简餐；适合与普吉老镇同日，雨天也可用。",
+    query: "Tops Central Phuket",
+    priority: "中",
+    status: "已核验",
+    tags: ["补给", "雨天"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aae3e6c000000001200251c",
+  },
+  {
+    id: "lamit-bounty",
+    city: "普吉",
+    category: "美食",
+    name: "Lamit Bounty Restaurant",
+    note: "卡伦附近的高性价比候选；英文店名仍需在地图中复核。",
+    query: "Lamit Bounty Restaurant Karon Phuket",
+    priority: "高",
+    status: "待核验",
+    tags: ["卡伦", "正餐"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a89c94600000000180187e7",
+  },
+  {
+    id: "karon-circle-food",
+    city: "普吉",
+    category: "美食",
+    name: "卡伦转盘附近大排档",
+    note: "现金友好型晚餐；到现场按原帖图片辨认，不专程跨区。",
+    query: "Karon Circle Phuket",
+    priority: "中",
+    status: "待核验",
+    tags: ["卡伦", "仅现金"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aa93298000000002802a12d",
+  },
+  {
+    id: "banzaan",
+    city: "普吉",
+    category: "美食",
+    name: "Banzaan Fresh Market",
+    note: "班赞海鲜市场；只有安排芭东方向时才顺路加入。",
+    query: "Banzaan Fresh Market Phuket",
+    priority: "中",
+    status: "已核验",
+    tags: ["海鲜", "市场"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aa4256c000000002700839c",
+  },
+  {
+    id: "hong-khao-tom-pla",
+    city: "普吉",
+    category: "美食",
+    name: "Hong Khao Tom Pla",
+    note: "普吉镇泰式海鲜；与老镇行程组合，优先级高。",
+    query: "Hong Khao Tom Pla Restaurant Phuket",
+    priority: "高",
+    status: "已核验",
+    tags: ["普吉镇", "海鲜"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aa23a7d00000000110338d3",
+    pinned: true,
+  },
+  {
+    id: "phuket-old-town-favorite",
+    city: "普吉",
+    category: "景点",
+    name: "Phuket Old Town",
+    note: "彩色建筑与老街；适合半日慢逛并衔接午餐。",
+    query: "Phuket Old Town Thalang Road",
+    priority: "高",
+    status: "已核验",
+    tags: ["街区", "拍照"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a888cd00000000016020a40",
+    pinned: true,
+  },
+  {
+    id: "racha-island",
+    city: "普吉",
+    category: "玩乐",
+    name: "Racha Island / 皇帝岛",
+    note: "按天气、船型、保险与接送选择；不以最低价下单。",
+    query: "Racha Island Phuket",
+    priority: "高",
+    status: "已核验",
+    tags: ["海岛", "需预约"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a87296f000000003a0226a6",
+    pinned: true,
+  },
+  {
+    id: "laem-sai-cup",
+    city: "普吉",
+    category: "咖啡酒吧",
+    name: "Laem Sai Cup Cafe",
+    note: "卡塔附近悬崖咖啡；有秋千和吊床，三家只选一家。",
+    query: "Laem Sai Cup Cafe Phuket",
+    priority: "中",
+    status: "已核验",
+    tags: ["日落", "卡塔"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a871891000000003300c684",
+  },
+  {
+    id: "the-commune",
+    city: "普吉",
+    category: "咖啡酒吧",
+    name: "The Commune Resto Bar",
+    note: "三家悬崖咖啡中的首选；有泳池与餐饮区。",
+    query: "The Commune Resto Bar Phuket",
+    priority: "高",
+    status: "已核验",
+    tags: ["日落", "出片"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a871891000000003300c684",
+  },
+  {
+    id: "blanket-pillow",
+    city: "普吉",
+    category: "咖啡酒吧",
+    name: "A Blanket & A Pillow",
+    note: "可下到礁石看日落；水果奶昔有一次负面体验。",
+    query: "A Blanket & A Pillow Phuket",
+    priority: "中",
+    status: "已核验",
+    tags: ["日落", "礁石"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a871891000000003300c684",
+  },
+  {
+    id: "phuket-airport-supper",
+    city: "普吉",
+    category: "备选",
+    name: "普吉机场夜宵摊",
+    note: "航班晚到且不排队时顺路；不建议为此延迟入住。",
+    query: "Phuket Airport local food",
+    priority: "低",
+    status: "待核验",
+    tags: ["机场", "夜宵"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aad6410000000000b036e04",
+  },
+  {
+    id: "kata-laundry",
+    city: "普吉",
+    category: "备选",
+    name: "卡塔自助洗衣",
+    note: "需要时再用；具体位置与现金要求按原帖图片确认。",
+    query: "self service laundry Kata Beach Phuket",
+    priority: "低",
+    status: "待核验",
+    tags: ["生活", "洗衣"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aaab19d000000002502feb0",
+  },
+  {
+    id: "karon-old-town-bus",
+    city: "普吉",
+    category: "交通",
+    name: "卡伦—普吉镇公共交通",
+    note: "约50 THB线索；出发前复核站点、末班车与耗时。",
+    query: "Karon Beach bus to Phuket Old Town",
+    priority: "高",
+    status: "待核验",
+    tags: ["公交", "省钱"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a9963e50000000028039723",
+  },
+  ...[
+    ["laypang-durian", "Laypang Durian Shop", "Laypang Durian Shop Phuket", "北部榴莲候选；只在顺路时购买。"],
+    ["khun-nai-durian", "Khun Nai Durian", "Khun Nai Durian Phuket", "中西部榴莲候选；价格与品质需现场比较。"],
+    ["mr-tuang-durian", "Mr. Tuang Durian", "Mr. Tuang Durian Phuket", "中南部候选；原帖列为高评分店。"],
+    ["durian-heaven", "Durian Heaven", "Durian Heaven Phuket", "南部品种型候选；不为水果横跨全岛。"],
+    ["rawai-durian", "Rawai Durian Shop", "Rawai Durian Shop Phuket", "拉威附近、营业较晚；仅南部路线顺路。"],
+  ].map(([id, name, query, note]) => ({
+    id,
+    city: "普吉" as const,
+    category: "美食" as const,
+    name,
+    note,
+    query,
+    priority: "低" as const,
+    status: "待核验" as const,
+    tags: ["水果", "顺路"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aa910c30000000026015e2a",
+  })),
+  {
+    id: "bang-krachao",
+    city: "曼谷",
+    category: "玩乐",
+    name: "Bang Krachao",
+    note: "曼谷绿肺骑行；周五不把周末水上市场作为核心。",
+    query: "Bang Krachao Bangkok",
+    priority: "高",
+    status: "已核验",
+    tags: ["骑行", "自然"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a8d177900000000370305ea",
+    pinned: true,
+  },
+  {
+    id: "bang-nam-phueng",
+    city: "曼谷",
+    category: "购物",
+    name: "Bang Nam Phueng Floating Market",
+    note: "周末市场；本次周五骑行时大概率不开。",
+    query: "Bang Nam Phueng Floating Market",
+    priority: "中",
+    status: "已核验",
+    tags: ["周末", "市场"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a8d177900000000370305ea",
+  },
+  ...[
+    ["khlong-toei-pier", "Wat Khlong Toei Nok Pier", "Wat Khlong Toei Nok Pier", "MRT Khlong Toei方向的过河码头。"],
+    ["bang-na-pier", "Wat Bang Na Nok Pier", "Wat Bang Na Nok Pier", "BTS Bang Na方向的过河码头。"],
+  ].map(([id, name, query, note]) => ({
+    id,
+    city: "曼谷" as const,
+    category: "交通" as const,
+    name,
+    note,
+    query,
+    priority: "中" as const,
+    status: "已核验" as const,
+    tags: ["码头", "Bang Krachao"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a8d177900000000370305ea",
+  })),
+  {
+    id: "soi-prachum",
+    city: "曼谷",
+    category: "美食",
+    name: "Soi Prachum Market",
+    note: "早餐早市；原帖评论确认英文定位，营业状态需临行复核。",
+    query: "Soi Prachum Market Bangkok",
+    priority: "高",
+    status: "已核验",
+    tags: ["早市", "早餐"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a9f84f100000000290109bd",
+    pinned: true,
+  },
+  {
+    id: "sathorn-pier",
+    city: "曼谷",
+    category: "交通",
+    name: "Sathorn Pier / 湄南河公交船",
+    note: "傍晚河上看日落；可衔接老城区或河滨夜市。",
+    query: "Sathorn Pier Bangkok",
+    priority: "高",
+    status: "已核验",
+    tags: ["轮渡", "日落"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a9ec5ca00000000260322fc",
+    pinned: true,
+  },
+  {
+    id: "mitr-street",
+    city: "曼谷",
+    category: "美食",
+    name: "Mitr Street by Ruay Mitr",
+    note: "Tha Tien老城区河景餐厅；符合不去大皇宫的路线。",
+    query: "Mitr Street by Ruay Mitr Bangkok",
+    priority: "高",
+    status: "已核验",
+    tags: ["河景", "老城区"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aa76ff7000000000b00d5a2",
+    pinned: true,
+  },
+  {
+    id: "samrong-market",
+    city: "曼谷",
+    category: "购物",
+    name: "Samrong Center Market",
+    note: "偏东的水果市场；仅与Bang Na方向组合。",
+    query: "Samrong Center Market Bangkok",
+    priority: "中",
+    status: "已核验",
+    tags: ["水果", "市场"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a967147000000002a02e693",
+  },
+  {
+    id: "chatuchak-favorite",
+    city: "曼谷",
+    category: "购物",
+    name: "Chatuchak Weekend Market",
+    note: "10月10日周六可选；必须给晚间航班留足缓冲。",
+    query: "Chatuchak Weekend Market Bangkok",
+    priority: "中",
+    status: "已核验",
+    tags: ["周末", "市场"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aa9da35000000002b027a3f",
+  },
+  {
+    id: "kodtalay-rca",
+    city: "曼谷",
+    category: "美食",
+    name: "Kodtalay Seafood Buffet RCA",
+    note: "活虾海鲜自助候选；需确认预约、税费和当日营业。",
+    query: "Kodtalay Seafood Buffet RCA Rama 9",
+    priority: "中",
+    status: "已核验",
+    tags: ["海鲜", "需预约"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a962776000000002b026d7f",
+  },
+  ...[
+    ["yaowarat", "Chinatown / Yaowarat", "Yaowarat Road Bangkok", "老城区夜间餐饮首选；与湄南河同日最顺。", "高", "已核验"],
+    ["asiatique", "Asiatique The Riverfront", "Asiatique The Riverfront", "河滨夜市；风景优先，性价比次之。", "中", "已核验"],
+    ["jodd-fairs", "JODD FAIRS Ratchada", "JODD FAIRS Ratchada", "住宿靠近拉差达时再选；临行复核当前地址。", "中", "待核验"],
+    ["banthat-favorite", "Banthat Thong Road", "Banthat Thong Road Bangkok", "更适合作为一条餐饮街，不按单店打卡。", "中", "已核验"],
+  ].map(([id, name, query, note, priority, status]) => ({
+    id,
+    city: "曼谷" as const,
+    category: "美食" as const,
+    name,
+    note,
+    query,
+    priority: priority as "高" | "中" | "低",
+    status: status as "已核验" | "待核验",
+    tags: ["夜间", "餐饮"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a9e2313000000002603322e",
+  })),
+  {
+    id: "bonchon-bkk",
+    city: "曼谷",
+    category: "备选",
+    name: "Bonchon Suvarnabhumi Airport",
+    note: "候机顺路再吃；不为此提前到机场。",
+    query: "Bonchon Suvarnabhumi Airport",
+    priority: "低",
+    status: "待核验",
+    tags: ["机场", "候机"],
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aa77602000000002a02e91d",
+  },
+];
+
+const practicalFavorites: PracticalFavorite[] = [
+  {
+    id: "practical-hkt-grab",
+    stage: "抵达日",
+    name: "普吉机场入境与 Grab 上车点",
+    note: "10月4日置顶；用于入境、出航站楼和叫车，不作为景点。",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aa14770000000002601bd69",
+  },
+  {
+    id: "practical-tdac",
+    stage: "出发前",
+    name: "泰国电子入境卡 TDAC",
+    note: "标记为必办；填写时间与入口最终以泰国移民局官网为准。",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aa64d02000000002a0272fa",
+  },
+  {
+    id: "practical-passport-benefit",
+    stage: "出发前",
+    name: "中国护照专属礼遇",
+    note: "使用前核对有效期、参与商户和领取条件；截图不作为最终凭证。",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aacb5cc000000001000059f",
+  },
+  {
+    id: "practical-tuktuk",
+    stage: "曼谷",
+    name: "正规嘟嘟车软件",
+    note: "先核对应用名称、覆盖区和付款方式；不能替代全城 Grab/Bolt。",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aae4452000000000d02c568",
+  },
+  {
+    id: "practical-laundry",
+    stage: "普吉",
+    name: "卡塔自助洗衣操作卡",
+    note: "需要时再用；保留位置截图、机器容量和现金要求。",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aaab19d000000002502feb0",
+  },
+  {
+    id: "practical-delivery",
+    stage: "普吉",
+    name: "普吉外卖备选",
+    note: "抵达晚、下雨或疲劳时使用；配送范围以酒店地址为准。",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aaf48f000000000260145d1",
+  },
+  {
+    id: "practical-bus",
+    stage: "普吉",
+    name: "卡伦到普吉镇公交",
+    note: "出发前复核站点、末班车和耗时；4人同行要与打车总价比较。",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a9963e50000000028039723",
+  },
+  {
+    id: "practical-boat",
+    stage: "出发前",
+    name: "皇帝岛选船指南",
+    note: "重点核对船型、晕船风险、保险、接送范围和天气取消条款。",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a87296f000000003a0226a6",
+    secondaryUrl:
+      "https://www.xiaohongshu.com/explore/6a816ecd000000003300b4e4",
+    secondaryLabel: "低价线索",
+  },
+  {
+    id: "practical-rules",
+    stage: "出发前",
+    name: "同行约定",
+    note: "提前约定集合、预算、体力、临时分组和迟到处理。",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/68dc786c0000000007015bef",
+  },
+  {
+    id: "practical-photo",
+    stage: "现场",
+    name: "拍照动作参考",
+    note: "现场快速查看动作摘要，避免在景点反复刷视频。",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6a3bcc21000000001700a724",
+    secondaryUrl:
+      "https://www.xiaohongshu.com/explore/6aa6913a0000000012003444",
+    secondaryLabel: "动作二",
+  },
+  {
+    id: "practical-snacks",
+    stage: "现场",
+    name: "便利店与街头小吃",
+    note: "看见顺路再试，不为单品跨区移动。",
+    sourceUrl:
+      "https://www.xiaohongshu.com/explore/6aa75dac000000002b001738",
+    secondaryUrl:
+      "https://www.xiaohongshu.com/explore/6aad2d8b00000000190300e7",
+    secondaryLabel: "烤肠",
   },
 ];
 
@@ -589,7 +1073,7 @@ export default function Home() {
           {[
             ["route", "路线"],
             ["weather", "天气"],
-            ["map", "地图"],
+            ["map", "收藏"],
             ["days", "每日"],
             ["booking", "预订"],
             ["budget", "预算"],
@@ -1094,12 +1578,22 @@ function googleRouteUrl(spots: MapSpot[]) {
 
 function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
   const holder = useRef<HTMLDivElement | null>(null);
+  const [collectionView, setCollectionView] = useState<
+    "map" | "places" | "practical"
+  >("map");
   const [activeDay, setActiveDay] = useState("全部");
   const [mapMode, setMapMode] = useState<"map" | "list">("map");
   const [activeCategory, setActiveCategory] = useState<"全部" | SpotCategory>(
     "全部",
   );
   const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [placeScope, setPlaceScope] = useState<
+    "全部" | "行程置顶" | "普吉" | "曼谷" | "待核验"
+  >("全部");
+  const [practicalStage, setPracticalStage] = useState<
+    "全部" | PracticalFavorite["stage"]
+  >("全部");
+  const [collectionQuery, setCollectionQuery] = useState("");
   const [favorites, setFavorites] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -1120,10 +1614,43 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
       ),
     [activeDay, activeCategory, favoritesOnly, favorites],
   );
+  const filteredPlaces = useMemo(() => {
+    const query = collectionQuery.trim().toLocaleLowerCase("zh-CN");
+    return placeFavorites.filter((spot) => {
+      const scopeMatched =
+        placeScope === "全部" ||
+        (placeScope === "行程置顶" && spot.pinned) ||
+        (placeScope === "待核验" && spot.status === "待核验") ||
+        spot.city === placeScope;
+      const textMatched =
+        !query ||
+        [spot.name, spot.note, spot.category, ...spot.tags]
+          .join(" ")
+          .toLocaleLowerCase("zh-CN")
+          .includes(query);
+      return (
+        scopeMatched &&
+        textMatched &&
+        (!favoritesOnly || favorites.includes(spot.id))
+      );
+    });
+  }, [collectionQuery, favorites, favoritesOnly, placeScope]);
+  const filteredPractical = useMemo(
+    () =>
+      practicalFavorites.filter(
+        (item) =>
+          (practicalStage === "全部" || item.stage === practicalStage) &&
+          (!favoritesOnly || favorites.includes(item.id)),
+      ),
+    [favorites, favoritesOnly, practicalStage],
+  );
   const dates = ["全部", ...Array.from(new Set(mapSpots.map((x) => x.day)))];
+  const mapFavoriteCount = mapSpots.filter((x) =>
+    favorites.includes(x.id),
+  ).length;
 
   useEffect(() => {
-    if (!holder.current) return;
+    if (!holder.current || collectionView !== "map") return;
     const isMobile = window.matchMedia("(max-width: 540px)").matches;
     if (isMobile && (!mobileActive || mapMode === "list")) return;
     let cancelled = false;
@@ -1138,7 +1665,7 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(map);
-      const bounds: L.LatLngExpression[] = [];
+      const bounds: [number, number][] = [];
       filtered.forEach((spot, index) => {
         const point: [number, number] = [spot.lat, spot.lon];
         bounds.push(point);
@@ -1151,10 +1678,13 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
           iconSize: [30, 30],
           iconAnchor: [15, 30],
         });
+        const sourceLink = spot.sourceUrl
+          ? `<br><a href="${spot.sourceUrl}" target="_blank" rel="noopener noreferrer">小红书原帖 ↗</a>`
+          : "";
         L.marker(point, { icon })
           .addTo(map!)
           .bindPopup(
-            `<b>${spot.name}</b><br><small>${spot.category} · ${spot.day} · ${spot.note}</small><br><a href="${googlePlaceUrl(spot.query)}" target="_blank" rel="noreferrer">在 Google Maps 打开 ↗</a>`,
+            `<b>${spot.name}</b><br><small>${spot.category} · ${spot.day} · ${spot.note}</small><br><a href="${googlePlaceUrl(spot.query)}" target="_blank" rel="noopener noreferrer">Google Maps ↗</a>${sourceLink}`,
           );
       });
       if (bounds.length === 0) map.setView([10.7, 99.5], 6);
@@ -1165,7 +1695,7 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
       cancelled = true;
       map?.remove();
     };
-  }, [filtered, mobileActive, mapMode]);
+  }, [collectionView, filtered, mobileActive, mapMode]);
 
   const toggleFavorite = (id: string) => {
     const next = favorites.includes(id)
@@ -1182,130 +1712,384 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
     >
       <div className="shell">
         <Heading
-          index="03 · TRIP MAP"
-          title={<>地图与收藏</>}
-          text="先按日期，再按吃喝玩乐分类筛选。星标保存在当前设备；你后续发来的地点会继续加入这套收藏夹。"
+          index="03 · FAVORITES"
+          title={<>地图与收藏夹</>}
+          text="行程地图、33个地点收藏和11张实用卡集中管理。星标保存在当前设备，原帖统一使用不含登录参数的小红书链接。"
         />
-        <div className="map-filters day-filter">
-          {dates.map((date) => (
+        <div className="collection-meta">
+          <span>43篇笔记已整理</span>
+          <span>2026.09.20 核验</span>
+          <a
+            href="https://www.xiaohongshu.com/board/6aa5053a000000002402ea22"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            打开泰国专辑 ↗
+          </a>
+        </div>
+        <div className="collection-switch" aria-label="收藏夹分类">
+          {[
+            ["map", "行程地图", mapSpots.length],
+            ["places", "地点收藏", placeFavorites.length],
+            ["practical", "实用收藏", practicalFavorites.length],
+          ].map(([id, label, count]) => (
             <button
-              className={activeDay === date ? "active" : ""}
-              onClick={() => setActiveDay(date)}
-              key={date}
+              className={collectionView === id ? "active" : ""}
+              onClick={() =>
+                setCollectionView(id as "map" | "places" | "practical")
+              }
+              aria-pressed={collectionView === id}
+              key={String(id)}
             >
-              {date}
+              <b>{label}</b>
+              <small>{count}</small>
             </button>
           ))}
-          {activeDay !== "全部" && filtered.length > 0 && (
-            <a href={googleRouteUrl(filtered)} target="_blank" rel="noreferrer">
-              在 Google Maps 打开当日路线 ↗
-            </a>
-          )}
         </div>
-        <div className="category-filters">
-          {spotCategories.map((category) => (
+
+        <div
+          className={`collection-panel ${collectionView === "map" ? "active" : ""}`}
+          aria-hidden={collectionView !== "map"}
+        >
+          <div className="map-filters day-filter">
+            {dates.map((date) => (
+              <button
+                className={activeDay === date ? "active" : ""}
+                onClick={() => setActiveDay(date)}
+                key={date}
+              >
+                {date}
+              </button>
+            ))}
+            {activeDay !== "全部" && filtered.length > 0 && (
+              <a
+                href={googleRouteUrl(filtered)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Google Maps 当日路线 ↗
+              </a>
+            )}
+          </div>
+          <div className="category-filters">
+            {spotCategories.map((category) => (
+              <button
+                className={activeCategory === category.name ? "active" : ""}
+                onClick={() => setActiveCategory(category.name)}
+                key={category.name}
+              >
+                <i style={{ background: category.color }} />
+                {category.name}
+                <small>
+                  {category.name === "全部"
+                    ? mapSpots.length
+                    : mapSpots.filter((x) => x.category === category.name)
+                        .length}
+                </small>
+              </button>
+            ))}
             <button
-              className={activeCategory === category.name ? "active" : ""}
-              onClick={() => setActiveCategory(category.name)}
-              key={category.name}
+              className={`favorite-filter ${favoritesOnly ? "active" : ""}`}
+              onClick={() => setFavoritesOnly(!favoritesOnly)}
             >
-              <i style={{ background: category.color }} />
-              {category.name}
-              <small>
-                {category.name === "全部"
-                  ? mapSpots.length
-                  : mapSpots.filter((x) => x.category === category.name).length}
-              </small>
+              ★ 仅看收藏 <small>{mapFavoriteCount}</small>
             </button>
-          ))}
-          <button
-            className={`favorite-filter ${favoritesOnly ? "active" : ""}`}
-            onClick={() => setFavoritesOnly(!favoritesOnly)}
-          >
-            ★ 仅看收藏 <small>{favorites.length}</small>
-          </button>
+          </div>
+          <div className="map-view-switch" aria-label="地图显示方式">
+            <button
+              className={mapMode === "map" ? "active" : ""}
+              onClick={() => setMapMode("map")}
+              aria-pressed={mapMode === "map"}
+            >
+              地图视图
+            </button>
+            <button
+              className={mapMode === "list" ? "active" : ""}
+              onClick={() => setMapMode("list")}
+              aria-pressed={mapMode === "list"}
+            >
+              路线点列表
+            </button>
+          </div>
+          <div className={`map-layout mode-${mapMode}`}>
+            <div className="map-canvas" ref={holder} />
+            <div className="spot-list">
+              {filtered.length === 0 ? (
+                <div className="empty-favorites">
+                  <b>
+                    {favoritesOnly ? "暂时没有收藏路线点" : "当前筛选没有地点"}
+                  </b>
+                  <span>
+                    {favoritesOnly
+                      ? "切换到地点收藏添加星标"
+                      : "换一个日期或分类看看"}
+                  </span>
+                </div>
+              ) : (
+                filtered.map((spot, index) => (
+                  <article key={spot.id}>
+                    <span
+                      style={{
+                        color: spotCategories.find(
+                          (x) => x.name === spot.category,
+                        )?.color,
+                      }}
+                    >
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <div>
+                      <small>
+                        {spot.day} · {spot.city}
+                        <i
+                          className="spot-category"
+                          style={{
+                            background: spotCategories.find(
+                              (x) => x.name === spot.category,
+                            )?.color,
+                          }}
+                        >
+                          {spot.category}
+                        </i>
+                      </small>
+                      <b>{spot.name}</b>
+                      <p>{spot.note}</p>
+                      <div className="spot-actions">
+                        <a
+                          href={googlePlaceUrl(spot.query)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Google Maps ↗
+                        </a>
+                        {spot.sourceUrl && (
+                          <a
+                            className="xhs-link"
+                            href={spot.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            小红书原帖 ↗
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      className={favorites.includes(spot.id) ? "saved" : ""}
+                      onClick={() => toggleFavorite(spot.id)}
+                      aria-label={
+                        favorites.includes(spot.id) ? "取消收藏" : "收藏地点"
+                      }
+                    >
+                      {favorites.includes(spot.id) ? "★" : "☆"}
+                    </button>
+                  </article>
+                ))
+              )}
+            </div>
+          </div>
+          <p className="map-privacy">
+            地图不读取Google账号或个人位置；仅为已确认坐标的行程点显示标记。完整候选请查看“地点收藏”。
+          </p>
         </div>
-        <div className="map-view-switch" aria-label="地图显示方式">
-          <button
-            className={mapMode === "map" ? "active" : ""}
-            onClick={() => setMapMode("map")}
-            aria-pressed={mapMode === "map"}
-          >
-            地图视图
-          </button>
-          <button
-            className={mapMode === "list" ? "active" : ""}
-            onClick={() => setMapMode("list")}
-            aria-pressed={mapMode === "list"}
-          >
-            收藏点列表
-          </button>
-        </div>
-        <div className={`map-layout mode-${mapMode}`}>
-          <div className="map-canvas" ref={holder} />
-          <div className="spot-list">
-            {filtered.length === 0 ? (
-              <div className="empty-favorites">
-                <b>{favoritesOnly ? "收藏夹还是空的" : "当前筛选没有地点"}</b>
-                <span>
-                  {favoritesOnly
-                    ? "点击地点右侧的星标即可收藏"
-                    : "换一个日期或分类看看"}
-                </span>
+
+        <div
+          className={`collection-panel ${collectionView === "places" ? "active" : ""}`}
+          aria-hidden={collectionView !== "places"}
+        >
+          <div className="collection-toolbar">
+            <label>
+              <span>搜索收藏</span>
+              <input
+                type="search"
+                value={collectionQuery}
+                onChange={(event) => setCollectionQuery(event.target.value)}
+                placeholder="店名、区域或标签"
+              />
+            </label>
+            <button
+              className={favoritesOnly ? "active" : ""}
+              onClick={() => setFavoritesOnly(!favoritesOnly)}
+            >
+              ★ 仅看星标 {favorites.length > 0 && `· ${favorites.length}`}
+            </button>
+          </div>
+          <div className="collection-filter" aria-label="地点收藏筛选">
+            {(["全部", "行程置顶", "普吉", "曼谷", "待核验"] as const).map(
+              (scope) => (
+                <button
+                  className={placeScope === scope ? "active" : ""}
+                  onClick={() => setPlaceScope(scope)}
+                  key={scope}
+                >
+                  {scope}
+                </button>
+              ),
+            )}
+            <small>{filteredPlaces.length} 个地点</small>
+          </div>
+          <div className="collection-grid place-collection-grid">
+            {filteredPlaces.length === 0 ? (
+              <div className="collection-empty">
+                <b>没有匹配的地点</b>
+                <span>清空搜索或切换收藏夹分类</span>
               </div>
             ) : (
-              filtered.map((spot, index) => (
-                <article key={spot.id}>
-                  <span
-                    style={{
-                      color: spotCategories.find(
-                        (x) => x.name === spot.category,
-                      )?.color,
-                    }}
-                  >
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <div>
-                    <small>
-                      {spot.day} · {spot.city}
-                      <i
-                        className="spot-category"
-                        style={{
-                          background: spotCategories.find(
-                            (x) => x.name === spot.category,
-                          )?.color,
-                        }}
-                      >
-                        {spot.category}
-                      </i>
-                    </small>
-                    <b>{spot.name}</b>
-                    <p>{spot.note}</p>
+              filteredPlaces.map((spot) => (
+                <article className="collection-card" key={spot.id}>
+                  <header>
+                    <span className={`priority priority-${spot.priority}`}>
+                      {spot.priority}优先级
+                    </span>
+                    <button
+                      className={favorites.includes(spot.id) ? "saved" : ""}
+                      onClick={() => toggleFavorite(spot.id)}
+                      aria-label={
+                        favorites.includes(spot.id) ? "取消收藏" : "收藏地点"
+                      }
+                    >
+                      {favorites.includes(spot.id) ? "★" : "☆"}
+                    </button>
+                  </header>
+                  <small>
+                    {spot.city} · {spot.category}
+                    <i className={spot.status === "待核验" ? "pending" : ""}>
+                      {spot.status}
+                    </i>
+                  </small>
+                  <h3>{spot.name}</h3>
+                  <p>{spot.note}</p>
+                  <div className="collection-tags">
+                    {spot.tags.map((tag) => (
+                      <span key={tag}>{tag}</span>
+                    ))}
+                  </div>
+                  <div className="collection-actions">
                     <a
                       href={googlePlaceUrl(spot.query)}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                     >
-                      Google Maps ↗
+                      地图导航
+                    </a>
+                    <a
+                      className="xhs-link"
+                      href={spot.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      小红书原帖 ↗
                     </a>
                   </div>
-                  <button
-                    className={favorites.includes(spot.id) ? "saved" : ""}
-                    onClick={() => toggleFavorite(spot.id)}
-                    aria-label={
-                      favorites.includes(spot.id) ? "取消收藏" : "收藏地点"
-                    }
-                  >
-                    {favorites.includes(spot.id) ? "★" : "☆"}
-                  </button>
                 </article>
               ))
             )}
           </div>
         </div>
-        <p className="map-privacy">
-          地图不读取Google账号或个人位置；收藏仅保存在当前浏览器。射击场和曼谷酒店尚未最终确认，因此暂不固定坐标。
-        </p>
+
+        <div
+          className={`collection-panel ${collectionView === "practical" ? "active" : ""}`}
+          aria-hidden={collectionView !== "practical"}
+        >
+          <div className="collection-toolbar compact">
+            <p>不生成地图标记；按使用时机整理成可快速打开的操作卡。</p>
+            <button
+              className={favoritesOnly ? "active" : ""}
+              onClick={() => setFavoritesOnly(!favoritesOnly)}
+            >
+              ★ 仅看星标
+            </button>
+          </div>
+          <div className="collection-filter" aria-label="实用收藏筛选">
+            {(
+              ["全部", "出发前", "抵达日", "普吉", "曼谷", "现场"] as const
+            ).map((stage) => (
+              <button
+                className={practicalStage === stage ? "active" : ""}
+                onClick={() => setPracticalStage(stage)}
+                key={stage}
+              >
+                {stage}
+              </button>
+            ))}
+            <small>{filteredPractical.length} 张卡片</small>
+          </div>
+          <div className="collection-grid practical-grid">
+            {filteredPractical.length === 0 ? (
+              <div className="collection-empty">
+                <b>还没有星标实用卡</b>
+                <span>关闭“仅看星标”后选择需要置顶的内容</span>
+              </div>
+            ) : (
+              filteredPractical.map((item, index) => (
+                <article className="practical-card" key={item.id}>
+                  <header>
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <small>{item.stage}</small>
+                    <button
+                      className={favorites.includes(item.id) ? "saved" : ""}
+                      onClick={() => toggleFavorite(item.id)}
+                      aria-label={
+                        favorites.includes(item.id)
+                          ? "取消收藏"
+                          : "收藏实用卡"
+                      }
+                    >
+                      {favorites.includes(item.id) ? "★" : "☆"}
+                    </button>
+                  </header>
+                  <h3>{item.name}</h3>
+                  <p>{item.note}</p>
+                  <div className="collection-actions">
+                    <a
+                      className="xhs-link"
+                      href={item.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      小红书原帖 ↗
+                    </a>
+                    {item.secondaryUrl && (
+                      <a
+                        href={item.secondaryUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {item.secondaryLabel || "补充笔记"} ↗
+                      </a>
+                    )}
+                  </div>
+                </article>
+              ))
+            )}
+          </div>
+        </div>
+
+        <aside className="collection-maintenance">
+          <header>
+            <div>
+              <small>UPDATE NOTES</small>
+              <b>收藏更新注意事项</b>
+            </div>
+            <span>上次整理 · 2026.09.20</span>
+          </header>
+          <div>
+            <article>
+              <b>出发前一周</b>
+              <p>复核预约、营业日、交通班次、跳岛保险与天气取消条款。</p>
+            </article>
+            <article>
+              <b>出发前一晚</b>
+              <p>检查天气、航班、机场、TDAC和当天置顶卡；户外项目只降级，不删除。</p>
+            </article>
+            <article>
+              <b>链接打不开</b>
+              <p>先登录小红书；仍不可用时从公开专辑按标题查找，不使用带登录令牌的临时链接。</p>
+            </article>
+          </div>
+          <p>
+            价格、低消、营业时间和优惠都属于动态信息。页面不保存乘机人、订单号、证件号、手机号或邮箱。
+          </p>
+        </aside>
       </div>
     </section>
   );
