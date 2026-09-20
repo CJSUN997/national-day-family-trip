@@ -1639,7 +1639,6 @@ footer button {
 
 /* Mobile app navigation and focused views */
 .mobile-bottom-nav,
-.map-view-switch,
 .task-filter,
 .weather-expand {
   display: none;
@@ -1660,8 +1659,7 @@ footer button {
     display: block !important;
   }
   .topbar {
-    height: 50px;
-    padding: 0 14px;
+    display: none;
   }
   .topbar .menu,
   .topbar nav,
@@ -1877,28 +1875,6 @@ footer button {
   .weather-note span {
     margin: 4px 0 7px;
   }
-  .map-view-switch {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    margin: 0 0 10px;
-    padding: 3px;
-    border-radius: 10px;
-    background: #ded7ca;
-  }
-  .map-view-switch button {
-    padding: 8px;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--muted);
-    font-size: 11px;
-  }
-  .map-view-switch button.active {
-    background: var(--cream);
-    color: var(--ink);
-    box-shadow: 0 2px 8px #00000012;
-    font-weight: 700;
-  }
   .map-filters,
   .category-filters {
     gap: 6px;
@@ -1923,19 +1899,6 @@ footer button {
   .map-layout {
     display: block;
     min-height: 0;
-  }
-  .map-layout.mode-map .spot-list,
-  .map-layout.mode-list .map-canvas {
-    display: none;
-  }
-  .map-layout.mode-map .map-canvas {
-    display: block;
-    min-height: 430px;
-  }
-  .map-layout.mode-list .spot-list {
-    display: block;
-    max-height: none;
-    border: 0;
   }
   .spot-list article {
     grid-template-columns: 26px 1fr 30px;
@@ -2735,9 +2698,16 @@ footer button {
 }
 
 @media (max-width: 540px) {
+  .trip-map-section .heading {
+    margin-bottom: 11px;
+  }
+  .trip-map-section .heading > p {
+    margin-top: 5px;
+    line-height: 1.45;
+  }
   .collection-meta {
     gap: 5px;
-    margin: -4px 0 11px;
+    margin: 0 0 9px;
     overflow-x: auto;
     white-space: nowrap;
     scrollbar-width: none;
@@ -2756,10 +2726,13 @@ footer button {
     border: 1px solid #ee68482c;
     border-radius: 999px;
   }
+  .collection-meta span:nth-child(2) {
+    display: none;
+  }
   .collection-switch {
     position: sticky;
     z-index: 12;
-    top: 55px;
+    top: 0;
     margin-bottom: 11px;
     padding: 3px;
     border-radius: 11px;
@@ -2801,8 +2774,7 @@ footer button {
     font-size: 9px;
   }
   .map-scope-filter small {
-    margin-left: 2px;
-    font-size: 7px;
+    display: none;
   }
   .collection-toolbar {
     grid-template-columns: 1fr auto;

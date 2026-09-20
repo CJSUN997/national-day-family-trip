@@ -29,7 +29,6 @@ test("renders the updated family travel planner", async () => {
   assert.match(html, /Open-Meteo/);
   assert.match(html, /FAVORITES/);
   assert.match(html, /手机端主导航/);
-  assert.match(html, /地图视图/);
   assert.match(html, /地图查看/);
   assert.match(html, /分类查看/);
   assert.match(html, /地点收藏/);
@@ -54,6 +53,7 @@ test("renders the updated family travel planner", async () => {
   assert.match(html, /10月10日/);
   assert.match(html, /不去大皇宫/);
   assert.doesNotMatch(html, /人妖秀|乌布|努沙杜瓦|巴厘岛|SUNCHANG/);
+  assert.doesNotMatch(html, /路线点列表/);
   assert.doesNotMatch(html, /xsec_token|share_id|appuid/);
   assert.doesNotMatch(
     html,

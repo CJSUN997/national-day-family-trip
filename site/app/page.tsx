@@ -1693,7 +1693,6 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
     "全部" | "行程点" | "普吉收藏" | "曼谷收藏"
   >("全部");
   const [activeDay, setActiveDay] = useState("全部");
-  const [mapMode, setMapMode] = useState<"map" | "list">("map");
   const [activeCategory, setActiveCategory] = useState<"全部" | SpotCategory>(
     "全部",
   );
@@ -1779,7 +1778,7 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
   useEffect(() => {
     if (!holder.current || collectionView !== "map") return;
     const isMobile = window.matchMedia("(max-width: 540px)").matches;
-    if (isMobile && (!mobileActive || mapMode === "list")) return;
+    if (isMobile && !mobileActive) return;
     let cancelled = false;
     let map: import("leaflet").Map | undefined;
     void import("leaflet").then((L) => {
@@ -1823,7 +1822,7 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
       cancelled = true;
       map?.remove();
     };
-  }, [collectionView, filtered, mobileActive, mapMode]);
+  }, [collectionView, filtered, mobileActive]);
 
   const toggleFavorite = (id: string) => {
     const next = favorites.includes(id)
@@ -1842,7 +1841,7 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
         <Heading
           index="03 · FAVORITES"
           title={<>地点收藏</>}
-          text="行程点与地点收藏已经合并：地图看位置，分类看笔记文字摘要。星标保存在当前设备，原帖统一使用不含登录参数的小红书链接。"
+          text="地图看位置，分类看笔记摘要；星标仅保存在当前设备。"
         />
         <div className="collection-meta">
           <span>43篇笔记已整理</span>
@@ -1963,23 +1962,7 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
               ★ 仅看收藏 <small>{mapFavoriteCount}</small>
             </button>
           </div>
-          <div className="map-view-switch" aria-label="地图显示方式">
-            <button
-              className={mapMode === "map" ? "active" : ""}
-              onClick={() => setMapMode("map")}
-              aria-pressed={mapMode === "map"}
-            >
-              地图视图
-            </button>
-            <button
-              className={mapMode === "list" ? "active" : ""}
-              onClick={() => setMapMode("list")}
-              aria-pressed={mapMode === "list"}
-            >
-              路线点列表
-            </button>
-          </div>
-          <div className={`map-layout mode-${mapMode}`}>
+          <div className="map-layout">
             <div className="map-canvas" ref={holder} />
             <div className="spot-list">
               {filtered.length === 0 ? (
