@@ -9,7 +9,7 @@ const days: Day[] = [
   { date:"10.04 · 周日", city:"普吉", title:"向南飞，先睡个好觉", lead:"已订 CA581。20:30落地后只完成接机、入住和简单宵夜，不再追加夜市。", pace:"交通日", events:[
     {time:"12:00",tag:"集合",title:"首都机场 T3",note:"4人一起办理值机，逐人确认电子客票号与1×23kg托运行李。"},
     {time:"15:30—20:30",tag:"已预订",title:"CA581 · PEK → HKT",note:"直飞普吉；泰国时间比北京时间慢1小时。"},
-    {time:"22:00",tag:"接机",title:"普吉机场 → 卡伦",note:"预订SUV / Van并填写航班号，预计23:15前后抵达酒店。"}]},
+    {time:"22:00",tag:"接机",title:"普吉机场 → 普吉岛卡塔度假酒店",note:"酒店已订，位于卡伦的Kata Road一带；预订SUV / Van并填写航班号。"}]},
   { date:"10.05 · 周一", city:"普吉", title:"老城、寺庙与南端日落", lead:"4人包车走一条完整的本岛路线，上午慢出发，傍晚把神仙半岛作为全日重点。", pace:"适中", rule:"日落受天气影响；大雨时缩短南部路线，不冒险赶观景点。", events:[
     {time:"10:00",tag:"老城",title:"普吉老镇",note:"塔朗路与罗曼尼巷慢逛，午餐尝试福建面或泰南风味。"},
     {time:"14:30",tag:"文化",title:"查龙寺",note:"免费参观，注意衣着得体；现场不赶时间、不叠加过多景点。"},
@@ -36,18 +36,21 @@ const days: Day[] = [
     {time:"15:30",tag:"二选一",title:"ICONSIAM 或酒店休息",note:"想看河岸与室内水上市场就去ICONSIAM；体力不足直接休息。"},
     {time:"17:30",tag:"可选",title:"Mahanakhon SkyWalk",note:"只在天气清晰且全员有兴趣时现场决定，不提前锁死不可退票。"},
     {time:"20:30",tag:"整理",title:"两组返程终检",note:"分别确认航站楼、送机时间、行李额、证件和落地日期。"}]},
-  { date:"10.10 · 周六", city:"返程", title:"先看航班，再决定乍都乍", lead:"1人返回上海，3人返回北京。只有下午较晚航班才安排乍都乍，返程优先级永远更高。", pace:"交通日", events:[
-    {time:"09:00",tag:"条件活动",title:"乍都乍周末市场",note:"仅限航班时间充裕时执行；若不满足条件，改为酒店附近早餐后直接退房。"},
-    {time:"待航班",tag:"上海 · 1人",title:"BKK → PVG",note:"优先10月10日当天抵沪、含托运行李的直飞航班。"},
+  { date:"10.10 · 周六", city:"返程", title:"两组返程，上海组厦门过夜", lead:"上海组已出票，10月10日晚从曼谷飞厦门、10月11日下午抵达虹桥；北京组3人仍待出票。", pace:"交通日", events:[
+    {time:"09:00",tag:"条件活动",title:"乍都乍周末市场",note:"上海组航班时间允许，但仍需给BKK国际出发预留充足时间；北京组按最终航班单独判断。"},
+    {time:"19:50—23:55",tag:"已出票 · 上海1人",title:"MF864 · BKK → XMN",note:"厦门航空，抵达厦门高崎T3；手提8kg、托运1×23kg。"},
+    {time:"10.11 · 13:00—14:45",tag:"已出票 · 上海1人",title:"MF8521 · XMN → SHA",note:"厦门高崎T3至上海虹桥T1；须确认行李是否直挂及厦门过夜安排。"},
     {time:"待航班",tag:"北京 · 3人",title:"BKK → PEK / PKX",note:"查询3张同舱库存；若10月11日凌晨落地，出票前再次确认。"},
-    {time:"起飞前3小时",tag:"送机",title:"酒店 → BKK",note:"两组起飞相差不超过2小时可同车，否则分别预约。"}]},
+    {time:"起飞前3小时",tag:"送机",title:"酒店 → BKK",note:"上海组按19:50起飞倒排；北京组出票后再决定是否同车。"}]},
 ];
 
 const tasks = [
   ["outbound","已完成","确认 CA581 全员出票","逐人检查电子客票号和1×23kg托运行李。"],
-  ["return","现在","锁定两组返程","10月10日：1人BKK→PVG，3人BKK→PEK/PKX。"],
+  ["return_sh","已完成","上海组返程已出票","10月10日MF864至厦门，10月11日MF8521抵达上海虹桥。"],
+  ["return_bj","现在","锁定北京组返程","10月10日：3人BKK→PEK/PKX，优先直飞和含托运行李。"],
   ["domestic","现在","锁定普吉到曼谷","10月7日HKT→BKK，直飞、含行李、中午前后起飞。"],
-  ["rooms","现在","预订两地2间房","普吉卡伦10.04—10.07；曼谷BTS沿线10.07—10.10。"],
+  ["hotel_phuket","已完成","普吉酒店已订","普吉岛卡塔度假酒店，10月4日至7日，3晚；订单显示1间房。"],
+  ["hotel_bangkok","现在","预订曼谷酒店","10月7日至10日，优先暹罗或National Stadium周边。"],
   ["island","尽快","筛选10月6日跳岛团","比较皮皮岛线与攀牙湾线，重点核对保险、接送及天气退款。"],
   ["shooting","出发前","预订正规射击体验","确认当天开放、证件要求、教练陪同、保险和取消政策。"],
   ["transfer","出发前2周","建立机场接送订单","同行段用SUV/Van；返程按航班差值决定是否分车。"],
@@ -61,35 +64,35 @@ const tasks = [
 export default function Home() {
   const [active, setActive] = useState(0);
   const [checks, setChecks] = useState<Record<string, boolean>>(() => {
-    if (typeof window === "undefined") return { outbound: true };
+    if (typeof window === "undefined") return { outbound: true, return_sh: true, hotel_phuket: true };
     try {
       const saved = window.localStorage.getItem("thai-trip-v7-checks");
-      return saved ? { outbound: true, ...JSON.parse(saved) } : { outbound: true };
+      return saved ? { ...JSON.parse(saved), outbound: true, return_sh: true, hotel_phuket: true } : { outbound: true, return_sh: true, hotel_phuket: true };
     } catch {
-      return { outbound: true };
+      return { outbound: true, return_sh: true, hotel_phuket: true };
     }
   });
   const [menu, setMenu] = useState(false);
   const completed=useMemo(()=>tasks.filter(([id])=>checks[id]).length,[checks]);
   const jump=(id:string)=>{setMenu(false);document.getElementById(id)?.scrollIntoView({behavior:"smooth"})};
-  const toggle=(id:string)=>{if(id==="outbound")return;const next={...checks,[id]:!checks[id]};setChecks(next);localStorage.setItem("thai-trip-v7-checks",JSON.stringify(next))};
+  const toggle=(id:string)=>{if(["outbound","return_sh","hotel_phuket"].includes(id))return;const next={...checks,[id]:!checks[id]};setChecks(next);localStorage.setItem("thai-trip-v7-checks",JSON.stringify(next))};
   const day=days[active]!;
   return <main>
     <header className="topbar"><button className="brand" onClick={()=>jump("top")}><span>向</span><b>向南，再向北<small>2026 家庭旅行执行册</small></b></button><button className="menu" onClick={()=>setMenu(!menu)}>目录</button><nav className={menu?"open":""}>{[["route","路线"],["weather","天气"],["days","每日"],["booking","预订"],["budget","预算"],["tasks","清单"]].map(([id,label])=><button key={id} onClick={()=>jump(id)}>{label}</button>)}</nav><em>● 7天6晚</em></header>
     <section className="hero" id="top"><div className="hero-copy"><p>OCT 04 — OCT 10 · PHUKET / BANGKOK</p><h1>先去海边，<br/><i>再回城市。</i></h1><h2>一家四口的泰国七日：普吉3晚，曼谷3晚。去程已经确定，余下的每一步都围绕舒服、真实和可执行。</h2><div><button onClick={()=>jump("days")}>查看每日安排 ↘</button><button onClick={()=>jump("tasks")}>先看待办</button></div></div><article className="ticket"><header><span>OUTBOUND · CONFIRMED</span><b>已订</b></header><div className="airports"><section><strong>PEK</strong><small>北京 · T3</small></section><i>CA581<br/>──────── ✦</i><section><strong>HKT</strong><small>普吉</small></section></div><div className="times"><span><b>15:30</b>10月4日</span><span><b>6h</b>直飞</span><span><b>20:30</b>当地时间</span></div><p>4人同行 · 每人1×23kg托运行李 · 以电子客票号确认出票</p></article></section>
-    <section className="shell route" id="route"><Heading index="01 · ROUTE LOGIC" title={<>六晚，两个落脚点。<br/>没有多余的折返。</>} text="路线先满足航班与体力，再安排体验。海况改变活动，不改变城市；返程分流，但都从素万那普机场出发。"/><div className="route-grid">{[["10.04 · 已订","北京","CA581 直飞"],["3 NIGHTS","普吉","老城 · 环岛 · 跳岛窗口"],["3 NIGHTS","曼谷","美食 · 体验 · 购物"],["10.10 · 待订","上海 / 北京","1人 PVG · 3人 PEK/PKX"]].map(([a,b,c])=><article key={b}><small>{a}</small><b>{b}</b><p>{c}</p></article>)}</div><div className="rails">{[["01","只换一次酒店","10月7日从普吉转场曼谷"],["02","关键活动可退","跳岛和高空项目不锁死"],["03","允许分组","妈妈不被迫出海或射击"],["04","明确排除","不去大皇宫，不看低俗演出"]].map(([n,t,d])=><article key={n}><span>{n}</span><b>{t}</b><small>{d}</small></article>)}</div></section>
+    <section className="shell route" id="route"><Heading index="01 · ROUTE LOGIC" title={<>六晚，两个落脚点。<br/>没有多余的折返。</>} text="路线先满足航班与体力，再安排体验。海况改变活动，不改变城市；上海组10月10日从BKK出发，经厦门过夜后于10月11日抵沪。"/><div className="route-grid">{[["10.04 · 已订","北京","CA581 直飞"],["3 NIGHTS · 已订","普吉","普吉岛卡塔度假酒店"],["3 NIGHTS · 待订","曼谷","美食 · 体验 · 购物"],["10.10 · 分流","上海 / 北京","上海已订 · 北京待订"]].map(([a,b,c])=><article key={b}><small>{a}</small><b>{b}</b><p>{c}</p></article>)}</div><div className="rails">{[["01","只换一次酒店","10月7日从普吉转场曼谷"],["02","关键活动可退","跳岛和高空项目不锁死"],["03","允许分组","妈妈不被迫出海或射击"],["04","明确排除","不去大皇宫，不看低俗演出"]].map(([n,t,d])=><article key={n}><span>{n}</span><b>{t}</b><small>{d}</small></article>)}</div></section>
     <WeatherBoard />
     <section className="dark" id="days"><div className="shell"><Heading light index="03 · DAY BY DAY" title={<>每天只做一件<br/>真正重要的事。</>} text="选择日期查看时间线。安排保留交通和休息缓冲，不用景点数量衡量一天是否值得。"/><div className="tabs">{days.map((d,i)=><button className={i===active?"active":""} onClick={()=>setActive(i)} key={d.date}><small>{d.date.split(" · ")[0]}</small><b>D{i+1}</b><span>{d.city}</span></button>)}</div><div className="day"><aside><span>{day.date}<i>{day.pace}</i></span><small>{day.city} · DAY {active+1}</small><h3>{day.title}</h3><p>{day.lead}</p>{day.rule&&<em><b>WEATHER RULE</b>{day.rule}</em>}</aside><div className="timeline">{day.events.map((e,i)=><article key={e.title}><span>{String(i+1).padStart(2,"0")}</span><div><small>{e.time}<i>{e.tag}</i></small><h4>{e.title}</h4><p>{e.note}</p></div></article>)}</div></div></div></section>
-    <section className="shell booking" id="booking"><Heading index="04 · BOOKING GATES" title={<>先锁交通，<br/>再让酒店落位。</>} text="动态价格不写成事实。这里只固定筛选条件和决策顺序，最终信息以付款页与电子客票为准。"/><div className="cards"><FlightCard urgent date="10.10" code="BKK → PVG" title="上海组 · 1人" items={["直飞且含托运行李","优先10月10日当天抵沪","独立出票，不等待北京组同价"]}/><FlightCard urgent date="10.10" code="BKK → PEK / PKX" title="北京组 · 3人" items={["一次查询3张同舱库存","直飞、含托运行李","凌晨抵达须全员提前确认"]}/><FlightCard date="10.07" code="HKT → BKK" title="城市转场 · 4人" items={["11:00—14:00理想起飞","只选BKK，避免DMK","包含4人托运行李"]}/><article className="rooms"><small>尽快预订 · 2间房</small><div><b>普吉</b><span>10.04—10.07</span><em>卡伦 · 3晚</em></div><div><b>曼谷</b><span>10.07—10.10</span><em>暹罗 / National Stadium周边 · 3晚</em></div><p>明确床型、BTS步行距离、电梯、早餐、税费和免费取消截止日。</p></article></div><div className="car-rule"><b>10月10日规则</b><span>下午较晚航班且预留足够送机时间 → 乍都乍</span><span>否则 → 取消市场，直接按两组航班送机</span></div></section>
+    <section className="shell booking" id="booking"><Heading index="04 · BOOKING GATES" title={<>已订信息归档，<br/>未知继续保持未知。</>} text="页面仅展示执行行程需要的信息，不公开乘机人姓名、订单编号、联系方式或支付信息。"/><div className="cards"><FlightCard status="已出票" date="10.10—10.11" code="BKK → XMN → SHA" title="上海组 · 1人" items={["MF864：19:50—23:55","MF8521：次日13:00—14:45","手提8kg、托运1×23kg","确认行李直挂与厦门过夜"]}/><FlightCard urgent date="10.10" code="BKK → PEK / PKX" title="北京组 · 3人" items={["一次查询3张同舱库存","直飞、含托运行李","凌晨抵达须全员提前确认"]}/><FlightCard date="10.07" code="HKT → BKK" title="城市转场 · 4人" items={["11:00—14:00理想起飞","只选BKK，避免DMK","包含4人托运行李"]}/><article className="rooms"><small>普吉已订 · 曼谷待订</small><div><b>普吉</b><span>10.04—10.07</span><em>普吉岛卡塔度假酒店 · 3晚</em></div><div><b>曼谷</b><span>10.07—10.10</span><em>暹罗 / National Stadium周边 · 3晚</em></div><p>普吉订单当前显示1间房，请确认床型、入住人数及是否适住4名成人。</p></article></div><div className="car-rule"><b>10月10日规则</b><span>上海组BKK 19:50起飞 → 下午至少预留国际出发缓冲</span><span>北京组出票后 → 再判断是否同车送机</span></div></section>
     <section className="money" id="budget"><div className="shell"><Heading light index="05 · MONEY MAP" title={<>国际机票另算，<br/>两万元需要做取舍。</>} text="新方案加入4人跳岛和射击体验，活动预算明显上升。购物和代购仍使用完全独立的账本。"/><div className="money-grid"><article className="total"><small>旅行主体目标 · 4人</small><b>¥20,000</b><p>不含国际机票<br/>不含购物与代购</p><span>当前规划区间 <strong>¥17,300—25,300</strong></span></article><article className="bars">{[["住宿 · 6晚2间房","¥5,000—7,500",31],["泰国境内机票","¥1,600—2,800",12],["接送与市内交通","¥1,800—2,800",12],["餐饮","¥4,000—5,500",23],["跳岛与射击","¥3,400—4,800",19],["保险与缓冲","¥1,500—1,900",8]].map(([n,a,w])=><div key={String(n)}><span>{n}</span><b>{a}</b><i><em style={{width:`${w}%`}}/></i></div>)}</article><article className="saving"><small>控制在两万元的顺序</small><ol><li>酒店控制在每晚两间合计约¥1,000</li><li>跳岛与射击不同时升级高价套餐</li><li>包车只用于10月5日环岛和机场链路</li><li>高空观景只在预算与天气都允许时购买</li></ol></article></div></div></section>
-    <section className="shell tasks" id="tasks"><Heading index="06 · ACTION LIST" title={<>从现在开始，<br/>一件件锁定。</>} text={`${completed}/${tasks.length} 项已完成。勾选结果只保存在当前设备。`}/><div className="progress"><i style={{width:`${completed/tasks.length*100}%`}}/></div><div className="task-list">{tasks.map(([id,phase,title,note],i)=><label className={checks[id]?"done":""} key={id}><input type="checkbox" checked={!!checks[id]} disabled={id==="outbound"} onChange={()=>toggle(id)}/><span>{String(i+1).padStart(2,"0")}</span><em>{phase}</em><b>{title}<small>{note}</small></b><i>✓</i></label>)}</div></section>
+    <section className="shell tasks" id="tasks"><Heading index="06 · ACTION LIST" title={<>从现在开始，<br/>一件件锁定。</>} text={`${completed}/${tasks.length} 项已完成。勾选结果只保存在当前设备。`}/><div className="progress"><i style={{width:`${completed/tasks.length*100}%`}}/></div><div className="task-list">{tasks.map(([id,phase,title,note],i)=><label className={checks[id]?"done":""} key={id}><input type="checkbox" checked={!!checks[id]} disabled={["outbound","return_sh","hotel_phuket"].includes(id)} onChange={()=>toggle(id)}/><span>{String(i+1).padStart(2,"0")}</span><em>{phase}</em><b>{title}<small>{note}</small></b><i>✓</i></label>)}</div></section>
     <section className="final-band"><div><small>07 · BEFORE YOU GO</small><h2>三个不能忘的<br/>出发前节点。</h2></div><article><small>10.01 起</small><b>填写4人 TDAC</b><p>仅使用泰国移民局官方免费入口。</p><a href="https://tdac.immigration.go.th/" target="_blank">打开官网 ↗</a></article><article><small>10.03</small><b>值机与行李终检</b><p>护照、保险、eSIM、常用药；充电宝随身携带。</p></article><article><small>全程</small><b>公开信息边界</b><p>不上传证件号、完整订单号、手机号、邮箱或支付凭证。</p></article></section>
     <footer><b>向南，再向北</b><span>事实与建议分开。未知保持未知，动态信息在付款前重新核实。</span><button onClick={()=>jump("top")}>回到顶部 ↑</button></footer>
   </main>
 }
 
 function Heading({index,title,text,light=false}:{index:string;title:React.ReactNode;text:string;light?:boolean}){return <header className={`heading ${light?"light":""}`}><div><small>{index}</small><h2>{title}</h2></div><p>{text}</p></header>}
-function FlightCard({urgent=false,date,code,title,items}:{urgent?:boolean;date:string;code:string;title:string;items:string[]}){return <article className={`flight-card ${urgent?"urgent":""}`}><header><span>{urgent?"最高优先级":"同步锁定"}</span><small>{date}</small></header><p>{code}</p><h3>{title}</h3><ul>{items.map(x=><li key={x}>{x}</li>)}</ul><a href="https://www.google.com/travel/flights" target="_blank">打开航班搜索 ↗</a></article>}
+function FlightCard({urgent=false,status,date,code,title,items}:{urgent?:boolean;status?:string;date:string;code:string;title:string;items:string[]}){return <article className={`flight-card ${urgent?"urgent":""}`}><header><span>{status|| (urgent?"最高优先级":"同步锁定")}</span><small>{date}</small></header><p>{code}</p><h3>{title}</h3><ul>{items.map(x=><li key={x}>{x}</li>)}</ul>{!status&&<a href="https://www.google.com/travel/flights" target="_blank">打开航班搜索 ↗</a>}</article>}
 
 type WeatherResponse = {
   current: { time:string; temperature_2m:number; apparent_temperature:number; weather_code:number; wind_speed_10m:number };
