@@ -14,6 +14,21 @@ type Day = {
   events: Event[];
 };
 
+type MobileView = "overview" | "days" | "map" | "booking" | "tasks";
+type TaskFilter = "pending" | "done" | "all";
+
+const mobileNavigation: {
+  id: MobileView;
+  label: string;
+  icon: "home" | "calendar" | "pin" | "ticket" | "check";
+}[] = [
+  { id: "overview", label: "概览", icon: "home" },
+  { id: "days", label: "行程", icon: "calendar" },
+  { id: "map", label: "地图", icon: "pin" },
+  { id: "booking", label: "预订", icon: "ticket" },
+  { id: "tasks", label: "清单", icon: "check" },
+];
+
 const days: Day[] = [
   {
     date: "10.04 · 周日",
@@ -345,14 +360,7 @@ const tasks = [
 ] as const;
 
 type SpotCategory =
-  | "美食"
-  | "咖啡酒吧"
-  | "景点"
-  | "玩乐"
-  | "购物"
-  | "住宿"
-  | "交通"
-  | "备选";
+  "美食" | "咖啡酒吧" | "景点" | "玩乐" | "购物" | "住宿" | "交通" | "备选";
 type MapSpot = {
   id: string;
   day: string;
@@ -525,6 +533,8 @@ const mapSpots: MapSpot[] = [
 
 export default function Home() {
   const [active, setActive] = useState(0);
+  const [mobileView, setMobileView] = useState<MobileView>("overview");
+  const [taskFilter, setTaskFilter] = useState<TaskFilter>("pending");
   const [checks, setChecks] = useState<Record<string, boolean>>(() => {
     if (typeof window === "undefined")
       return { outbound: true, return_sh: true, hotel_phuket: true };
@@ -551,6 +561,11 @@ export default function Home() {
     setMenu(false);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
+  const switchMobileView = (view: MobileView) => {
+    setMobileView(view);
+    setMenu(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const toggle = (id: string) => {
     if (["outbound", "return_sh", "hotel_phuket"].includes(id)) return;
     const next = { ...checks, [id]: !checks[id] };
@@ -561,7 +576,7 @@ export default function Home() {
   return (
     <main>
       <header className="topbar">
-        <button className="brand" onClick={() => jump("top")}>
+        <button className="brand" onClick={() => switchMobileView("overview")}>
           <span>向</span>
           <b>
             向南，再向北<small>2026 家庭旅行执行册</small>
@@ -587,7 +602,10 @@ export default function Home() {
         </nav>
         <em>● 7天6晚</em>
       </header>
-      <section className="hero" id="top">
+      <section
+        className={`hero mobile-panel ${mobileView === "overview" ? "mobile-active" : ""}`}
+        id="top"
+      >
         <div className="hero-copy">
           <p>OCT 04 — OCT 10 · PHUKET / BANGKOK</p>
           <h1>
@@ -637,12 +655,13 @@ export default function Home() {
           <p>4人同行 · 每人1×23kg托运行李 · 以电子客票号确认出票</p>
         </article>
       </section>
-      <section className="shell route" id="route">
+      <section
+        className={`shell route mobile-panel ${mobileView === "overview" ? "mobile-active" : ""}`}
+        id="route"
+      >
         <Heading
           index="01 · ROUTE LOGIC"
-          title={
-            <>行程概览</>
-          }
+          title={<>行程概览</>}
           text="路线先满足航班与体力，再安排体验。海况改变活动，不改变城市；上海组10月10日从BKK出发，经厦门过夜后于10月11日抵沪。"
         />
         <div className="route-grid">
@@ -674,16 +693,17 @@ export default function Home() {
           ))}
         </div>
       </section>
-      <WeatherBoard />
-      <TripMap />
-      <section className="dark" id="days">
+      <WeatherBoard mobileActive={mobileView === "overview"} />
+      <TripMap mobileActive={mobileView === "map"} />
+      <section
+        className={`dark mobile-panel ${mobileView === "days" ? "mobile-active" : ""}`}
+        id="days"
+      >
         <div className="shell">
           <Heading
             light
-            index="03 · DAY BY DAY"
-            title={
-              <>每日行程</>
-            }
+            index="04 · DAY BY DAY"
+            title={<>每日行程</>}
             text="选择日期查看时间线。安排保留交通和休息缓冲，不用景点数量衡量一天是否值得。"
           />
           <div className="tabs">
@@ -735,9 +755,12 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className="shell booking" id="booking">
+      <section
+        className={`shell booking mobile-panel ${mobileView === "booking" ? "mobile-active" : ""}`}
+        id="booking"
+      >
         <Heading
-          index="04 · BOOKING GATES"
+          index="05 · BOOKING GATES"
           title={<>预订信息</>}
           text="页面仅展示执行行程需要的信息，不公开乘机人姓名、订单编号、联系方式或支付信息。"
         />
@@ -798,14 +821,15 @@ export default function Home() {
           <span>北京组出票后 → 再判断是否同车送机</span>
         </div>
       </section>
-      <section className="money" id="budget">
+      <section
+        className={`money mobile-panel ${mobileView === "booking" ? "mobile-active" : ""}`}
+        id="budget"
+      >
         <div className="shell">
           <Heading
             light
-            index="05 · MONEY MAP"
-            title={
-              <>预算概览</>
-            }
+            index="06 · MONEY MAP"
+            title={<>预算概览</>}
             text="新方案加入4人跳岛和射击体验，活动预算明显上升。购物和代购仍使用完全独立的账本。"
           />
           <div className="money-grid">
@@ -851,20 +875,40 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className="shell tasks" id="tasks">
+      <section
+        className={`shell tasks mobile-panel ${mobileView === "tasks" ? "mobile-active" : ""}`}
+        id="tasks"
+        data-task-filter={taskFilter}
+      >
         <Heading
-          index="06 · ACTION LIST"
-          title={
-            <>待办清单</>
-          }
+          index="07 · ACTION LIST"
+          title={<>待办清单</>}
           text={`${completed}/${tasks.length} 项已完成。勾选结果只保存在当前设备。`}
         />
         <div className="progress">
           <i style={{ width: `${(completed / tasks.length) * 100}%` }} />
         </div>
+        <div className="task-filter" aria-label="筛选待办清单">
+          {[
+            ["pending", "待办", tasks.length - completed],
+            ["done", "已完成", completed],
+            ["all", "全部", tasks.length],
+          ].map(([id, label, count]) => (
+            <button
+              className={taskFilter === id ? "active" : ""}
+              onClick={() => setTaskFilter(id as TaskFilter)}
+              key={id}
+            >
+              {label} <small>{count}</small>
+            </button>
+          ))}
+        </div>
         <div className="task-list">
           {tasks.map(([id, phase, title, note], i) => (
-            <label className={checks[id] ? "done" : ""} key={id}>
+            <label
+              className={`${checks[id] ? "done task-state-done" : "task-state-pending"}`}
+              key={id}
+            >
               <input
                 type="checkbox"
                 checked={!!checks[id]}
@@ -884,9 +928,11 @@ export default function Home() {
           ))}
         </div>
       </section>
-      <section className="final-band">
+      <section
+        className={`final-band mobile-panel ${mobileView === "tasks" ? "mobile-active" : ""}`}
+      >
         <div>
-          <small>07 · BEFORE YOU GO</small>
+          <small>08 · BEFORE YOU GO</small>
           <h2>出发前提醒</h2>
         </div>
         <article>
@@ -913,7 +959,64 @@ export default function Home() {
         <span>事实与建议分开。未知保持未知，动态信息在付款前重新核实。</span>
         <button onClick={() => jump("top")}>回到顶部 ↑</button>
       </footer>
+      <nav className="mobile-bottom-nav" aria-label="手机端主导航">
+        {mobileNavigation.map((item) => (
+          <button
+            className={mobileView === item.id ? "active" : ""}
+            onClick={() => switchMobileView(item.id)}
+            aria-current={mobileView === item.id ? "page" : undefined}
+            key={item.id}
+          >
+            <MobileNavIcon name={item.icon} />
+            <span>{item.label}</span>
+          </button>
+        ))}
+      </nav>
     </main>
+  );
+}
+
+function MobileNavIcon({
+  name,
+}: {
+  name: "home" | "calendar" | "pin" | "ticket" | "check";
+}) {
+  if (name === "home") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m4 10 8-6 8 6v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1Z" />
+      </svg>
+    );
+  }
+  if (name === "calendar") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="4" y="5" width="16" height="15" rx="2" />
+        <path d="M8 3v4m8-4v4M4 10h16" />
+      </svg>
+    );
+  }
+  if (name === "pin") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
+        <circle cx="12" cy="10" r="2.5" />
+      </svg>
+    );
+  }
+  if (name === "ticket") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 7a2 2 0 0 0 2-2h12a2 2 0 0 0 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 0-2 2H6a2 2 0 0 0-2-2v-3a2 2 0 0 0 0-4Z" />
+        <path d="M12 7v2m0 2v2m0 2v2" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <path d="m8 12 2.5 2.5L16.5 9" />
+    </svg>
   );
 }
 
@@ -989,9 +1092,10 @@ function googleRouteUrl(spots: MapSpot[]) {
   return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${middle ? `&waypoints=${encodeURIComponent(middle)}` : ""}&travelmode=driving`;
 }
 
-function TripMap() {
+function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
   const holder = useRef<HTMLDivElement | null>(null);
   const [activeDay, setActiveDay] = useState("全部");
+  const [mapMode, setMapMode] = useState<"map" | "list">("map");
   const [activeCategory, setActiveCategory] = useState<"全部" | SpotCategory>(
     "全部",
   );
@@ -1020,6 +1124,8 @@ function TripMap() {
 
   useEffect(() => {
     if (!holder.current) return;
+    const isMobile = window.matchMedia("(max-width: 540px)").matches;
+    if (isMobile && (!mobileActive || mapMode === "list")) return;
     let cancelled = false;
     let map: import("leaflet").Map | undefined;
     void import("leaflet").then((L) => {
@@ -1059,7 +1165,7 @@ function TripMap() {
       cancelled = true;
       map?.remove();
     };
-  }, [filtered]);
+  }, [filtered, mobileActive, mapMode]);
 
   const toggleFavorite = (id: string) => {
     const next = favorites.includes(id)
@@ -1070,13 +1176,14 @@ function TripMap() {
   };
 
   return (
-    <section className="trip-map-section" id="map">
+    <section
+      className={`trip-map-section mobile-panel ${mobileActive ? "mobile-active" : ""}`}
+      id="map"
+    >
       <div className="shell">
         <Heading
           index="03 · TRIP MAP"
-          title={
-            <>地图与收藏</>
-          }
+          title={<>地图与收藏</>}
           text="先按日期，再按吃喝玩乐分类筛选。星标保存在当前设备；你后续发来的地点会继续加入这套收藏夹。"
         />
         <div className="map-filters day-filter">
@@ -1118,7 +1225,23 @@ function TripMap() {
             ★ 仅看收藏 <small>{favorites.length}</small>
           </button>
         </div>
-        <div className="map-layout">
+        <div className="map-view-switch" aria-label="地图显示方式">
+          <button
+            className={mapMode === "map" ? "active" : ""}
+            onClick={() => setMapMode("map")}
+            aria-pressed={mapMode === "map"}
+          >
+            地图视图
+          </button>
+          <button
+            className={mapMode === "list" ? "active" : ""}
+            onClick={() => setMapMode("list")}
+            aria-pressed={mapMode === "list"}
+          >
+            收藏点列表
+          </button>
+        </div>
+        <div className={`map-layout mode-${mapMode}`}>
           <div className="map-canvas" ref={holder} />
           <div className="spot-list">
             {filtered.length === 0 ? (
@@ -1243,11 +1366,12 @@ function forecastDate(date: string, index: number) {
   return { day, weekday: index === 0 ? `今天 · ${weekday}` : weekday };
 }
 
-function WeatherBoard() {
+function WeatherBoard({ mobileActive = false }: { mobileActive?: boolean }) {
   const [weather, setWeather] = useState<Record<string, WeatherResponse>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [updated, setUpdated] = useState("");
+  const [expanded, setExpanded] = useState(false);
 
   async function refresh() {
     setLoading(true);
@@ -1295,13 +1419,14 @@ function WeatherBoard() {
   }, []);
 
   return (
-    <section className="weather" id="weather">
+    <section
+      className={`weather mobile-panel ${mobileActive ? "mobile-active" : ""} ${expanded ? "weather-expanded" : ""}`}
+      id="weather"
+    >
       <div className="shell">
         <Heading
           index="02 · LIVE WEATHER"
-          title={
-            <>实时天气</>
-          }
+          title={<>实时天气</>}
           text="当前展示当地实况与未来7天预报。进入旅行日期的可预报窗口后，这里会自动覆盖普吉和曼谷的实际行程日。"
         />
         <div className="weather-status">
@@ -1309,9 +1434,18 @@ function WeatherBoard() {
             <i />
             泰国当地时间 · {updated || "正在同步"}
           </span>
-          <button onClick={refresh} disabled={loading}>
-            {loading ? "更新中…" : "刷新天气 ↻"}
-          </button>
+          <div className="weather-actions">
+            <button
+              className="weather-expand"
+              onClick={() => setExpanded(!expanded)}
+              aria-expanded={expanded}
+            >
+              {expanded ? "收起预报" : "查看5日预报"}
+            </button>
+            <button onClick={refresh} disabled={loading}>
+              {loading ? "更新中…" : "刷新天气 ↻"}
+            </button>
+          </div>
         </div>
         {error && (
           <div className="weather-error">

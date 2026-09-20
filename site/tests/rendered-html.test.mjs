@@ -5,9 +5,13 @@ async function render() {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
-  return worker.fetch(new Request("http://localhost/", { headers: { accept: "text/html" } }), {
-    ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) },
-  }, { waitUntil() {}, passThroughOnException() {} });
+  return worker.fetch(
+    new Request("http://localhost/", { headers: { accept: "text/html" } }),
+    {
+      ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) },
+    },
+    { waitUntil() {}, passThroughOnException() {} },
+  );
 }
 
 test("renders the updated family travel planner", async () => {
@@ -24,6 +28,11 @@ test("renders the updated family travel planner", async () => {
   assert.match(html, /LIVE WEATHER/);
   assert.match(html, /Open-Meteo/);
   assert.match(html, /TRIP MAP/);
+  assert.match(html, /手机端主导航/);
+  assert.match(html, /地图视图/);
+  assert.match(html, /收藏点列表/);
+  assert.match(html, /查看5日预报/);
+  assert.match(html, /筛选待办清单/);
   assert.match(html, /仅看收藏/);
   assert.match(html, /咖啡酒吧/);
   assert.match(html, /Google Maps/);
@@ -32,5 +41,8 @@ test("renders the updated family travel planner", async () => {
   assert.match(html, /10月10日/);
   assert.match(html, /不去大皇宫/);
   assert.doesNotMatch(html, /人妖秀|乌布|努沙杜瓦|巴厘岛|SUNCHANG/);
-  assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
+  assert.doesNotMatch(
+    html,
+    /codex-preview|Your site is taking shape|react-loading-skeleton/i,
+  );
 });
