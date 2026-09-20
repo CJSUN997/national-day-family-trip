@@ -379,6 +379,7 @@ type MapSpot = {
   sourceUrl?: string;
   sourceKind?: "收藏点";
   favoriteId?: string;
+  locationStatus?: "已核验位置" | "普吉默认位置" | "曼谷默认位置";
 };
 
 type PlaceFavorite = {
@@ -922,8 +923,8 @@ const placeFavorites: PlaceFavorite[] = [
   },
 ];
 
-// 只把名称和位置都足够明确的收藏加入地图。其余候选继续留在“待核验”分类，
-// 避免因为帖子截图或旧定位而把同行人带到错误地点。
+// 已确认地点使用实际坐标；其余收藏按照用户要求落在所属城市的默认位置，
+// 并在地图弹窗和地点卡片中明确标记，避免被误认为精确地址。
 const favoriteMapCoordinates: Record<string, [number, number]> = {
   "central-phuket": [7.8913, 98.3673],
   banzaan: [7.8914, 98.3016],
@@ -939,28 +940,59 @@ const favoriteMapCoordinates: Record<string, [number, number]> = {
   asiatique: [13.7049, 100.5031],
 };
 
-const mappedFavoriteSpots: MapSpot[] = placeFavorites.flatMap((favorite) => {
-  const coordinates = favoriteMapCoordinates[favorite.id];
-  if (!coordinates) return [];
-  return [
-    {
-      id: `favorite-${favorite.id}`,
-      day: "收藏",
-      city: favorite.city,
-      category: favorite.category,
-      name: favorite.name,
-      note: favorite.note,
-      lat: coordinates[0],
-      lon: coordinates[1],
-      query: favorite.query,
-      sourceUrl: favorite.sourceUrl,
-      sourceKind: "收藏点",
-      favoriteId: favorite.id,
-    },
-  ];
+const cityDefaultCoordinates: Record<PlaceFavorite["city"], [number, number]> = {
+  普吉: [7.8804, 98.3923],
+  曼谷: [13.7563, 100.5018],
+};
+
+const mappedFavoriteSpots: MapSpot[] = placeFavorites.map((favorite) => {
+  const exactCoordinates = favoriteMapCoordinates[favorite.id];
+  const coordinates = exactCoordinates || cityDefaultCoordinates[favorite.city];
+  return {
+    id: `favorite-${favorite.id}`,
+    day: "收藏",
+    city: favorite.city,
+    category: favorite.category,
+    name: favorite.name,
+    note: favorite.note,
+    lat: coordinates[0],
+    lon: coordinates[1],
+    query: favorite.query,
+    sourceUrl: favorite.sourceUrl,
+    sourceKind: "收藏点",
+    favoriteId: favorite.id,
+    locationStatus: exactCoordinates
+      ? "已核验位置"
+      : `${favorite.city}默认位置`,
+  };
 });
 
 const mergedMapSpots = [...mapSpots, ...mappedFavoriteSpots];
+const defaultLocationCount = mappedFavoriteSpots.filter(
+  (spot) => spot.locationStatus !== "已核验位置",
+).length;
+
+const itineraryRednoteSummaries: Record<string, string> = {
+  "old-town": "彩色建筑与老街适合半日慢逛，可衔接普吉镇午餐。",
+  hkt: "入境、取行李后按机场标识前往 Grab 上车点。",
+  banthat: "把这里当作集中餐饮街，抵达曼谷后按排队情况选店。",
+  iconsiam: "适合河岸、室内购物和雨天备用，可与湄南河船线衔接。",
+  chatuchak: "周末市场适合返程日上午短逛，必须预留去机场时间。",
+};
+
+function spotSummary(spot: MapSpot) {
+  if (spot.favoriteId) {
+    const digest =
+      placeFavoriteDetails[
+        spot.favoriteId as keyof typeof placeFavoriteDetails
+      ];
+    if (digest?.facts[0]) return `小红书：${digest.facts[0]}`;
+  }
+  const itinerarySummary = itineraryRednoteSummaries[spot.id];
+  if (spot.sourceUrl && itinerarySummary)
+    return `小红书：${itinerarySummary}`;
+  return spot.note;
+}
 
 const practicalFavorites: PracticalFavorite[] = [
   {
@@ -1686,9 +1718,9 @@ function FavoriteDigestPanel({
 
 function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
   const holder = useRef<HTMLDivElement | null>(null);
-  const [collectionView, setCollectionView] = useState<
-    "map" | "places" | "practical"
-  >("map");
+  const [collectionView, setCollectionView] = useState<"map" | "practical">(
+    "map",
+  );
   const [mapScope, setMapScope] = useState<
     "全部" | "行程点" | "普吉收藏" | "曼谷收藏"
   >("全部");
@@ -1697,13 +1729,9 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
     "全部",
   );
   const [favoritesOnly, setFavoritesOnly] = useState(false);
-  const [placeScope, setPlaceScope] = useState<
-    "全部" | "行程置顶" | "普吉" | "曼谷" | "待核验"
-  >("全部");
   const [practicalStage, setPracticalStage] = useState<
     "全部" | PracticalFavorite["stage"]
   >("全部");
-  const [collectionQuery, setCollectionQuery] = useState("");
   const [favorites, setFavorites] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -1740,27 +1768,6 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
       }),
     [activeDay, activeCategory, favoritesOnly, favorites, mapScope],
   );
-  const filteredPlaces = useMemo(() => {
-    const query = collectionQuery.trim().toLocaleLowerCase("zh-CN");
-    return placeFavorites.filter((spot) => {
-      const scopeMatched =
-        placeScope === "全部" ||
-        (placeScope === "行程置顶" && spot.pinned) ||
-        (placeScope === "待核验" && spot.status === "待核验") ||
-        spot.city === placeScope;
-      const textMatched =
-        !query ||
-        [spot.name, spot.note, spot.category, ...spot.tags]
-          .join(" ")
-          .toLocaleLowerCase("zh-CN")
-          .includes(query);
-      return (
-        scopeMatched &&
-        textMatched &&
-        (!favoritesOnly || favorites.includes(spot.id))
-      );
-    });
-  }, [collectionQuery, favorites, favoritesOnly, placeScope]);
   const filteredPractical = useMemo(
     () =>
       practicalFavorites.filter(
@@ -1808,10 +1815,13 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
           ? `<br><a href="${spot.sourceUrl}" target="_blank" rel="noopener noreferrer">小红书原帖 ↗</a>`
           : "";
         const sourceLabel = spot.sourceKind || "行程点";
+        const locationLabel = spot.locationStatus
+          ? ` · ${spot.locationStatus}`
+          : "";
         L.marker(point, { icon })
           .addTo(map!)
           .bindPopup(
-            `<b>${spot.name}</b><br><small>${sourceLabel} · ${spot.category} · ${spot.city} · ${spot.note}</small><br><a href="${googlePlaceUrl(spot.query)}" target="_blank" rel="noopener noreferrer">Google Maps ↗</a>${sourceLink}`,
+            `<b>${spot.name}</b><br><small>${sourceLabel} · ${spot.category} · ${spot.city}${locationLabel} · ${spotSummary(spot)}</small><br><a href="${googlePlaceUrl(spot.query)}" target="_blank" rel="noopener noreferrer">Google Maps ↗</a>${sourceLink}`,
           );
       });
       if (bounds.length === 0) map.setView([10.7, 99.5], 6);
@@ -1841,7 +1851,7 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
         <Heading
           index="03 · FAVORITES"
           title={<>地点收藏</>}
-          text="地图看位置，分类看笔记摘要；星标仅保存在当前设备。"
+          text="地图与地点列表合并展示；小红书地点直接补充帖子摘要。星标仅保存在当前设备。"
         />
         <div className="collection-meta">
           <span>43篇笔记已整理</span>
@@ -1856,9 +1866,9 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
         </div>
         <div className="collection-switch" aria-label="收藏夹分类">
           <button
-            className={collectionView !== "practical" ? "active" : ""}
+            className={collectionView === "map" ? "active" : ""}
             onClick={() => setCollectionView("map")}
-            aria-pressed={collectionView !== "practical"}
+            aria-pressed={collectionView === "map"}
           >
             <b>地点收藏</b>
             <small>{placeFavorites.length}</small>
@@ -1872,27 +1882,6 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
             <small>{practicalFavorites.length}</small>
           </button>
         </div>
-
-        {collectionView !== "practical" && (
-          <div className="place-view-switch" aria-label="地点收藏查看方式">
-            <button
-              className={collectionView === "map" ? "active" : ""}
-              onClick={() => setCollectionView("map")}
-              aria-pressed={collectionView === "map"}
-            >
-              <b>地图查看</b>
-              <small>{mergedMapSpots.length} 个已定位点</small>
-            </button>
-            <button
-              className={collectionView === "places" ? "active" : ""}
-              onClick={() => setCollectionView("places")}
-              aria-pressed={collectionView === "places"}
-            >
-              <b>分类查看</b>
-              <small>{placeFavorites.length} 个收藏</small>
-            </button>
-          </div>
-        )}
 
         <div
           className={`collection-panel ${collectionView === "map" ? "active" : ""}`}
@@ -1911,7 +1900,7 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
               ),
             )}
             <small>
-              {mapSpots.length} 个行程点 + {mappedFavoriteSpots.length} 个已核验收藏点
+              {mapSpots.length} 个行程点 + {mappedFavoriteSpots.length} 个收藏点 · {defaultLocationCount} 个城市默认位置
             </small>
           </div>
           {mapScope === "行程点" && (
@@ -1978,7 +1967,7 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
                 </div>
               ) : (
                 filtered.map((spot, index) => (
-                  <article key={spot.id}>
+                  <article className="compact-spot-card" key={spot.id}>
                     <span
                       style={{
                         color: spotCategories.find(
@@ -1988,9 +1977,12 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
                     >
                       {String(index + 1).padStart(2, "0")}
                     </span>
-                    <div>
-                      <small>
-                        {spot.sourceKind || `行程点 · ${spot.day}`} · {spot.city}
+                    <div className="spot-card-body">
+                      <div className="spot-card-primary">
+                        <b>{spot.name}</b>
+                        <small>
+                          {spot.sourceKind || `行程 · ${spot.day}`} · {spot.city}
+                        </small>
                         <i
                           className="spot-category"
                           style={{
@@ -2001,27 +1993,31 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
                         >
                           {spot.category}
                         </i>
-                      </small>
-                      <b>{spot.name}</b>
-                      <p>{spot.note}</p>
-                      <div className="spot-actions">
-                        <a
-                          href={googlePlaceUrl(spot.query)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Google Maps ↗
-                        </a>
-                        {spot.sourceUrl && (
+                        {spot.locationStatus?.includes("默认位置") && (
+                          <em>{spot.locationStatus}</em>
+                        )}
+                      </div>
+                      <div className="spot-card-secondary">
+                        <p>{spotSummary(spot)}</p>
+                        <div className="spot-actions">
                           <a
-                            className="xhs-link"
-                            href={spot.sourceUrl}
+                            href={googlePlaceUrl(spot.query)}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            小红书原帖 ↗
+                            地图 ↗
                           </a>
-                        )}
+                          {spot.sourceUrl && (
+                            <a
+                              className="xhs-link"
+                              href={spot.sourceUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              原帖 ↗
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <button
@@ -2049,102 +2045,8 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
             </div>
           </div>
           <p className="map-privacy">
-            地图不读取Google账号或个人位置；合并显示 {mapSpots.length} 个行程点和 {mappedFavoriteSpots.length} 个已核验收藏点。位置不够确定的候选不会猜测落点，请在“分类查看”中按原帖与地图重新核验。
+            地图不读取Google账号或个人位置。{mappedFavoriteSpots.length} 个小红书地点均已加入；其中 {defaultLocationCount} 个暂未确认精确地址，使用所属城市默认位置并在卡片中明确标记，导航前仍需按店名复核。
           </p>
-        </div>
-
-        <div
-          className={`collection-panel ${collectionView === "places" ? "active" : ""}`}
-          aria-hidden={collectionView !== "places"}
-        >
-          <div className="collection-toolbar">
-            <label>
-              <span>搜索收藏</span>
-              <input
-                type="search"
-                value={collectionQuery}
-                onChange={(event) => setCollectionQuery(event.target.value)}
-                placeholder="店名、区域或标签"
-              />
-            </label>
-            <button
-              className={favoritesOnly ? "active" : ""}
-              onClick={() => setFavoritesOnly(!favoritesOnly)}
-            >
-              ★ 仅看星标 {favorites.length > 0 && `· ${favorites.length}`}
-            </button>
-          </div>
-          <div className="collection-filter" aria-label="地点收藏筛选">
-            {(["全部", "行程置顶", "普吉", "曼谷", "待核验"] as const).map(
-              (scope) => (
-                <button
-                  className={placeScope === scope ? "active" : ""}
-                  onClick={() => setPlaceScope(scope)}
-                  key={scope}
-                >
-                  {scope}
-                </button>
-              ),
-            )}
-            <small>{filteredPlaces.length} 个地点</small>
-          </div>
-          <div className="collection-grid place-collection-grid">
-            {filteredPlaces.length === 0 ? (
-              <div className="collection-empty">
-                <b>没有匹配的地点</b>
-                <span>清空搜索或切换收藏夹分类</span>
-              </div>
-            ) : (
-              filteredPlaces.map((spot) => (
-                <article className="collection-card" key={spot.id}>
-                  <header>
-                    <span className={`priority priority-${spot.priority}`}>
-                      {spot.priority}优先级
-                    </span>
-                    <button
-                      className={favorites.includes(spot.id) ? "saved" : ""}
-                      onClick={() => toggleFavorite(spot.id)}
-                      aria-label={
-                        favorites.includes(spot.id) ? "取消收藏" : "收藏地点"
-                      }
-                    >
-                      {favorites.includes(spot.id) ? "★" : "☆"}
-                    </button>
-                  </header>
-                  <small>
-                    {spot.city} · {spot.category}
-                    <i className={spot.status === "待核验" ? "pending" : ""}>
-                      {spot.status}
-                    </i>
-                  </small>
-                  <h3>{spot.name}</h3>
-                  <p>{spot.note}</p>
-                  <div className="collection-tags">
-                    {spot.tags.map((tag) => (
-                      <span key={tag}>{tag}</span>
-                    ))}
-                  </div>
-                  <FavoriteDigestPanel
-                    digest={
-                      placeFavoriteDetails[
-                        spot.id as keyof typeof placeFavoriteDetails
-                      ]
-                    }
-                    sourceUrl={spot.sourceUrl}
-                  />
-                  <div className="collection-actions">
-                    <a
-                      href={googlePlaceUrl(spot.query)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      地图导航
-                    </a>
-                  </div>
-                </article>
-              ))
-            )}
-          </div>
         </div>
 
         <div

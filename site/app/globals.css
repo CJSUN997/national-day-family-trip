@@ -1258,6 +1258,73 @@ footer button {
 .spot-list button.saved {
   color: var(--gold);
 }
+.spot-list article.compact-spot-card {
+  grid-template-columns: 24px minmax(0, 1fr) 26px;
+  align-items: center;
+  gap: 8px;
+  min-height: 68px;
+  padding: 9px 11px;
+}
+.compact-spot-card > span {
+  align-self: center;
+}
+.spot-card-body {
+  min-width: 0;
+}
+.spot-card-primary,
+.spot-card-secondary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 23px;
+  white-space: nowrap;
+}
+.spot-card-primary b {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.spot-card-primary small {
+  flex: 0 0 auto;
+  letter-spacing: 0;
+}
+.spot-card-primary .spot-category {
+  flex: 0 0 auto;
+  margin-left: 0;
+}
+.spot-card-primary em {
+  flex: 0 0 auto;
+  padding: 2px 5px;
+  border-radius: 7px;
+  background: #efc76a2b;
+  color: #8b6a1d;
+  font-size: 7px;
+  font-style: normal;
+}
+.spot-card-secondary p {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.spot-card-secondary .spot-actions {
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+.spot-card-secondary .spot-actions a {
+  white-space: nowrap;
+}
+.compact-spot-card > button {
+  align-self: center;
+}
 .map-privacy {
   margin: 14px 0 0;
   color: var(--muted);
@@ -2207,37 +2274,6 @@ footer button {
 .collection-panel.active {
   display: block;
 }
-.place-view-switch {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 7px;
-  margin: -7px 0 14px;
-}
-.place-view-switch button {
-  display: grid;
-  grid-template-columns: auto auto;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  min-height: 42px;
-  padding: 7px 10px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: #fffaf071;
-  color: var(--muted);
-}
-.place-view-switch button b {
-  font-size: 11px;
-}
-.place-view-switch button small {
-  font-size: 8px;
-}
-.place-view-switch button.active {
-  border-color: var(--green);
-  background: var(--green);
-  color: #fff;
-  box-shadow: 0 4px 12px #173a3518;
-}
 .map-scope-filter {
   display: flex;
   align-items: center;
@@ -2748,20 +2784,6 @@ footer button {
   .collection-switch button small {
     min-width: 18px;
     height: 18px;
-    font-size: 7px;
-  }
-  .place-view-switch {
-    gap: 5px;
-    margin: -3px 0 10px;
-  }
-  .place-view-switch button {
-    min-height: 38px;
-    padding: 6px;
-  }
-  .place-view-switch button b {
-    font-size: 10px;
-  }
-  .place-view-switch button small {
     font-size: 7px;
   }
   .map-scope-filter {
