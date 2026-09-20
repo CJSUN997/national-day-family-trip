@@ -1322,8 +1322,59 @@ footer button {
 .spot-card-secondary .spot-actions a {
   white-space: nowrap;
 }
+.spot-card-secondary .spot-actions .digest-toggle {
+  align-self: center;
+  padding: 0;
+  color: var(--coral);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: inherit;
+  white-space: nowrap;
+}
 .compact-spot-card > button {
   align-self: center;
+}
+.spot-digest-drawer {
+  grid-column: 1 / -1;
+  margin: 3px 0 -1px 32px;
+  padding: 11px 12px;
+  border-top: 1px solid var(--line);
+  background: rgba(23, 58, 53, 0.035);
+  color: var(--ink);
+}
+.spot-digest-drawer > small {
+  color: var(--coral);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.spot-digest-drawer h4 {
+  margin: 4px 0 7px;
+  font: 600 13px/1.45 "Noto Serif SC";
+}
+.spot-digest-drawer ul {
+  margin: 0;
+  padding-left: 17px;
+}
+.spot-digest-drawer li,
+.spot-digest-drawer p {
+  margin: 3px 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.65;
+}
+.spot-digest-drawer p b {
+  margin-right: 7px;
+  color: var(--ink);
+  font: 700 10px/1.5 var(--sans);
+}
+.spot-digest-drawer .digest-verify,
+.spot-digest-drawer .digest-location {
+  padding-top: 5px;
+  border-top: 1px dashed var(--line);
+}
+.spot-digest-drawer .digest-location {
+  color: #8b6a1d;
 }
 .map-privacy {
   margin: 14px 0 0;

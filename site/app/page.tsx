@@ -379,7 +379,12 @@ type MapSpot = {
   sourceUrl?: string;
   sourceKind?: "收藏点";
   favoriteId?: string;
-  locationStatus?: "已核验位置" | "普吉默认位置" | "曼谷默认位置";
+  locationStatus?:
+    | "已核验位置"
+    | "区域锚点"
+    | "普吉默认位置"
+    | "曼谷默认位置";
+  locationNote?: string;
 };
 
 type PlaceFavorite = {
@@ -923,21 +928,143 @@ const placeFavorites: PlaceFavorite[] = [
   },
 ];
 
-// 已确认地点使用实际坐标；其余收藏按照用户要求落在所属城市的默认位置，
-// 并在地图弹窗和地点卡片中明确标记，避免被误认为精确地址。
-const favoriteMapCoordinates: Record<string, [number, number]> = {
-  "central-phuket": [7.8913, 98.3673],
-  banzaan: [7.8914, 98.3016],
-  "racha-island": [7.6083, 98.3663],
-  "bang-krachao": [13.682, 100.565],
-  "bang-nam-phueng": [13.681, 100.5807],
-  "khlong-toei-pier": [13.7065, 100.5594],
-  "bang-na-pier": [13.6599, 100.5947],
-  "sathorn-pier": [13.7186, 100.5142],
-  "mitr-street": [13.7456, 100.4905],
-  "samrong-market": [13.6472, 100.595],
-  yaowarat: [13.7402, 100.5096],
-  asiatique: [13.7049, 100.5031],
+type FavoriteLocation = {
+  coordinates: [number, number];
+  status: "已核验位置" | "区域锚点";
+  note?: string;
+};
+
+// “已核验位置”只用于能与公开地图 POI 对上的地点；只有道路、街区、岛屿或
+// 机场范围线索的收藏标为“区域锚点”。其余仍落到所属城市默认点，避免伪精确。
+const favoriteLocations: Record<string, FavoriteLocation> = {
+  "central-phuket": {
+    coordinates: [7.8911739, 98.3668714],
+    status: "已核验位置",
+  },
+  "lamit-bounty": {
+    coordinates: [7.8479, 98.2937],
+    status: "区域锚点",
+    note: "只确认到卡伦海滩片区，店名仍需在 Google Maps 复核。",
+  },
+  "karon-circle-food": {
+    coordinates: [7.8489471, 98.2929395],
+    status: "区域锚点",
+    note: "定位到卡伦转盘；大排档摊位需按原帖画面现场辨认。",
+  },
+  banzaan: {
+    coordinates: [7.8912856, 98.3017412],
+    status: "已核验位置",
+  },
+  "hong-khao-tom-pla": {
+    coordinates: [7.87667, 98.3932184],
+    status: "已核验位置",
+  },
+  "phuket-old-town-favorite": {
+    coordinates: [7.8845565, 98.3920742],
+    status: "区域锚点",
+    note: "定位到塔朗路核心街区，不代表单一入口。",
+  },
+  "racha-island": {
+    coordinates: [7.6024486, 98.3654233],
+    status: "区域锚点",
+    note: "岛屿中心点；实际上下船码头由一日团确认。",
+  },
+  "laem-sai-cup": {
+    coordinates: [7.8279, 98.2926],
+    status: "区域锚点",
+    note: "定位到 Soi Laem Sai 一带；导航前按店名确认入口。",
+  },
+  "the-commune": {
+    coordinates: [7.8286674, 98.2931434],
+    status: "已核验位置",
+  },
+  "blanket-pillow": {
+    coordinates: [7.8093371, 98.2993862],
+    status: "区域锚点",
+    note: "按公开地址定位到 Kata Noi Road 路段，入口仍需复核。",
+  },
+  "phuket-airport-supper": {
+    coordinates: [8.1132, 98.3069],
+    status: "区域锚点",
+    note: "只有机场附近线索，非具体摊位。",
+  },
+  "kata-laundry": {
+    coordinates: [7.8214, 98.2992],
+    status: "区域锚点",
+    note: "只有卡塔海滩片区线索，门店需按原帖图片确认。",
+  },
+  "karon-old-town-bus": {
+    coordinates: [7.8489471, 98.2929395],
+    status: "区域锚点",
+    note: "以卡伦转盘作上车片区参考，不代表已核验站点。",
+  },
+  "bang-krachao": {
+    coordinates: [13.682, 100.565],
+    status: "区域锚点",
+    note: "绿肺片区中心点；骑行起点应以实际过河码头为准。",
+  },
+  "bang-nam-phueng": {
+    coordinates: [13.6801412, 100.5742607],
+    status: "已核验位置",
+  },
+  "khlong-toei-pier": {
+    coordinates: [13.7072028, 100.5635823],
+    status: "已核验位置",
+  },
+  "bang-na-pier": {
+    coordinates: [13.6766314, 100.5873694],
+    status: "已核验位置",
+  },
+  "soi-prachum": {
+    coordinates: [13.7250253, 100.5228855],
+    status: "已核验位置",
+  },
+  "sathorn-pier": {
+    coordinates: [13.7183726, 100.5125661],
+    status: "已核验位置",
+  },
+  "mitr-street": {
+    coordinates: [13.7456, 100.4905],
+    status: "区域锚点",
+    note: "公开资料确认在 Tha Tien / Soi Tha Suphan 一带，精确入口待地图复核。",
+  },
+  "samrong-market": {
+    coordinates: [13.6492199, 100.5961735],
+    status: "区域锚点",
+    note: "定位到 Samrong 市场群，原帖所指具体摊位未锁定。",
+  },
+  "chatuchak-favorite": {
+    coordinates: [13.8002651, 100.5511228],
+    status: "已核验位置",
+  },
+  "kodtalay-rca": {
+    coordinates: [13.7535, 100.575],
+    status: "区域锚点",
+    note: "只确认到 RCA / Rama 9 片区；门店与营业状态需复核。",
+  },
+  yaowarat: {
+    coordinates: [13.7411515, 100.5083113],
+    status: "区域锚点",
+    note: "定位到耀华力路核心路段，不代表单一店铺。",
+  },
+  asiatique: {
+    coordinates: [13.7041568, 100.5027137],
+    status: "已核验位置",
+  },
+  "jodd-fairs": {
+    coordinates: [13.7681679, 100.5709179],
+    status: "已核验位置",
+  },
+  "banthat-favorite": {
+    coordinates: [13.7374014, 100.5219028],
+    status: "区域锚点",
+    note: "定位到 Banthat Thong Road 南段，按现场排队选择餐厅。",
+  },
+  "bonchon-bkk": {
+    coordinates: [13.69, 100.75],
+    status: "区域锚点",
+    note: "以素万那普机场为锚点，尚未确认具体航站楼店位。",
+  },
 };
 
 const cityDefaultCoordinates: Record<PlaceFavorite["city"], [number, number]> = {
@@ -946,8 +1073,9 @@ const cityDefaultCoordinates: Record<PlaceFavorite["city"], [number, number]> = 
 };
 
 const mappedFavoriteSpots: MapSpot[] = placeFavorites.map((favorite) => {
-  const exactCoordinates = favoriteMapCoordinates[favorite.id];
-  const coordinates = exactCoordinates || cityDefaultCoordinates[favorite.city];
+  const location = favoriteLocations[favorite.id];
+  const coordinates =
+    location?.coordinates || cityDefaultCoordinates[favorite.city];
   return {
     id: `favorite-${favorite.id}`,
     day: "收藏",
@@ -961,15 +1089,22 @@ const mappedFavoriteSpots: MapSpot[] = placeFavorites.map((favorite) => {
     sourceUrl: favorite.sourceUrl,
     sourceKind: "收藏点",
     favoriteId: favorite.id,
-    locationStatus: exactCoordinates
-      ? "已核验位置"
-      : `${favorite.city}默认位置`,
+    locationStatus: location?.status || `${favorite.city}默认位置`,
+    locationNote:
+      location?.note ||
+      "原帖未提供可稳定复核的地址，当前仅以所属城市作为地图占位。",
   };
 });
 
 const mergedMapSpots = [...mapSpots, ...mappedFavoriteSpots];
 const defaultLocationCount = mappedFavoriteSpots.filter(
-  (spot) => spot.locationStatus !== "已核验位置",
+  (spot) => spot.locationStatus?.includes("默认位置"),
+).length;
+const verifiedLocationCount = mappedFavoriteSpots.filter(
+  (spot) => spot.locationStatus === "已核验位置",
+).length;
+const regionalLocationCount = mappedFavoriteSpots.filter(
+  (spot) => spot.locationStatus === "区域锚点",
 ).length;
 
 const itineraryRednoteSummaries: Record<string, string> = {
@@ -1716,6 +1851,42 @@ function FavoriteDigestPanel({
   );
 }
 
+function InlineFavoriteDigest({
+  digest,
+  locationNote,
+}: {
+  digest: FavoriteDigest;
+  locationNote?: string;
+}) {
+  return (
+    <div className="spot-digest-drawer">
+      <small>小红书原帖摘要</small>
+      <h4>{digest.sourceTitle}</h4>
+      <ul>
+        {digest.facts.map((fact) => (
+          <li key={fact}>{fact}</li>
+        ))}
+      </ul>
+      <p>
+        <b>本次怎么用</b>
+        {digest.tripUse}
+      </p>
+      {digest.verify && (
+        <p className="digest-verify">
+          <b>临行核验</b>
+          {digest.verify}
+        </p>
+      )}
+      {locationNote && (
+        <p className="digest-location">
+          <b>位置说明</b>
+          {locationNote}
+        </p>
+      )}
+    </div>
+  );
+}
+
 function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
   const holder = useRef<HTMLDivElement | null>(null);
   const [collectionView, setCollectionView] = useState<"map" | "practical">(
@@ -1729,6 +1900,7 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
     "全部",
   );
   const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [expandedSpotId, setExpandedSpotId] = useState<string | null>(null);
   const [practicalStage, setPracticalStage] = useState<
     "全部" | PracticalFavorite["stage"]
   >("全部");
@@ -1818,10 +1990,13 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
         const locationLabel = spot.locationStatus
           ? ` · ${spot.locationStatus}`
           : "";
+        const locationNote = spot.locationNote
+          ? `<br><small>位置说明：${spot.locationNote}</small>`
+          : "";
         L.marker(point, { icon })
           .addTo(map!)
           .bindPopup(
-            `<b>${spot.name}</b><br><small>${sourceLabel} · ${spot.category} · ${spot.city}${locationLabel} · ${spotSummary(spot)}</small><br><a href="${googlePlaceUrl(spot.query)}" target="_blank" rel="noopener noreferrer">Google Maps ↗</a>${sourceLink}`,
+            `<b>${spot.name}</b><br><small>${sourceLabel} · ${spot.category} · ${spot.city}${locationLabel} · ${spotSummary(spot)}</small>${locationNote}<br><a href="${googlePlaceUrl(spot.query)}" target="_blank" rel="noopener noreferrer">Google Maps ↗</a>${sourceLink}`,
           );
       });
       if (bounds.length === 0) map.setView([10.7, 99.5], 6);
@@ -1900,7 +2075,7 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
               ),
             )}
             <small>
-              {mapSpots.length} 个行程点 + {mappedFavoriteSpots.length} 个收藏点 · {defaultLocationCount} 个城市默认位置
+              {mapSpots.length} 个行程点 + {mappedFavoriteSpots.length} 个收藏点 · {verifiedLocationCount} 个精确点 / {regionalLocationCount} 个区域锚点 / {defaultLocationCount} 个城市默认点
             </small>
           </div>
           {mapScope === "行程点" && (
@@ -1966,8 +2141,18 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
                   </span>
                 </div>
               ) : (
-                filtered.map((spot, index) => (
-                  <article className="compact-spot-card" key={spot.id}>
+                filtered.map((spot, index) => {
+                  const digest = spot.favoriteId
+                    ? placeFavoriteDetails[
+                        spot.favoriteId as keyof typeof placeFavoriteDetails
+                      ]
+                    : undefined;
+                  const digestExpanded = expandedSpotId === spot.id;
+                  return (
+                  <article
+                    className={`compact-spot-card ${digestExpanded ? "digest-open" : ""}`}
+                    key={spot.id}
+                  >
                     <span
                       style={{
                         color: spotCategories.find(
@@ -1993,7 +2178,8 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
                         >
                           {spot.category}
                         </i>
-                        {spot.locationStatus?.includes("默认位置") && (
+                        {spot.locationStatus &&
+                          spot.locationStatus !== "已核验位置" && (
                           <em>{spot.locationStatus}</em>
                         )}
                       </div>
@@ -2007,6 +2193,20 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
                           >
                             地图 ↗
                           </a>
+                          {digest && (
+                            <button
+                              type="button"
+                              className="digest-toggle"
+                              onClick={() =>
+                                setExpandedSpotId(
+                                  digestExpanded ? null : spot.id,
+                                )
+                              }
+                              aria-expanded={digestExpanded}
+                            >
+                              {digestExpanded ? "收起摘要" : "查看摘要"}
+                            </button>
+                          )}
                           {spot.sourceUrl && (
                             <a
                               className="xhs-link"
@@ -2039,13 +2239,20 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
                         ? "★"
                         : "☆"}
                     </button>
+                    {digestExpanded && digest && (
+                      <InlineFavoriteDigest
+                        digest={digest}
+                        locationNote={spot.locationNote}
+                      />
+                    )}
                   </article>
-                ))
+                  );
+                })
               )}
             </div>
           </div>
           <p className="map-privacy">
-            地图不读取Google账号或个人位置。{mappedFavoriteSpots.length} 个小红书地点均已加入；其中 {defaultLocationCount} 个暂未确认精确地址，使用所属城市默认位置并在卡片中明确标记，导航前仍需按店名复核。
+            地图不读取Google账号或个人位置。{mappedFavoriteSpots.length} 个小红书地点均已加入：{verifiedLocationCount} 个对上公开地图地点，{regionalLocationCount} 个只定位到街区、道路或机场范围，{defaultLocationCount} 个缺少稳定地址而使用所属城市默认点。区域锚点和默认点都不是精确导航终点。
           </p>
         </div>
 
