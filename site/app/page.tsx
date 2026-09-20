@@ -1940,7 +1940,7 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
       return [];
     }
   });
-  const filtered = useMemo(
+  const scopeFiltered = useMemo(
     () =>
       mergedMapSpots.filter((spot) => {
         const favoriteKey = spot.favoriteId || spot.id;
@@ -1960,11 +1960,18 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
         return (
           scopeMatched &&
           dayMatched &&
-          (activeCategory === "全部" || spot.category === activeCategory) &&
           (!favoritesOnly || favorites.includes(favoriteKey))
         );
       }),
-    [activeDay, activeCategory, favoritesOnly, favorites, mapScope],
+    [activeDay, favoritesOnly, favorites, mapScope],
+  );
+  const filtered = useMemo(
+    () =>
+      scopeFiltered.filter(
+        (spot) =>
+          activeCategory === "全部" || spot.category === activeCategory,
+      ),
+    [activeCategory, scopeFiltered],
   );
   const filteredPractical = useMemo(
     () =>
@@ -2137,8 +2144,8 @@ function TripMap({ mobileActive = false }: { mobileActive?: boolean }) {
                 {category.name}
                 <small>
                   {category.name === "全部"
-                    ? mergedMapSpots.length
-                    : mergedMapSpots.filter(
+                    ? scopeFiltered.length
+                    : scopeFiltered.filter(
                         (x) => x.category === category.name,
                       )
                         .length}
