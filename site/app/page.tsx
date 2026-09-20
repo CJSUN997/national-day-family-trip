@@ -62,22 +62,29 @@ const tasks = [
   ["final","10月9日晚","完成返程终检","两组分别确认航站楼、送机时间、行李额和抵达日期。"],
 ] as const;
 
-type MapSpot = { id:string; day:string; city:"普吉"|"曼谷"; name:string; note:string; lat:number; lon:number; query:string };
+type SpotCategory = "美食"|"咖啡酒吧"|"景点"|"玩乐"|"购物"|"住宿"|"交通"|"备选";
+type MapSpot = { id:string; day:string; city:"普吉"|"曼谷"; category:SpotCategory; name:string; note:string; lat:number; lon:number; query:string };
+
+const spotCategories:{name:"全部"|SpotCategory;color:string}[] = [
+  {name:"全部",color:"#173a35"},{name:"美食",color:"#e76545"},{name:"咖啡酒吧",color:"#9b6a4a"},
+  {name:"景点",color:"#2f7d68"},{name:"玩乐",color:"#7f5aa2"},{name:"购物",color:"#d49a2f"},
+  {name:"住宿",color:"#315d9b"},{name:"交通",color:"#59636f"},{name:"备选",color:"#8a8a82"},
+];
 
 const mapSpots: MapSpot[] = [
-  {id:"phuket-hotel",day:"10.04",city:"普吉",name:"普吉岛卡塔度假酒店",note:"10月4日至7日 · 已订",lat:7.8203,lon:98.2977,query:"Phuket Kata Resort Kata Road Karon Phuket"},
-  {id:"old-town",day:"10.05",city:"普吉",name:"普吉老镇",note:"塔朗路与罗曼尼巷",lat:7.8840,lon:98.3891,query:"Phuket Old Town Thalang Road"},
-  {id:"wat-chalong",day:"10.05",city:"普吉",name:"查龙寺",note:"下午文化行程",lat:7.8469,lon:98.3369,query:"Wat Chalong Phuket"},
-  {id:"promthep",day:"10.05",city:"普吉",name:"神仙半岛",note:"日落重点",lat:7.7626,lon:98.3050,query:"Promthep Cape Phuket"},
-  {id:"karon-viewpoint",day:"10.07",city:"普吉",name:"卡伦观景台",note:"航班时间允许才去",lat:7.7974,lon:98.3021,query:"Karon Viewpoint Phuket"},
-  {id:"hkt",day:"10.07",city:"普吉",name:"普吉国际机场",note:"HKT → BKK · 待订",lat:8.1132,lon:98.3169,query:"Phuket International Airport"},
-  {id:"bkk",day:"10.07",city:"曼谷",name:"素万那普机场",note:"曼谷进出机场",lat:13.6900,lon:100.7501,query:"Suvarnabhumi Airport"},
-  {id:"banthat",day:"10.07",city:"曼谷",name:"Banthat Thong 美食街",note:"抵达曼谷后的晚餐",lat:13.7432,lon:100.5224,query:"Banthat Thong Road Bangkok"},
-  {id:"mbk",day:"10.08",city:"曼谷",name:"MBK Center",note:"Suki Teenoi与晚间商圈",lat:13.7445,lon:100.5290,query:"MBK Center Bangkok"},
-  {id:"siam",day:"10.09",city:"曼谷",name:"Siam Paragon",note:"暹罗商圈起点",lat:13.7462,lon:100.5347,query:"Siam Paragon Bangkok"},
-  {id:"iconsiam",day:"10.09",city:"曼谷",name:"ICONSIAM",note:"河岸与室内活动",lat:13.7265,lon:100.5100,query:"ICONSIAM Bangkok"},
-  {id:"mahanakhon",day:"10.09",city:"曼谷",name:"Mahanakhon SkyWalk",note:"天气清晰时可选",lat:13.7237,lon:100.5285,query:"King Power Mahanakhon SkyWalk"},
-  {id:"chatuchak",day:"10.10",city:"曼谷",name:"乍都乍周末市场",note:"只在航班时间允许时执行",lat:13.7999,lon:100.5501,query:"Chatuchak Weekend Market"},
+  {id:"phuket-hotel",day:"10.04",city:"普吉",category:"住宿",name:"普吉岛卡塔度假酒店",note:"10月4日至7日 · 已订",lat:7.8203,lon:98.2977,query:"Phuket Kata Resort Kata Road Karon Phuket"},
+  {id:"old-town",day:"10.05",city:"普吉",category:"景点",name:"普吉老镇",note:"塔朗路与罗曼尼巷",lat:7.8840,lon:98.3891,query:"Phuket Old Town Thalang Road"},
+  {id:"wat-chalong",day:"10.05",city:"普吉",category:"景点",name:"查龙寺",note:"下午文化行程",lat:7.8469,lon:98.3369,query:"Wat Chalong Phuket"},
+  {id:"promthep",day:"10.05",city:"普吉",category:"景点",name:"神仙半岛",note:"日落重点",lat:7.7626,lon:98.3050,query:"Promthep Cape Phuket"},
+  {id:"karon-viewpoint",day:"10.07",city:"普吉",category:"景点",name:"卡伦观景台",note:"航班时间允许才去",lat:7.7974,lon:98.3021,query:"Karon Viewpoint Phuket"},
+  {id:"hkt",day:"10.07",city:"普吉",category:"交通",name:"普吉国际机场",note:"HKT → BKK · 待订",lat:8.1132,lon:98.3169,query:"Phuket International Airport"},
+  {id:"bkk",day:"10.07",city:"曼谷",category:"交通",name:"素万那普机场",note:"曼谷进出机场",lat:13.6900,lon:100.7501,query:"Suvarnabhumi Airport"},
+  {id:"banthat",day:"10.07",city:"曼谷",category:"美食",name:"Banthat Thong 美食街",note:"抵达曼谷后的晚餐",lat:13.7432,lon:100.5224,query:"Banthat Thong Road Bangkok"},
+  {id:"mbk",day:"10.08",city:"曼谷",category:"美食",name:"MBK Center",note:"Suki Teenoi与晚间商圈",lat:13.7445,lon:100.5290,query:"MBK Center Bangkok"},
+  {id:"siam",day:"10.09",city:"曼谷",category:"购物",name:"Siam Paragon",note:"暹罗商圈起点",lat:13.7462,lon:100.5347,query:"Siam Paragon Bangkok"},
+  {id:"iconsiam",day:"10.09",city:"曼谷",category:"购物",name:"ICONSIAM",note:"河岸与室内活动",lat:13.7265,lon:100.5100,query:"ICONSIAM Bangkok"},
+  {id:"mahanakhon",day:"10.09",city:"曼谷",category:"玩乐",name:"Mahanakhon SkyWalk",note:"天气清晰时可选",lat:13.7237,lon:100.5285,query:"King Power Mahanakhon SkyWalk"},
+  {id:"chatuchak",day:"10.10",city:"曼谷",category:"购物",name:"乍都乍周末市场",note:"只在航班时间允许时执行",lat:13.7999,lon:100.5501,query:"Chatuchak Weekend Market"},
 ];
 
 export default function Home() {
@@ -126,11 +133,13 @@ function googleRouteUrl(spots:MapSpot[]){
 function TripMap(){
   const holder=useRef<HTMLDivElement|null>(null);
   const [activeDay,setActiveDay]=useState("全部");
+  const [activeCategory,setActiveCategory]=useState<"全部"|SpotCategory>("全部");
+  const [favoritesOnly,setFavoritesOnly]=useState(false);
   const [favorites,setFavorites]=useState<string[]>(()=>{
     if(typeof window==="undefined") return [];
     try{return JSON.parse(localStorage.getItem("thai-trip-map-favorites")||"[]");}catch{return [];}
   });
-  const filtered=useMemo(()=>activeDay==="全部"?mapSpots:mapSpots.filter(x=>x.day===activeDay),[activeDay]);
+  const filtered=useMemo(()=>mapSpots.filter(spot=>(activeDay==="全部"||spot.day===activeDay)&&(activeCategory==="全部"||spot.category===activeCategory)&&(!favoritesOnly||favorites.includes(spot.id))),[activeDay,activeCategory,favoritesOnly,favorites]);
   const dates=["全部",...Array.from(new Set(mapSpots.map(x=>x.day)))];
 
   useEffect(()=>{
@@ -144,10 +153,11 @@ function TripMap(){
       const bounds:L.LatLngExpression[]=[];
       filtered.forEach((spot,index)=>{
         const point:[number,number]=[spot.lat,spot.lon]; bounds.push(point);
-        const icon=L.divIcon({className:"trip-marker",html:`<span><i>${index+1}</i></span>`,iconSize:[30,30],iconAnchor:[15,30]});
-        L.marker(point,{icon}).addTo(map!).bindPopup(`<b>${spot.name}</b><br><small>${spot.day} · ${spot.note}</small><br><a href="${googlePlaceUrl(spot.query)}" target="_blank" rel="noreferrer">在 Google Maps 打开 ↗</a>`);
+        const color=spotCategories.find(x=>x.name===spot.category)?.color||"#173a35";
+        const icon=L.divIcon({className:"trip-marker",html:`<span style="background:${color}"><i>${index+1}</i></span>`,iconSize:[30,30],iconAnchor:[15,30]});
+        L.marker(point,{icon}).addTo(map!).bindPopup(`<b>${spot.name}</b><br><small>${spot.category} · ${spot.day} · ${spot.note}</small><br><a href="${googlePlaceUrl(spot.query)}" target="_blank" rel="noreferrer">在 Google Maps 打开 ↗</a>`);
       });
-      if(bounds.length===1)map.setView(bounds[0]!,12); else map.fitBounds(bounds,{padding:[28,28]});
+      if(bounds.length===0)map.setView([10.7,99.5],6); else if(bounds.length===1)map.setView(bounds[0]!,12); else map.fitBounds(bounds,{padding:[28,28]});
     });
     return()=>{cancelled=true;map?.remove();};
   },[filtered]);
@@ -158,9 +168,10 @@ function TripMap(){
   };
 
   return <section className="trip-map-section" id="map"><div className="shell">
-    <Heading index="03 · TRIP MAP" title={<>每天的路，<br/>在地图上先走一遍。</>} text="按日期查看地点顺序。星标保存在当前设备；地点与整日路线均可跳转Google Maps继续导航。"/>
-    <div className="map-filters">{dates.map(date=><button className={activeDay===date?"active":""} onClick={()=>setActiveDay(date)} key={date}>{date}</button>)}<a href={googleRouteUrl(filtered)} target="_blank" rel="noreferrer">在 Google Maps 打开{activeDay==="全部"?"地点":"当日路线"} ↗</a></div>
-    <div className="map-layout"><div className="map-canvas" ref={holder}/><div className="spot-list">{filtered.map((spot,index)=><article key={spot.id}><span>{String(index+1).padStart(2,"0")}</span><div><small>{spot.day} · {spot.city}</small><b>{spot.name}</b><p>{spot.note}</p><a href={googlePlaceUrl(spot.query)} target="_blank" rel="noreferrer">Google Maps ↗</a></div><button className={favorites.includes(spot.id)?"saved":""} onClick={()=>toggleFavorite(spot.id)} aria-label={favorites.includes(spot.id)?"取消收藏":"收藏地点"}>{favorites.includes(spot.id)?"★":"☆"}</button></article>)}</div></div>
+    <Heading index="03 · TRIP MAP" title={<>带地图标记的<br/>旅行收藏夹。</>} text="先按日期，再按吃喝玩乐分类筛选。星标保存在当前设备；你后续发来的地点会继续加入这套收藏夹。"/>
+    <div className="map-filters day-filter">{dates.map(date=><button className={activeDay===date?"active":""} onClick={()=>setActiveDay(date)} key={date}>{date}</button>)}{activeDay!=="全部"&&filtered.length>0&&<a href={googleRouteUrl(filtered)} target="_blank" rel="noreferrer">在 Google Maps 打开当日路线 ↗</a>}</div>
+    <div className="category-filters">{spotCategories.map(category=><button className={activeCategory===category.name?"active":""} onClick={()=>setActiveCategory(category.name)} key={category.name}><i style={{background:category.color}}/>{category.name}<small>{category.name==="全部"?mapSpots.length:mapSpots.filter(x=>x.category===category.name).length}</small></button>)}<button className={`favorite-filter ${favoritesOnly?"active":""}`} onClick={()=>setFavoritesOnly(!favoritesOnly)}>★ 仅看收藏 <small>{favorites.length}</small></button></div>
+    <div className="map-layout"><div className="map-canvas" ref={holder}/><div className="spot-list">{filtered.length===0?<div className="empty-favorites"><b>{favoritesOnly?"收藏夹还是空的":"当前筛选没有地点"}</b><span>{favoritesOnly?"点击地点右侧的星标即可收藏":"换一个日期或分类看看"}</span></div>:filtered.map((spot,index)=><article key={spot.id}><span style={{color:spotCategories.find(x=>x.name===spot.category)?.color}}>{String(index+1).padStart(2,"0")}</span><div><small>{spot.day} · {spot.city}<i className="spot-category" style={{background:spotCategories.find(x=>x.name===spot.category)?.color}}>{spot.category}</i></small><b>{spot.name}</b><p>{spot.note}</p><a href={googlePlaceUrl(spot.query)} target="_blank" rel="noreferrer">Google Maps ↗</a></div><button className={favorites.includes(spot.id)?"saved":""} onClick={()=>toggleFavorite(spot.id)} aria-label={favorites.includes(spot.id)?"取消收藏":"收藏地点"}>{favorites.includes(spot.id)?"★":"☆"}</button></article>)}</div></div>
     <p className="map-privacy">地图不读取Google账号或个人位置；收藏仅保存在当前浏览器。射击场和曼谷酒店尚未最终确认，因此暂不固定坐标。</p>
   </div></section>;
 }

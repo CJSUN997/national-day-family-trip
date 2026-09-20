@@ -24,6 +24,8 @@ test("renders the updated family travel planner", async () => {
   assert.match(html, /LIVE WEATHER/);
   assert.match(html, /Open-Meteo/);
   assert.match(html, /TRIP MAP/);
+  assert.match(html, /仅看收藏/);
+  assert.match(html, /咖啡酒吧/);
   assert.match(html, /Google Maps/);
   assert.match(html, /MF864/);
   assert.match(html, /普吉岛卡塔度假酒店/);
