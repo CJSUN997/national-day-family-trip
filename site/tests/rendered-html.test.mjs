@@ -23,8 +23,12 @@ test("renders the updated family travel planner", async () => {
   assert.match(html, /北京组 · 3人/);
   assert.match(html, /LIVE WEATHER/);
   assert.match(html, /Open-Meteo/);
+  assert.match(html, /TRIP MAP/);
+  assert.match(html, /Google Maps/);
+  assert.match(html, /MF864/);
+  assert.match(html, /普吉岛卡塔度假酒店/);
   assert.match(html, /10月10日/);
   assert.match(html, /不去大皇宫/);
-  assert.doesNotMatch(html, /人妖秀|乌布|努沙杜瓦|巴厘岛/);
+  assert.doesNotMatch(html, /人妖秀|乌布|努沙杜瓦|巴厘岛|SUNCHANG/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });

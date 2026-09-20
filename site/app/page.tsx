@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import "leaflet/dist/leaflet.css";
 
 type Event = { time: string; tag: string; title: string; note: string };
 type Day = { date: string; city: string; title: string; lead: string; pace: string; rule?: string; events: Event[] };
@@ -61,6 +62,24 @@ const tasks = [
   ["final","10月9日晚","完成返程终检","两组分别确认航站楼、送机时间、行李额和抵达日期。"],
 ] as const;
 
+type MapSpot = { id:string; day:string; city:"普吉"|"曼谷"; name:string; note:string; lat:number; lon:number; query:string };
+
+const mapSpots: MapSpot[] = [
+  {id:"phuket-hotel",day:"10.04",city:"普吉",name:"普吉岛卡塔度假酒店",note:"10月4日至7日 · 已订",lat:7.8203,lon:98.2977,query:"Phuket Kata Resort Kata Road Karon Phuket"},
+  {id:"old-town",day:"10.05",city:"普吉",name:"普吉老镇",note:"塔朗路与罗曼尼巷",lat:7.8840,lon:98.3891,query:"Phuket Old Town Thalang Road"},
+  {id:"wat-chalong",day:"10.05",city:"普吉",name:"查龙寺",note:"下午文化行程",lat:7.8469,lon:98.3369,query:"Wat Chalong Phuket"},
+  {id:"promthep",day:"10.05",city:"普吉",name:"神仙半岛",note:"日落重点",lat:7.7626,lon:98.3050,query:"Promthep Cape Phuket"},
+  {id:"karon-viewpoint",day:"10.07",city:"普吉",name:"卡伦观景台",note:"航班时间允许才去",lat:7.7974,lon:98.3021,query:"Karon Viewpoint Phuket"},
+  {id:"hkt",day:"10.07",city:"普吉",name:"普吉国际机场",note:"HKT → BKK · 待订",lat:8.1132,lon:98.3169,query:"Phuket International Airport"},
+  {id:"bkk",day:"10.07",city:"曼谷",name:"素万那普机场",note:"曼谷进出机场",lat:13.6900,lon:100.7501,query:"Suvarnabhumi Airport"},
+  {id:"banthat",day:"10.07",city:"曼谷",name:"Banthat Thong 美食街",note:"抵达曼谷后的晚餐",lat:13.7432,lon:100.5224,query:"Banthat Thong Road Bangkok"},
+  {id:"mbk",day:"10.08",city:"曼谷",name:"MBK Center",note:"Suki Teenoi与晚间商圈",lat:13.7445,lon:100.5290,query:"MBK Center Bangkok"},
+  {id:"siam",day:"10.09",city:"曼谷",name:"Siam Paragon",note:"暹罗商圈起点",lat:13.7462,lon:100.5347,query:"Siam Paragon Bangkok"},
+  {id:"iconsiam",day:"10.09",city:"曼谷",name:"ICONSIAM",note:"河岸与室内活动",lat:13.7265,lon:100.5100,query:"ICONSIAM Bangkok"},
+  {id:"mahanakhon",day:"10.09",city:"曼谷",name:"Mahanakhon SkyWalk",note:"天气清晰时可选",lat:13.7237,lon:100.5285,query:"King Power Mahanakhon SkyWalk"},
+  {id:"chatuchak",day:"10.10",city:"曼谷",name:"乍都乍周末市场",note:"只在航班时间允许时执行",lat:13.7999,lon:100.5501,query:"Chatuchak Weekend Market"},
+];
+
 export default function Home() {
   const [active, setActive] = useState(0);
   const [checks, setChecks] = useState<Record<string, boolean>>(() => {
@@ -78,10 +97,11 @@ export default function Home() {
   const toggle=(id:string)=>{if(["outbound","return_sh","hotel_phuket"].includes(id))return;const next={...checks,[id]:!checks[id]};setChecks(next);localStorage.setItem("thai-trip-v7-checks",JSON.stringify(next))};
   const day=days[active]!;
   return <main>
-    <header className="topbar"><button className="brand" onClick={()=>jump("top")}><span>向</span><b>向南，再向北<small>2026 家庭旅行执行册</small></b></button><button className="menu" onClick={()=>setMenu(!menu)}>目录</button><nav className={menu?"open":""}>{[["route","路线"],["weather","天气"],["days","每日"],["booking","预订"],["budget","预算"],["tasks","清单"]].map(([id,label])=><button key={id} onClick={()=>jump(id)}>{label}</button>)}</nav><em>● 7天6晚</em></header>
+    <header className="topbar"><button className="brand" onClick={()=>jump("top")}><span>向</span><b>向南，再向北<small>2026 家庭旅行执行册</small></b></button><button className="menu" onClick={()=>setMenu(!menu)}>目录</button><nav className={menu?"open":""}>{[["route","路线"],["weather","天气"],["map","地图"],["days","每日"],["booking","预订"],["budget","预算"],["tasks","清单"]].map(([id,label])=><button key={id} onClick={()=>jump(id)}>{label}</button>)}</nav><em>● 7天6晚</em></header>
     <section className="hero" id="top"><div className="hero-copy"><p>OCT 04 — OCT 10 · PHUKET / BANGKOK</p><h1>先去海边，<br/><i>再回城市。</i></h1><h2>一家四口的泰国七日：普吉3晚，曼谷3晚。去程已经确定，余下的每一步都围绕舒服、真实和可执行。</h2><div><button onClick={()=>jump("days")}>查看每日安排 ↘</button><button onClick={()=>jump("tasks")}>先看待办</button></div></div><article className="ticket"><header><span>OUTBOUND · CONFIRMED</span><b>已订</b></header><div className="airports"><section><strong>PEK</strong><small>北京 · T3</small></section><i>CA581<br/>──────── ✦</i><section><strong>HKT</strong><small>普吉</small></section></div><div className="times"><span><b>15:30</b>10月4日</span><span><b>6h</b>直飞</span><span><b>20:30</b>当地时间</span></div><p>4人同行 · 每人1×23kg托运行李 · 以电子客票号确认出票</p></article></section>
     <section className="shell route" id="route"><Heading index="01 · ROUTE LOGIC" title={<>六晚，两个落脚点。<br/>没有多余的折返。</>} text="路线先满足航班与体力，再安排体验。海况改变活动，不改变城市；上海组10月10日从BKK出发，经厦门过夜后于10月11日抵沪。"/><div className="route-grid">{[["10.04 · 已订","北京","CA581 直飞"],["3 NIGHTS · 已订","普吉","普吉岛卡塔度假酒店"],["3 NIGHTS · 待订","曼谷","美食 · 体验 · 购物"],["10.10 · 分流","上海 / 北京","上海已订 · 北京待订"]].map(([a,b,c])=><article key={b}><small>{a}</small><b>{b}</b><p>{c}</p></article>)}</div><div className="rails">{[["01","只换一次酒店","10月7日从普吉转场曼谷"],["02","关键活动可退","跳岛和高空项目不锁死"],["03","允许分组","妈妈不被迫出海或射击"],["04","明确排除","不去大皇宫，不看低俗演出"]].map(([n,t,d])=><article key={n}><span>{n}</span><b>{t}</b><small>{d}</small></article>)}</div></section>
     <WeatherBoard />
+    <TripMap />
     <section className="dark" id="days"><div className="shell"><Heading light index="03 · DAY BY DAY" title={<>每天只做一件<br/>真正重要的事。</>} text="选择日期查看时间线。安排保留交通和休息缓冲，不用景点数量衡量一天是否值得。"/><div className="tabs">{days.map((d,i)=><button className={i===active?"active":""} onClick={()=>setActive(i)} key={d.date}><small>{d.date.split(" · ")[0]}</small><b>D{i+1}</b><span>{d.city}</span></button>)}</div><div className="day"><aside><span>{day.date}<i>{day.pace}</i></span><small>{day.city} · DAY {active+1}</small><h3>{day.title}</h3><p>{day.lead}</p>{day.rule&&<em><b>WEATHER RULE</b>{day.rule}</em>}</aside><div className="timeline">{day.events.map((e,i)=><article key={e.title}><span>{String(i+1).padStart(2,"0")}</span><div><small>{e.time}<i>{e.tag}</i></small><h4>{e.title}</h4><p>{e.note}</p></div></article>)}</div></div></div></section>
     <section className="shell booking" id="booking"><Heading index="04 · BOOKING GATES" title={<>已订信息归档，<br/>未知继续保持未知。</>} text="页面仅展示执行行程需要的信息，不公开乘机人姓名、订单编号、联系方式或支付信息。"/><div className="cards"><FlightCard status="已出票" date="10.10—10.11" code="BKK → XMN → SHA" title="上海组 · 1人" items={["MF864：19:50—23:55","MF8521：次日13:00—14:45","手提8kg、托运1×23kg","确认行李直挂与厦门过夜"]}/><FlightCard urgent date="10.10" code="BKK → PEK / PKX" title="北京组 · 3人" items={["一次查询3张同舱库存","直飞、含托运行李","凌晨抵达须全员提前确认"]}/><FlightCard date="10.07" code="HKT → BKK" title="城市转场 · 4人" items={["11:00—14:00理想起飞","只选BKK，避免DMK","包含4人托运行李"]}/><article className="rooms"><small>普吉已订 · 曼谷待订</small><div><b>普吉</b><span>10.04—10.07</span><em>普吉岛卡塔度假酒店 · 3晚</em></div><div><b>曼谷</b><span>10.07—10.10</span><em>暹罗 / National Stadium周边 · 3晚</em></div><p>普吉订单当前显示1间房，请确认床型、入住人数及是否适住4名成人。</p></article></div><div className="car-rule"><b>10月10日规则</b><span>上海组BKK 19:50起飞 → 下午至少预留国际出发缓冲</span><span>北京组出票后 → 再判断是否同车送机</span></div></section>
     <section className="money" id="budget"><div className="shell"><Heading light index="05 · MONEY MAP" title={<>国际机票另算，<br/>两万元需要做取舍。</>} text="新方案加入4人跳岛和射击体验，活动预算明显上升。购物和代购仍使用完全独立的账本。"/><div className="money-grid"><article className="total"><small>旅行主体目标 · 4人</small><b>¥20,000</b><p>不含国际机票<br/>不含购物与代购</p><span>当前规划区间 <strong>¥17,300—25,300</strong></span></article><article className="bars">{[["住宿 · 6晚2间房","¥5,000—7,500",31],["泰国境内机票","¥1,600—2,800",12],["接送与市内交通","¥1,800—2,800",12],["餐饮","¥4,000—5,500",23],["跳岛与射击","¥3,400—4,800",19],["保险与缓冲","¥1,500—1,900",8]].map(([n,a,w])=><div key={String(n)}><span>{n}</span><b>{a}</b><i><em style={{width:`${w}%`}}/></i></div>)}</article><article className="saving"><small>控制在两万元的顺序</small><ol><li>酒店控制在每晚两间合计约¥1,000</li><li>跳岛与射击不同时升级高价套餐</li><li>包车只用于10月5日环岛和机场链路</li><li>高空观景只在预算与天气都允许时购买</li></ol></article></div></div></section>
@@ -93,6 +113,57 @@ export default function Home() {
 
 function Heading({index,title,text,light=false}:{index:string;title:React.ReactNode;text:string;light?:boolean}){return <header className={`heading ${light?"light":""}`}><div><small>{index}</small><h2>{title}</h2></div><p>{text}</p></header>}
 function FlightCard({urgent=false,status,date,code,title,items}:{urgent?:boolean;status?:string;date:string;code:string;title:string;items:string[]}){return <article className={`flight-card ${urgent?"urgent":""}`}><header><span>{status|| (urgent?"最高优先级":"同步锁定")}</span><small>{date}</small></header><p>{code}</p><h3>{title}</h3><ul>{items.map(x=><li key={x}>{x}</li>)}</ul>{!status&&<a href="https://www.google.com/travel/flights" target="_blank">打开航班搜索 ↗</a>}</article>}
+
+function googlePlaceUrl(query:string){return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;}
+function googleRouteUrl(spots:MapSpot[]){
+  if(spots.length<2) return googlePlaceUrl(spots[0]?.query||"Thailand");
+  const origin=encodeURIComponent(spots[0]!.query);
+  const destination=encodeURIComponent(spots[spots.length-1]!.query);
+  const middle=spots.slice(1,-1).map(x=>x.query).join("|");
+  return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${middle?`&waypoints=${encodeURIComponent(middle)}`:""}&travelmode=driving`;
+}
+
+function TripMap(){
+  const holder=useRef<HTMLDivElement|null>(null);
+  const [activeDay,setActiveDay]=useState("全部");
+  const [favorites,setFavorites]=useState<string[]>(()=>{
+    if(typeof window==="undefined") return [];
+    try{return JSON.parse(localStorage.getItem("thai-trip-map-favorites")||"[]");}catch{return [];}
+  });
+  const filtered=useMemo(()=>activeDay==="全部"?mapSpots:mapSpots.filter(x=>x.day===activeDay),[activeDay]);
+  const dates=["全部",...Array.from(new Set(mapSpots.map(x=>x.day)))];
+
+  useEffect(()=>{
+    if(!holder.current) return;
+    let cancelled=false;
+    let map:import("leaflet").Map|undefined;
+    void import("leaflet").then(L=>{
+      if(cancelled||!holder.current)return;
+      map=L.map(holder.current,{scrollWheelZoom:false,zoomControl:true});
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+      const bounds:L.LatLngExpression[]=[];
+      filtered.forEach((spot,index)=>{
+        const point:[number,number]=[spot.lat,spot.lon]; bounds.push(point);
+        const icon=L.divIcon({className:"trip-marker",html:`<span><i>${index+1}</i></span>`,iconSize:[30,30],iconAnchor:[15,30]});
+        L.marker(point,{icon}).addTo(map!).bindPopup(`<b>${spot.name}</b><br><small>${spot.day} · ${spot.note}</small><br><a href="${googlePlaceUrl(spot.query)}" target="_blank" rel="noreferrer">在 Google Maps 打开 ↗</a>`);
+      });
+      if(bounds.length===1)map.setView(bounds[0]!,12); else map.fitBounds(bounds,{padding:[28,28]});
+    });
+    return()=>{cancelled=true;map?.remove();};
+  },[filtered]);
+
+  const toggleFavorite=(id:string)=>{
+    const next=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];
+    setFavorites(next);localStorage.setItem("thai-trip-map-favorites",JSON.stringify(next));
+  };
+
+  return <section className="trip-map-section" id="map"><div className="shell">
+    <Heading index="03 · TRIP MAP" title={<>每天的路，<br/>在地图上先走一遍。</>} text="按日期查看地点顺序。星标保存在当前设备；地点与整日路线均可跳转Google Maps继续导航。"/>
+    <div className="map-filters">{dates.map(date=><button className={activeDay===date?"active":""} onClick={()=>setActiveDay(date)} key={date}>{date}</button>)}<a href={googleRouteUrl(filtered)} target="_blank" rel="noreferrer">在 Google Maps 打开{activeDay==="全部"?"地点":"当日路线"} ↗</a></div>
+    <div className="map-layout"><div className="map-canvas" ref={holder}/><div className="spot-list">{filtered.map((spot,index)=><article key={spot.id}><span>{String(index+1).padStart(2,"0")}</span><div><small>{spot.day} · {spot.city}</small><b>{spot.name}</b><p>{spot.note}</p><a href={googlePlaceUrl(spot.query)} target="_blank" rel="noreferrer">Google Maps ↗</a></div><button className={favorites.includes(spot.id)?"saved":""} onClick={()=>toggleFavorite(spot.id)} aria-label={favorites.includes(spot.id)?"取消收藏":"收藏地点"}>{favorites.includes(spot.id)?"★":"☆"}</button></article>)}</div></div>
+    <p className="map-privacy">地图不读取Google账号或个人位置；收藏仅保存在当前浏览器。射击场和曼谷酒店尚未最终确认，因此暂不固定坐标。</p>
+  </div></section>;
+}
 
 type WeatherResponse = {
   current: { time:string; temperature_2m:number; apparent_temperature:number; weather_code:number; wind_speed_10m:number };
