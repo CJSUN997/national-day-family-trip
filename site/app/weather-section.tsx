@@ -206,16 +206,19 @@ export function WeatherBoard({ mobileActive = false }: { mobileActive?: boolean 
           })}
         </div>
         <div className="weather-note">
-          <b>行程联动规则</b>
+          <b>10月6日 · 条件式出海</b>
           <span>
-            普吉降雨概率高不等于全天有雨；出海决定仍以雷暴预警、海滩旗帜和运营方通知为准。
+            页面实时数据来自Open-Meteo；9月26日初判可保留，但官方海况尚未覆盖当天。9月30日初检、10月5日晚终检；雷暴、强风浪/小船停航预警、现场红旗或运营商取消任一出现即改陆地方案。
           </span>
-          <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">
-            天气数据 · Open-Meteo ↗
+          <a
+            href="https://www.tmd.go.th/en/forecast/shipping"
+            target="_blank"
+            rel="noreferrer"
+          >
+            官方海况 · TMD ↗
           </a>
         </div>
       </div>
     </section>
   );
 }
-

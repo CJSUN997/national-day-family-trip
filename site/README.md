@@ -4,6 +4,10 @@
 
 正式站点：<https://cjsun997.github.io/national-day-family-trip/>
 
+## 正式方案的数据源
+
+网页端是本项目的正式执行方案。`app/itinerary-data.ts` 维护逐日安排、预订状态与待办，`app/map-data.ts` 和 `app/favorite-details.ts` 维护地点与收藏资料。仓库根目录中的 Markdown/CSV 仅作分析、打印和离线备份；内容冲突时以网页端为准。
+
 ## 快速开始
 
 需要 Node.js 22.13 或更高版本。

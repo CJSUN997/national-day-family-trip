@@ -57,6 +57,12 @@ test("renders the updated family travel planner", async () => {
   assert.match(html, /MF864/);
   assert.match(html, /普吉岛卡塔度假酒店/);
   assert.match(html, /10月10日/);
+  assert.match(html, /10月6日 · 条件式出海/);
+  assert.match(html, /9月30日初检、10月5日晚终检/);
+  assert.match(html, /确认普吉酒店可住4名成人/);
+  assert.match(html, /完成4人证件与订单备份/);
+  assert.match(html, /建立离线执行包/);
+  assert.match(html, /确认出海与留守分组规则/);
   assert.match(html, /不去大皇宫/);
   assert.doesNotMatch(html, /人妖秀|乌布|努沙杜瓦|巴厘岛|SUNCHANG/);
   assert.doesNotMatch(html, /地图查看|分类查看|路线点列表/);

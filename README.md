@@ -4,6 +4,8 @@
 
 正式站点：<https://cjsun997.github.io/national-day-family-trip/>
 
+> **版本规则：**正式方案以网页端为准，行程、预订状态和待办的唯一事实源是 `site/app/` 中的站点数据。`计划/`、`分析/`、`预订/`、`预算/` 和 `清单/` 中的文档用于分析、打印或离线备份；如与网页端冲突，以网页端为准。
+
 ## 仓库内容
 
 - `site/`：旅行执行册站点，包含行程、天气、地图收藏、预订、预算和待办。
@@ -21,9 +23,9 @@
 
 ## 推荐工作方式
 
-1. 在 `预订/预订信息.md` 更新已核实的交通和住宿状态。
-2. 在 `计划/行程.md` 更新文字版执行方案。
-3. 将确认后的内容同步到 `site/app/itinerary-data.ts` 或地图资源文件。
+1. 在 `site/app/itinerary-data.ts` 更新正式行程、预订状态与待办。
+2. 在 `site/app/map-data.ts` 和 `site/app/favorite-details.ts` 更新地点与收藏资料。
+3. 需要打印或离线使用时，再将网页端已确认内容同步到对应 Markdown/CSV 文档。
 4. 按 [站点开发说明](site/DEVELOPMENT.md) 完成本地验证。
 5. 提交并推送 `main` 后，由 GitHub Actions 自动更新正式站点。
 
